@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="../icons/icon48.png" alt="Cookie Away" id="logo-img">
+                <div class="title-group">
+                    <h1>Cookie Away</h1>
+                    <span id="cmp-tag" class="cmp-tag" style="display: none;"></span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="open-settings" class="icon-btn" title="Settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+                    </svg>
+                </button>
+                <button id="export-btn" class="icon-btn" title="Export ZIP">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                </button>
+                <div class="toggle-container">
+                    <label class="switch">
+                        <input type="checkbox" id="master-toggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </header>
+
+        <div class="inset-group">
+            <div class="stat-row">
+                <div class="stat-item">
+                    <span class="stat-value" id="banners-count">0</span>
+                    <span class="stat-label">Banners Removed</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value" id="time-saved">0s</span>
+                    <span class="stat-label">Time Saved</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status / Error Reporting -->
+        <div class="status-container" id="status-container" style="display: none;">
+            <!-- Status messages will appear here -->
+        </div>
+
+        <div class="settings-section">
+            <h2>Preferences</h2>
+            <div class="inset-group">
+                <label class="radio-option">
+                    <input type="radio" name="mode" value="reject_all" checked>
+                    <div class="radio-content">
+                        <span class="radio-title">Reject All</span>
+                        <span class="radio-desc">Block everything except necessary cookies.</span>
+                    </div>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="mode" value="necessary_only">
+                    <div class="radio-content">
+                        <span class="radio-title">Necessary Only</span>
+                        <span class="radio-desc">Accept only what's needed for the site to work.</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="action-row">
+            <button id="ignore-site-btn" class="ignore-btn">
+                Ignore this site
+            </button>
+        </div>
+
+        <footer>
+            <p>Version 4.0.0 • <a href="#" id="reset-stats">Reset Stats</a></p>
+        </footer>
+    </div>
+    <script src="../lib/jszip.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

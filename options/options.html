@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cookie Away Settings</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <img src="../icons/icon48.png" alt="Cookie Away Logo" class="logo">
+            <h1>Cookie Away Settings</h1>
+        </header>
+
+        <main>
+            <section class="settings-section">
+                <h2>Ignored Sites</h2>
+                <p class="description">The extension will not run on these websites.</p>
+
+                <div id="ignored-list" class="ignored-list">
+                    <!-- Items will be added here dynamically -->
+                    <div class="empty-state">No ignored sites yet.</div>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h2>Supported Providers</h2>
+                <p class="description">The extension automatically detects and handles banners from these providers:</p>
+                <div id="cmp-list" class="cmp-list">
+                    <!-- Items will be added here dynamically -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Cookie Away 4.0</p>
+        </footer>
+    </div>
+    <script src="options.js"></script>
+</body>
+
+</html>
