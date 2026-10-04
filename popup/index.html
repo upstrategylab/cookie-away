@@ -1,95 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <title>Cookie Away</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <img src="../icons/icon48.png" alt="Cookie Away" id="logo-img">
-                <div class="title-group">
-                    <h1>Cookie Away</h1>
-                    <span id="cmp-tag" class="cmp-tag" style="display: none;"></span>
+    <header class="top">
+        <div class="brand">
+            <img src="../icons/icon48.png" alt="" width="22" height="22">
+            <span>Cookie Away</span>
+        </div>
+        <label class="switch" title="Turn Cookie Away on or off everywhere">
+            <input type="checkbox" id="master-toggle" aria-label="Cookie Away on or off">
+            <span class="track"></span>
+        </label>
+    </header>
+
+    <main>
+        <!-- This site -->
+        <section class="site" id="site" data-state="idle">
+            <div class="site-head">
+                <div class="site-avatar" id="site-avatar" aria-hidden="true"></div>
+                <div class="site-id">
+                    <div class="site-host" id="site-host">—</div>
+                    <div class="site-cmp" id="site-cmp"></div>
                 </div>
             </div>
-            <div class="header-actions">
-                <button id="open-settings" class="icon-btn" title="Settings">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z" />
-                    </svg>
+
+            <div class="status">
+                <span class="status-dot" aria-hidden="true"></span>
+                <div>
+                    <div class="status-title" id="status-title">Checking…</div>
+                    <div class="status-detail" id="status-detail"></div>
+                </div>
+            </div>
+
+            <div class="site-actions" id="site-actions">
+                <button class="btn" id="retry-btn" type="button">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16" /><path d="M3 21v-5h5" /></svg>
+                    <span>Try again</span>
                 </button>
-                <button id="export-btn" class="icon-btn" title="Export ZIP">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="7 10 12 15 17 10" />
-                        <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                </button>
-                <div class="toggle-container">
-                    <label class="switch">
-                        <input type="checkbox" id="master-toggle" checked>
-                        <span class="slider round"></span>
-                    </label>
+                <button class="btn btn-quiet" id="site-toggle-btn" type="button">Turn off here</button>
+            </div>
+        </section>
+
+        <!-- Behaviour -->
+        <section class="group">
+            <h2>When there's no reject button</h2>
+
+            <label class="row">
+                <div class="row-text">
+                    <span class="row-title">Go through the settings</span>
+                    <span class="row-desc">Open "Manage options", switch everything off, save</span>
+                </div>
+                <span class="switch small">
+                    <input type="checkbox" id="deep-toggle">
+                    <span class="track"></span>
+                </span>
+            </label>
+
+            <div class="row">
+                <div class="row-text">
+                    <span class="row-title">If that doesn't work</span>
+                </div>
+                <div class="segmented" role="radiogroup" aria-label="If that doesn't work">
+                    <label><input type="radio" name="fallback" value="leave"><span>Leave it</span></label>
+                    <label><input type="radio" name="fallback" value="accept"><span>Accept</span></label>
                 </div>
             </div>
-        </header>
 
-        <div class="inset-group">
-            <div class="stat-row">
-                <div class="stat-item">
-                    <span class="stat-value" id="banners-count">0</span>
-                    <span class="stat-label">Banners Removed</span>
+            <button class="row row-link" id="jev-row" type="button">
+                <div class="row-text">
+                    <span class="row-title">Smart detection</span>
+                    <span class="row-desc">Jev reads banners in unfamiliar languages</span>
                 </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-value" id="time-saved">0s</span>
-                    <span class="stat-label">Time Saved</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Status / Error Reporting -->
-        <div class="status-container" id="status-container" style="display: none;">
-            <!-- Status messages will appear here -->
-        </div>
-
-        <div class="settings-section">
-            <h2>Preferences</h2>
-            <div class="inset-group">
-                <label class="radio-option">
-                    <input type="radio" name="mode" value="reject_all" checked>
-                    <div class="radio-content">
-                        <span class="radio-title">Reject All</span>
-                        <span class="radio-desc">Block everything except necessary cookies.</span>
-                    </div>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="mode" value="necessary_only">
-                    <div class="radio-content">
-                        <span class="radio-title">Necessary Only</span>
-                        <span class="radio-desc">Accept only what's needed for the site to work.</span>
-                    </div>
-                </label>
-            </div>
-        </div>
-
-        <div class="action-row">
-            <button id="ignore-site-btn" class="ignore-btn">
-                Ignore this site
+                <span class="pill" id="jev-pill">Off</span>
+                <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
             </button>
-        </div>
+        </section>
+    </main>
 
-        <footer>
-            <p>Version 4.0.0 • <a href="#" id="reset-stats">Reset Stats</a></p>
-        </footer>
-    </div>
-    <script src="../lib/jszip.min.js"></script>
+    <footer class="bottom">
+        <span id="stats">—</span>
+        <button class="link" id="open-settings" type="button">Settings</button>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 

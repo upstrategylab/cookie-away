@@ -1,371 +1,435 @@
 /**
  * Cookie Away 4.0 - Smart Content Script
- * Uses heuristics and observation to detect and handle cookie banners.
+ * 1. Known CMPs (cmp_registry.js) by selector
+ * 2. Heuristics: consent-looking overlays + multilingual button labels
+ * 3. No reject button? Open "Manage options", switch everything off, save
+ * 4. Optional Jev fallback (via the service worker) for banners the heuristics can't read
+ *
+ * Safety rails against click/reload loops:
+ * - Every action is verified; the banner must disappear
+ * - At most LIMITS.maxActionsPerPage actions per page load
+ * - Actions are logged in sessionStorage (survives reloads); too many in a short window
+ *   pauses the extension on this site and tells the service worker
+ * - Links that navigate away are never clicked
  */
 
-const CONFIG = {
-    maxClicks: 3,
-    clickDelay: 500,
-    knownIds: [
-        'onetrust-reject-all-handler',
-        'ot-pc-refuse-all-handler',
-        'CybotCookiebotDialogBodyButtonDecline',
-        'uc-btn-deny',
-        'cookie-reject-all',
-        'reject-all-cookies'
-    ],
-    keywords: {
-        banner: [
-            'cookie', 'cookies', 'consent', 'privacy', 'gdpr', 'data', 'tracking',
-            'kakor', 'integritet', 'samtycke', // Swedish
-            'datenschutz', 'privatsphäre' // German
-        ],
-        reject: [
-            'reject', 'decline', 'no', 'necessary', 'deny', 'refuse',
-            'disagree', 'not accept', 'dismiss', 'close',
-            'ablehnen', 'verweigern', 'nein', 'nur notwendige', // German
-            'refuser', 'non', 'tout refuser', // French
-            'rechazar', 'negar', 'no aceptar', // Spanish
-            'avvisa', 'neka', 'endast nödvändiga', 'jag godkänner inte', 'nej', // Swedish
-            'i do not agree', 'refuse non-essential cookies', 'save & exit', 'save preferences' // User specific
-        ],
-        accept: [
-            'accept', 'agree', 'allow', 'ok', 'yes', 'got it', 'understand', 'confirm',
-            'akzeptieren', 'zustimmen', 'alles', // German
-            'accepter', 'oui', // French
-            'aceptar', 'si', // Spanish
-            'godkänn', 'acceptera', 'okej', 'ja', 'tillåt' // Swedish
-        ]
-    }
-};
+(() => {
+    if (window.__cookieAwayLoaded || !window.CA) return;
+    window.__cookieAwayLoaded = true;
 
-let state = {
-    clicks: 0,
-    enabled: true
-};
+    const {
+        BANNER, AVOID, matchesAny, isVisible, wouldNavigate, safeClick, findButtons,
+        collectRoots, detectProvider, rejectViaSettings, resolveBanner
+    } = window.CA;
 
-// Initialize
-(async () => {
-    const data = await chrome.storage.local.get(['enabled', 'ignoredSites']);
-    if (data.enabled === false) return;
-
-    // Check if site is ignored
-    const hostname = window.location.hostname;
-    if (data.ignoredSites && data.ignoredSites.includes(hostname)) {
-        console.log('Cookie Away 4.0: Site ignored by user settings.');
-        return;
-    }
-
-    console.log('Cookie Away 4.0: Active');
-
-    // Start observing
-    const observer = new MutationObserver(debounce(scanForBanners, 500));
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Initial scan
-    scanForBanners();
-})();
-
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+    const LIMITS = {
+        scanDelay: 400,          // Throttle between scans after DOM changes
+        watchMs: 30000,          // Stop watching the DOM after this long
+        maxScans: 40,
+        verifyDelay: 1500,       // Wait before checking the banner is gone
+        maxActionsPerPage: 2,
+        loopWindowMs: 2 * 60 * 1000,
+        loopMaxActions: 3        // This many actions on one site within loopWindowMs = loop
     };
-}
 
-function scanForBanners() {
-    if (state.clicks >= CONFIG.maxClicks) return;
+    const LOOP_KEY = '__cookieAwayActions';
+    const IS_TOP = window === window.top;
+    const host = location.hostname;
 
-    // 0. Check CMP Registry (New Scalable System)
-    if (window.CMP_REGISTRY) {
-        // Collect all roots (Document + Shadow Roots)
-        const roots = [document.body, ...findAllRoots(document.body)];
+    // Elements whose class/id/label suggests a consent UI, plus dialogs.
+    const CANDIDATE_SELECTOR = [
+        '[id*="cookie" i]', '[class*="cookie" i]', '[id*="consent" i]', '[class*="consent" i]',
+        '[id*="gdpr" i]', '[class*="gdpr" i]', '[aria-label*="cookie" i]', '[aria-label*="consent" i]',
+        '[role="dialog"]', '[role="alertdialog"]', '[aria-modal="true"]', 'dialog[open]'
+    ].join(',');
+    const STRONG_CLASS = /cookie|consent|gdpr|kakor|samtycke|datenschutz|einwilligung|cmp-|privacy-banner/;
 
-        for (const provider of window.CMP_REGISTRY) {
-            // A. Global Object Check (The "Brain" Check)
-            const globalDetected = provider.checkGlobal && provider.checkGlobal();
+    let page;
+    let settings = {};
 
-            // B. Element Check (The "Body" Check)
-            let elementDetected = false;
-            let targetRoot = null;
-
-            for (const root of roots) {
-                if (provider.detect(root)) {
-                    elementDetected = true;
-                    targetRoot = root;
-                    break;
-                }
-            }
-
-            if (globalDetected || elementDetected) {
-                console.log(`Cookie Away 4.0: Detected ${provider.name} (Global: ${!!globalDetected}, Element: ${elementDetected})`);
-
-                // Notify background immediately
-                chrome.runtime.sendMessage({
-                    type: 'CMP_DETECTED',
-                    name: provider.name
-                });
-
-                // Attempt Action with Retry Logic
-                attemptAction(provider, targetRoot || document.body, 0);
-                return; // Focus on this provider
-            }
-        }
+    function resetPage() {
+        if (page && page.observer) page.observer.disconnect();
+        if (page) clearTimeout(page.timer);
+        page = {
+            scans: 0,
+            actions: 0,
+            busy: false,
+            done: false,
+            jevAsked: false,
+            cmpReported: false,
+            tried: new WeakSet(),
+            timer: null,
+            observer: null
+        };
     }
 
-    // ... (Fallback logic)
+    resetPage();
+    init();
 
-    // 1. Find potential banner elements (fixed/sticky, high z-index)
-    // ... (rest of the heuristic logic remains as fallback)
-    const candidates = findBannerCandidates(document.body);
-
-    // 2. Also check Shadow DOMs
-    const shadowCandidates = findShadowBanners(document.body);
-
-    const allCandidates = [...candidates, ...shadowCandidates];
-
-    for (const element of allCandidates) {
-        if (isCookieBanner(element)) {
-            console.log('Cookie Away 4.0: Found banner', element);
-            handleBanner(element);
-            // Only handle one at a time to be safe
-            break;
-        }
-    }
-}
-
-function findBannerCandidates(root) {
-    const candidates = [];
-    const elements = root.querySelectorAll('*');
-
-    for (const el of elements) {
-        // Filter by visibility first
-        if (!isVisible(el)) continue;
-
-        const style = window.getComputedStyle(el);
-        const classId = (el.className + ' ' + el.id).toLowerCase();
-
-        // Strategy 1: Fixed/Sticky positioning with high Z-index
-        if (style.position === 'fixed' || style.position === 'sticky') {
-            const rect = el.getBoundingClientRect();
-            const isBottom = rect.bottom >= window.innerHeight - 150; // Increased tolerance
-            const isTop = rect.top <= 150;
-
-            if ((isBottom || isTop) && style.zIndex !== 'auto' && parseInt(style.zIndex) > 0) {
-                candidates.push(el);
-            }
-        }
-
-        // Strategy 2: Explicit Roles
-        if (el.getAttribute('role') === 'dialog' || el.getAttribute('role') === 'alertdialog') {
-            candidates.push(el);
-        }
-
-        // Strategy 3: Strong Class/ID signals (New)
-        if (classId.includes('cookie') ||
-            classId.includes('consent') ||
-            classId.includes('gdpr') ||
-            classId.includes('privacy') ||
-            classId.includes('kakor') ||
-            classId.includes('samtycke') ||
-            classId.includes('datenschutz') ||
-            classId.includes('aviso')) {
-            // Only if it looks like a container (has children)
-            if (el.children.length > 0) {
-                candidates.push(el);
-            }
-        }
-    }
-
-    return candidates;
-}
-
-function findAllRoots(root) {
-    let roots = [];
-    const elements = root.querySelectorAll('*');
-
-    for (const el of elements) {
-        if (el.shadowRoot) {
-            roots.push(el.shadowRoot);
-            roots = [...roots, ...findAllRoots(el.shadowRoot)];
-        }
-    }
-    return roots;
-}
-
-function findShadowBanners(root) {
-    let candidates = [];
-    const elements = root.querySelectorAll('*');
-
-    for (const el of elements) {
-        if (el.shadowRoot) {
-            candidates = [...candidates, ...findBannerCandidates(el.shadowRoot)];
-            candidates = [...candidates, ...findShadowBanners(el.shadowRoot)];
-        }
-    }
-    return candidates;
-}
-
-function isCookieBanner(element) {
-    const text = element.textContent.toLowerCase();
-    const classId = (element.className + ' ' + element.id).toLowerCase();
-
-    // Strong signal: Class or ID contains "cookie" or "consent"
-    const hasStrongSignal = classId.includes('cookie') ||
-        classId.includes('consent') ||
-        classId.includes('gdpr') ||
-        classId.includes('privacy') ||
-        classId.includes('kakor') || // Swedish
-        classId.includes('samtycke') || // Swedish
-        classId.includes('datenschutz') || // German
-        classId.includes('privatsphäre') || // German
-        classId.includes('aviso'); // Spanish
-
-    // Check keywords
-    let matchCount = 0;
-    for (const word of CONFIG.keywords.banner) {
-        if (text.includes(word)) matchCount++;
-    }
-
-    // If we have a strong class/ID signal, we only need 1 keyword (or even 0 if it's very obvious, but let's say 1 to be safe)
-    if (hasStrongSignal) {
-        return matchCount >= 1 || text.length > 20; // If it has text and the right class, it's probably it
-    }
-
-    // Otherwise, we need 2 keywords
-    return matchCount >= 2;
-}
-
-function handleBanner(banner) {
-    // Find buttons
-    const buttons = findButtons(banner);
-
-    // 1. Check for specific known IDs first (Highest Priority)
-    let targetBtn = buttons.find(btn => {
-        return CONFIG.knownIds.some(id => btn.id === id || btn.element.id === id);
+    // "Try again" from the popup
+    chrome.runtime.onMessage.addListener((message) => {
+        if (message.type !== 'RESCAN') return;
+        try {
+            sessionStorage.removeItem(LOOP_KEY);
+        } catch (e) { }
+        resetPage();
+        init();
     });
 
-    // 2. Prioritize Reject/Decline keywords
-    if (!targetBtn) {
-        targetBtn = buttons.find(btn => matchesKeywords(btn.text, CONFIG.keywords.reject));
-    }
+    async function init() {
+        settings = await chrome.storage.local.get(['enabled', 'ignoredSites', 'cooldowns', 'jevEnabled', 'fallback', 'deepReject']);
+        if (settings.enabled === false) return;
+        if ((settings.ignoredSites || []).includes(host)) return;
 
-    // 3. Fallback to Accept if no Reject found
-    if (!targetBtn) {
-        targetBtn = buttons.find(btn => matchesKeywords(btn.text, CONFIG.keywords.accept));
-    }
-
-    if (targetBtn) {
-        // SAFETY CHECK: Don't click if it looks like a link that opens a new tab
-        if (targetBtn.element.tagName === 'A') {
-            if (targetBtn.element.target === '_blank') {
-                console.log('Cookie Away 4.0: Skipping unsafe link (target=_blank)', targetBtn.text);
-                return;
-            }
-            // Also skip if href looks like a policy page
-            const href = targetBtn.element.href || '';
-            if (href.includes('policy') || href.includes('statement') || href.includes('info')) {
-                // But only if the text doesn't explicitly say "accept" or "reject" strongly
-            }
-        }
-
-        console.log('Cookie Away 4.0: Clicking', targetBtn.text || targetBtn.id);
-
-        // Check if clickable
-        if (!isVisible(targetBtn.element)) {
+        const pausedUntil = (settings.cooldowns || {})[host];
+        if (pausedUntil && pausedUntil > Date.now()) {
+            log(`Paused on ${host} until ${new Date(pausedUntil).toLocaleString()} (loop protection).`);
             return;
         }
 
-        clickElement(targetBtn.element);
-        state.clicks++;
+        // Ignore tiny frames (ads, trackers, pixels). Consent iframes are often created at 0x0
+        // and resized when shown, so wait for a resize before giving up on them.
+        if (!IS_TOP && isTinyFrame()) {
+            const onResize = () => {
+                if (isTinyFrame()) return;
+                window.removeEventListener('resize', onResize);
+                init();
+            };
+            window.addEventListener('resize', onResize);
+            setTimeout(() => window.removeEventListener('resize', onResize), LIMITS.watchMs);
+            return;
+        }
 
-        // Notify background
-        chrome.runtime.sendMessage({ type: 'BANNER_HANDLED' });
+        if (recentActions().length >= LIMITS.loopMaxActions) {
+            reportLoop();
+            return;
+        }
 
-        // Verification: Check if banner is gone after a short delay
-        setTimeout(() => {
-            if (isVisible(banner)) {
-                console.warn('Cookie Away 4.0: Banner still visible after click. Marking as failed.');
-                chrome.runtime.sendMessage({ type: 'BANNER_MISSED' });
-            }
-        }, 1500);
-    } else {
-        // Banner found but no buttons found
-        console.warn('Cookie Away 4.0: Banner found but no buttons detected.');
-        chrome.runtime.sendMessage({ type: 'BANNER_MISSED' });
+        if (IS_TOP) log('Active');
+        scan();
+
+        page.observer = new MutationObserver(schedule);
+        page.observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class', 'style', 'hidden', 'open', 'aria-hidden']
+        });
+        const current = page;
+        setTimeout(() => current === page && stop(), LIMITS.watchMs);
     }
-}
 
-function findButtons(root) {
-    // Look for button tags, input[type=button], or div/a with role=button or button-like classes
-    // Added: elements with class containing 'btn' or 'button'
-    const elements = root.querySelectorAll('button, input[type="button"], input[type="submit"], a, div[role="button"], [class*="btn"], [class*="button"]');
-    const buttons = [];
+    function isTinyFrame() {
+        return window.innerWidth < 120 || window.innerHeight < 60;
+    }
 
-    for (const el of elements) {
-        if (isVisible(el)) {
-            // Skip links that are likely just "Read Policy" links
-            const text = el.textContent.toLowerCase().trim();
-            if (text.includes('policy') || text.includes('read') || text.includes('view') || text.includes('more info')) {
-                continue;
+    function options() {
+        return { deep: settings.deepReject !== false, allowAccept: settings.fallback === 'accept' };
+    }
+
+    // Throttle, not debounce: a constantly animating page would otherwise never scan.
+    function schedule() {
+        if (page.timer || page.done) return;
+        page.timer = setTimeout(() => {
+            page.timer = null;
+            scan();
+        }, LIMITS.scanDelay);
+    }
+
+    function stop() {
+        page.done = true;
+        if (page.observer) page.observer.disconnect();
+        clearTimeout(page.timer);
+    }
+
+    function scan() {
+        if (page.done || page.busy) return;
+        if (++page.scans > LIMITS.maxScans) return stop();
+
+        const roots = collectRoots(document);
+
+        // 1. Known CMPs
+        for (const provider of window.CMP_REGISTRY || []) {
+            let banner = null;
+            for (const root of roots) {
+                banner = detectProvider(provider, root);
+                if (banner) break;
             }
 
-            buttons.push({
-                element: el,
-                text: text,
-                id: el.id // Capture ID for matching
+            const scriptPresent = !banner && provider.checkGlobal && safe(provider.checkGlobal);
+            if (banner || scriptPresent) reportCmp(provider.name);
+            if (!banner || page.tried.has(banner)) continue;
+
+            log(`Detected ${provider.name}`);
+            handle(banner, provider, provider.name);
+            return;
+        }
+
+        // 2. Heuristics
+        for (const candidate of findCandidates(roots)) {
+            if (page.tried.has(candidate.el)) continue;
+
+            const buttons = findButtons(candidate.el);
+            if (buttons.length === 0) continue;
+
+            const verdict = classify(candidate);
+            if (verdict === 'yes') {
+                handle(candidate.el, null, 'heuristic');
+                return;
+            }
+
+            // An overlay we can't read (unfamiliar language/layout): let Jev decide once.
+            if (verdict === 'maybe' && jevAvailable() && buttons.length <= 6) {
+                askJev(candidate.el, buttons);
+                return;
+            }
+        }
+    }
+
+    function findCandidates(roots) {
+        const found = new Map(); // element -> { el, overlay }
+
+        for (const root of roots) {
+            for (const el of root.querySelectorAll(CANDIDATE_SELECTOR)) {
+                if (!found.has(el)) found.set(el, { el, overlay: el.matches('[role="dialog"],[role="alertdialog"],[aria-modal="true"],dialog') });
+            }
+        }
+
+        // Fixed/sticky bars near the top or bottom: only check the top two levels of the page,
+        // which is where banners are mounted, instead of computing styles for every element.
+        if (document.body) {
+            for (const el of document.body.querySelectorAll(':scope > *, :scope > * > *')) {
+                if (found.has(el)) continue;
+                const style = getComputedStyle(el);
+                if (style.position !== 'fixed' && style.position !== 'sticky') continue;
+                const rect = el.getBoundingClientRect();
+                const atBottom = rect.bottom >= window.innerHeight - 150;
+                const coversCenter = rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2 &&
+                    rect.width >= window.innerWidth / 2;
+                // Top bars are usually site headers: only consider them with consent keywords (overlay: false)
+                if (atBottom || coversCenter || rect.top <= 150) found.set(el, { el, overlay: atBottom || coversCenter });
+            }
+        }
+
+        const list = [...found.values()].filter(c => {
+            const tag = c.el.tagName;
+            if (tag === 'HTML' || tag === 'BODY' || tag === 'SCRIPT' || tag === 'STYLE') return false;
+            const len = (c.el.textContent || '').length;
+            return len >= 20 && len <= 6000 && isVisible(c.el);
+        });
+
+        // Keep the outermost match, so nested ".cookie-banner__text" etc. collapse into one banner.
+        return list.filter(c => !list.some(o => o !== c && o.el.contains(c.el)));
+    }
+
+    // 'yes' = consent banner, 'maybe' = overlay we can't read (Jev may), 'no' = skip
+    function classify({ el, overlay }) {
+        const text = (el.textContent || '').replace(/\s+/g, ' ').toLowerCase();
+        const className = typeof el.className === 'string' ? el.className : (el.getAttribute('class') || '');
+        const classId = `${el.id} ${className}`.toLowerCase();
+
+        let hits = 0;
+        for (const word of BANNER) {
+            if (matchesAny(text, [word])) hits++;
+        }
+
+        if (STRONG_CLASS.test(classId) && (hits >= 1 || text.length > 20)) return 'yes';
+        if (hits >= 2) return 'yes';
+        // Unreadable overlay (unknown language?): worth asking Jev, unless it's site navigation
+        if (overlay && text.length >= 40 && text.length <= 2500 && !isNavigation(el)) return 'maybe';
+        return 'no';
+    }
+
+    function isNavigation(el) {
+        return /^(HEADER|NAV|FOOTER)$/.test(el.tagName) || !!el.querySelector('nav') || !!el.closest('header, nav');
+    }
+
+    function jevAvailable() {
+        return settings.jevEnabled && !page.jevAsked;
+    }
+
+    // Known provider or recognised banner: reject -> settings route -> accept (per user settings)
+    async function handle(banner, provider, source) {
+        page.tried.add(banner);
+        page.busy = true;
+
+        let result = null;
+        try {
+            result = await resolveBanner(banner, provider || {}, options());
+        } catch (e) {
+            log(`Failed on ${source}`, e);
+        }
+
+        // Recognised as consent but nothing we could understand: Jev may read it
+        if (!result && jevAvailable() && isVisible(banner)) {
+            const buttons = findButtons(banner);
+            if (buttons.length > 0 && buttons.length <= 12) {
+                page.busy = false;
+                return askJev(banner, buttons);
+            }
+        }
+
+        await finish(banner, result, source);
+    }
+
+    async function askJev(banner, buttons) {
+        page.jevAsked = true;
+        page.tried.add(banner);
+        page.busy = true;
+
+        const usable = buttons.slice(0, 12);
+        let res = null;
+        try {
+            res = await chrome.runtime.sendMessage({
+                type: 'JEV_CLASSIFY',
+                host,
+                text: (banner.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 1500),
+                buttons: usable.map(b => b.label)
             });
+        } catch (e) {
+            res = null;
+        }
+
+        if (!res || !res.ok) {
+            log('Jev unavailable', res && res.reason);
+            page.busy = false;
+            return;
+        }
+        if (res.isBanner < 0.75) {
+            page.busy = false; // Not a consent banner (newsletter, chat, etc.)
+            return;
+        }
+
+        const usableButton = (i) => {
+            const b = i != null ? usable[i] : null;
+            return b && !wouldNavigate(b.element) ? b : null;
+        };
+        const { deep, allowAccept } = options();
+
+        let result = null;
+        const reject = usableButton(res.reject);
+        const settingsBtn = usableButton(res.settings);
+        const accept = usableButton(res.accept);
+
+        if (reject && !matchesAny(reject.label, AVOID) && safeClick(reject.element)) {
+            result = { kind: 'reject' };
+        } else if (deep && settingsBtn) {
+            result = await rejectViaSettings(banner, { openElement: settingsBtn.element });
+        }
+        if (!result && allowAccept && accept && safeClick(accept.element)) {
+            result = { kind: 'accept' };
+        }
+
+        if (result) log(`Jev resolved banner (${result.kind}${res.cached ? ', cached' : ''})`);
+        await finish(banner, result, 'jev');
+    }
+
+    // Verify the banner (and any settings layer) actually went away.
+    async function finish(banner, result, source) {
+        if (!result) {
+            page.busy = false;
+            send('BANNER_MISSED', { reason: 'no-button', source });
+            return;
+        }
+
+        // Settings opened in another frame, which handles the rest
+        if (result.kind === 'handoff') {
+            log(`Opened settings for ${source}; the settings frame takes over`);
+            stop();
+            return;
+        }
+
+        // Consent-or-pay wall and the user chose "Leave it"
+        if (result.kind === 'none') {
+            page.busy = false;
+            send('BANNER_MISSED', { reason: 'pay-wall', source });
+            stop();
+            return;
+        }
+
+        page.actions++;
+        recordAction();
+
+        // Banners in their own iframe (Sourcepoint etc.) are usually removed together with the
+        // frame, so this code never gets to verify. Report now; a miss below corrects it.
+        const report = { source, kind: result.kind, toggles: result.toggles || 0, payWall: !!result.payWall };
+        if (!IS_TOP) send('BANNER_HANDLED', report);
+
+        await wait(LIMITS.verifyDelay);
+        page.busy = false;
+
+        const gone = !isVisible(banner) && !(result.layer && isVisible(result.layer));
+        if (gone) {
+            if (IS_TOP) send('BANNER_HANDLED', report);
+            stop();
+            return;
+        }
+
+        log(`Banner still visible after ${result.kind} (${source})`);
+        send('BANNER_MISSED', { reason: 'still-visible', source, correction: !IS_TOP });
+
+        if (recentActions().length >= LIMITS.loopMaxActions) reportLoop();
+        else if (page.actions >= LIMITS.maxActionsPerPage) stop();
+        else schedule();
+    }
+
+    // --- Loop guard ---------------------------------------------------------
+
+    function recentActions() {
+        try {
+            const now = Date.now();
+            return JSON.parse(sessionStorage.getItem(LOOP_KEY) || '[]').filter(t => now - t < LIMITS.loopWindowMs);
+        } catch (e) {
+            return [];
         }
     }
 
-    return buttons;
-}
-
-function matchesKeywords(text, keywords) {
-    return keywords.some(kw => text.includes(kw));
-}
-
-function isVisible(el) {
-    if (!el) return false;
-    const style = window.getComputedStyle(el);
-    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
-    const rect = el.getBoundingClientRect();
-    return rect.width > 0 && rect.height > 0;
-}
-
-function clickElement(el) {
-    el.click();
-}
-
-function attemptAction(provider, root, attempt) {
-    if (attempt > 5) {
-        console.warn(`Cookie Away 4.0: Failed to handle ${provider.name} after 5 attempts.`);
-        chrome.runtime.sendMessage({ type: 'BANNER_MISSED' });
-        return;
-    }
-
-    try {
-        // Re-detect to get fresh element reference
-        const banner = provider.detect(root);
-
-        // If we have a banner element, check if it's visible enough to act
-        if (banner && isVisible(banner)) {
-            console.log(`Cookie Away 4.0: Actioning ${provider.name} (Attempt ${attempt + 1})`);
-            provider.action(root);
-            state.clicks++;
-            chrome.runtime.sendMessage({ type: 'BANNER_HANDLED' });
-        } else {
-            // Not visible yet, or not found yet (but global was found)
-            console.log(`Cookie Away 4.0: Waiting for ${provider.name} banner... (Attempt ${attempt + 1})`);
-            setTimeout(() => attemptAction(provider, root, attempt + 1), 1000);
+    function recordAction() {
+        const actions = recentActions();
+        actions.push(Date.now());
+        try {
+            sessionStorage.setItem(LOOP_KEY, JSON.stringify(actions));
+        } catch (e) {
+            // Storage blocked (sandboxed frame); the per-page cap still applies
         }
-    } catch (e) {
-        console.warn(`Cookie Away 4.0: Error in ${provider.name} action`, e);
-        setTimeout(() => attemptAction(provider, root, attempt + 1), 1000);
     }
-}
+
+    function reportLoop() {
+        stop();
+        console.warn(`Cookie Away 4.0: Banner keeps coming back on ${host}. Pausing here to avoid a click/reload loop.`);
+        send('LOOP_DETECTED', { host });
+    }
+
+    // --- Utils --------------------------------------------------------------
+
+    function reportCmp(name) {
+        if (page.cmpReported) return;
+        page.cmpReported = true;
+        send('CMP_DETECTED', { name });
+    }
+
+    function send(type, extra = {}) {
+        try {
+            chrome.runtime.sendMessage({ type, host, ...extra }).catch(() => { });
+        } catch (e) {
+            // Extension was reloaded; this content script is orphaned
+            stop();
+        }
+    }
+
+    function safe(fn) {
+        try {
+            return fn();
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function log(...args) {
+        console.log('Cookie Away 4.0:', ...args);
+    }
+})();

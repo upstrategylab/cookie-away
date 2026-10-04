@@ -1,42 +1,150 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cookie Away Settings</title>
     <link rel="stylesheet" href="options.css">
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <img src="../icons/icon48.png" alt="Cookie Away Logo" class="logo">
-            <h1>Cookie Away Settings</h1>
+    <div class="page">
+        <header class="top">
+            <div class="brand">
+                <img src="../icons/icon48.png" alt="" width="36" height="36">
+                <div>
+                    <h1>Cookie Away</h1>
+                    <span class="version" id="version"></span>
+                </div>
+            </div>
+            <label class="toggle-inline">
+                <span id="master-label">On</span>
+                <span class="switch">
+                    <input type="checkbox" id="master-toggle" aria-label="Cookie Away on or off everywhere">
+                    <span class="track"></span>
+                </span>
+            </label>
         </header>
 
-        <main>
-            <section class="settings-section">
-                <h2>Ignored Sites</h2>
-                <p class="description">The extension will not run on these websites.</p>
+        <!-- Stats -->
+        <section class="stats" aria-label="Stats">
+            <div class="stat">
+                <span class="stat-value" id="stat-banners">0</span>
+                <span class="stat-label">Banners handled</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="stat-toggles">0</span>
+                <span class="stat-label">Settings switched off</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="stat-time">0s</span>
+                <span class="stat-label">Time saved</span>
+            </div>
+        </section>
 
-                <div id="ignored-list" class="ignored-list">
-                    <!-- Items will be added here dynamically -->
-                    <div class="empty-state">No ignored sites yet.</div>
+        <!-- Behaviour -->
+        <section class="card">
+            <div class="card-head">
+                <h2>When there's no reject button</h2>
+                <p>Some banners, often on news sites, hide "Reject" behind a settings screen or only offer it with a paid subscription.</p>
+            </div>
+
+            <label class="row">
+                <div class="row-text">
+                    <span class="row-title">Go through the settings</span>
+                    <span class="row-desc">Open "Manage options", click Reject all / Object all, switch off anything still on, then save.</span>
                 </div>
-            </section>
+                <span class="switch">
+                    <input type="checkbox" id="deep-toggle">
+                    <span class="track"></span>
+                </span>
+            </label>
 
-            <section class="settings-section">
-                <h2>Supported Providers</h2>
-                <p class="description">The extension automatically detects and handles banners from these providers:</p>
-                <div id="cmp-list" class="cmp-list">
-                    <!-- Items will be added here dynamically -->
+            <div class="row">
+                <div class="row-text">
+                    <span class="row-title">If that doesn't work</span>
+                    <span class="row-desc" id="fallback-desc"></span>
                 </div>
-            </section>
-        </main>
+                <div class="segmented" role="radiogroup" aria-label="If that doesn't work">
+                    <label><input type="radio" name="fallback" value="leave"><span>Leave it</span></label>
+                    <label><input type="radio" name="fallback" value="accept"><span>Accept</span></label>
+                </div>
+            </div>
+        </section>
 
-        <footer>
-            <p>Cookie Away 4.0</p>
+        <!-- Jev -->
+        <section class="card">
+            <div class="card-head">
+                <h2>Smart detection <span class="tag">Jev by TypeSafe</span></h2>
+                <p>For banners the built-in rules can't read, like unfamiliar languages or layouts. Only the banner's text and button labels are sent, once per banner. Answers are cached, with at most 3 calls per site per day.</p>
+            </div>
+
+            <label class="row">
+                <div class="row-text">
+                    <span class="row-title">Use Jev</span>
+                    <span class="row-desc" id="jev-status"></span>
+                </div>
+                <span class="switch">
+                    <input type="checkbox" id="jev-enabled">
+                    <span class="track"></span>
+                </span>
+            </label>
+
+            <div class="row">
+                <div class="row-text">
+                    <span class="row-title">API key</span>
+                    <div class="key-field">
+                        <input type="password" id="jev-key" placeholder="Paste your TypeSafe API key" autocomplete="off" spellcheck="false">
+                        <button class="icon-btn" id="jev-reveal" type="button" title="Show key" aria-label="Show key">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>
+                        </button>
+                        <button class="btn" id="jev-save" type="button">Save</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sites -->
+        <section class="card">
+            <div class="card-head">
+                <h2>Sites</h2>
+                <p>Cookie Away leaves banners alone on these sites.</p>
+            </div>
+
+            <div class="list-head">
+                <h3>Turned off</h3>
+                <form class="add-site" id="add-site-form">
+                    <input type="text" id="add-site-input" placeholder="example.com" autocomplete="off" spellcheck="false" aria-label="Site to turn off">
+                    <button class="btn btn-quiet" type="submit">Add</button>
+                </form>
+            </div>
+            <ul class="site-list" id="ignored-list"></ul>
+
+            <div class="list-head">
+                <h3>Paused <span class="hint">The banner kept coming back after a click, so it stopped for 24 hours to avoid a reload loop</span></h3>
+            </div>
+            <ul class="site-list" id="paused-list"></ul>
+        </section>
+
+        <!-- Providers -->
+        <section class="card">
+            <div class="card-head">
+                <h2>Recognised consent tools</h2>
+                <p>Handled with dedicated rules. Other banners are found by their wording, in about 20 languages.</p>
+            </div>
+            <div class="chips" id="cmp-list"></div>
+        </section>
+
+        <footer class="bottom">
+            <button class="link" id="reset-stats" type="button">Reset stats</button>
+            <span class="dot" aria-hidden="true">·</span>
+            <button class="link" id="export-btn" type="button">Export source (ZIP)</button>
         </footer>
     </div>
+
+    <script src="../lib/jszip.min.js"></script>
+    <script src="../content/cmp_registry.js"></script>
     <script src="options.js"></script>
 </body>
 

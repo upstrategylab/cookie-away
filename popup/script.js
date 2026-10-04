@@ -1,175 +1,202 @@
+// Cookie Away popup: what happened on this site, plus the few settings that matter.
+
+const $ = (id) => document.getElementById(id);
+const SECONDS_SAVED_PER_BANNER = 5;
+
+let tab = null;
+let host = null;
+let rescanTimer = null;
+let scanning = null; // Shown after "Try again" until the page reports back
+
 document.addEventListener('DOMContentLoaded', async () => {
-    // Load state
-    const data = await chrome.storage.local.get(['enabled', 'mode', 'stats', 'lastStatus']);
-
-    // Set toggle
-    document.getElementById('master-toggle').checked = data.enabled !== false;
-
-    // Set mode
-    const mode = data.mode || 'reject_all';
-    document.querySelector(`input[value="${mode}"]`).checked = true;
-
-    // Set stats
-    const stats = data.stats || { bannersHandled: 0 };
-    document.getElementById('banners-count').textContent = stats.bannersHandled;
-
-    // Set status
-    const statusContainer = document.getElementById('status-container');
-    // Error reporting removed as per user request ("pointless")
-    if (statusContainer) {
-        statusContainer.style.display = 'none';
+    [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    try {
+        const url = new URL(tab.url);
+        host = /^https?:$/.test(url.protocol) ? url.hostname : null;
+    } catch (e) {
+        host = null;
     }
 
-    // Calculate time saved (approx 5s per banner)
-    const timeSaved = stats.bannersHandled * 5;
-    document.getElementById('time-saved').textContent = formatTime(timeSaved);
+    await render();
+    bindEvents();
 
-    // Load Detected CMP for current tab
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    const tabData = await chrome.storage.local.get('tabCMPs');
-    const cmpTag = document.getElementById('cmp-tag');
-
-    if (tabData.tabCMPs && tabData.tabCMPs[tab.id]) {
-        cmpTag.textContent = tabData.tabCMPs[tab.id];
-        cmpTag.style.display = 'inline-block';
-    } else {
-        cmpTag.style.display = 'none';
-    }
-
-    // Listeners
-    document.getElementById('master-toggle').addEventListener('change', (e) => {
-        chrome.storage.local.set({ enabled: e.target.checked });
-    });
-
-    document.querySelectorAll('input[name="mode"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            chrome.storage.local.set({ mode: e.target.value });
-        });
-    });
-
-    // Settings Icon
-    document.getElementById('open-settings').addEventListener('click', () => {
-        chrome.runtime.openOptionsPage();
-    });
-
-    // Export Icon
-    document.getElementById('export-btn').addEventListener('click', () => {
-        // Trigger download logic (assuming exportExtension function exists or needs to be added)
-        // For now, we'll just log it as the user didn't provide the export function in the snippet
-        // Re-adding the export logic if it was there before
-        exportExtension();
-    });
-
-    // Ignore Site Button with Feedback
-    const ignoreBtn = document.getElementById('ignore-site-btn');
-    if (ignoreBtn) {
-        ignoreBtn.addEventListener('click', async () => {
-            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-            if (!tab || !tab.url) return;
-
-            const url = new URL(tab.url);
-            const hostname = url.hostname;
-
-            const data = await chrome.storage.local.get('ignoredSites');
-            const ignoredSites = data.ignoredSites || [];
-
-            if (!ignoredSites.includes(hostname)) {
-                ignoredSites.push(hostname);
-                await chrome.storage.local.set({ ignoredSites });
-
-                // Visual Feedback
-                const originalText = ignoreBtn.textContent;
-                ignoreBtn.textContent = 'Site Ignored';
-                ignoreBtn.style.color = '#34C759'; // Success Green
-                ignoreBtn.disabled = true;
-
-                setTimeout(() => {
-                    ignoreBtn.textContent = originalText;
-                    ignoreBtn.style.color = '';
-                    ignoreBtn.disabled = false;
-                }, 2000);
-
-                // Reload the tab to apply changes
-                chrome.tabs.reload(tab.id);
+    // Live updates while the popup is open (e.g. after "Try again")
+    chrome.storage.onChanged.addListener((changes, area) => {
+        const change = area === 'session' && changes[`tab:${tab.id}`];
+        if (change) {
+            if (change.newValue) {
+                scanning = null;
+                clearTimeout(rescanTimer);
             }
-        });
-    }
-
-    document.getElementById('reset-stats').addEventListener('click', (e) => {
-        e.preventDefault();
-        if (confirm('Reset all statistics?')) {
-            chrome.storage.local.set({
-                stats: { bannersHandled: 0, lastHandled: null }
-            }, () => {
-                location.reload();
-            });
+            render();
         }
+        if (area === 'local' && (changes.cooldowns || changes.stats || changes.enabled)) render();
     });
 });
 
-function exportExtension() {
-    // Basic export stub or re-implement if needed. 
-    // Since the previous file content didn't show the export logic, I'll assume it's needed.
-    // However, to be safe and not break things, I'll check if JSZip is loaded.
-    if (typeof JSZip === 'undefined') {
-        console.error('JSZip not found');
-        return;
+async function render() {
+    const local = await chrome.storage.local.get([
+        'enabled', 'ignoredSites', 'cooldowns', 'stats', 'fallback', 'deepReject', 'jevEnabled', 'jevApiKey'
+    ]);
+    const key = `tab:${tab.id}`;
+    const { [key]: status = {} } = await chrome.storage.session.get(key);
+
+    const enabled = local.enabled !== false;
+    $('master-toggle').checked = enabled;
+    document.body.classList.toggle('disabled', !enabled);
+
+    $('deep-toggle').checked = local.deepReject !== false;
+    const fallback = local.fallback === 'accept' ? 'accept' : 'leave';
+    document.querySelector(`input[name="fallback"][value="${fallback}"]`).checked = true;
+
+    const jevOn = !!(local.jevEnabled && local.jevApiKey);
+    $('jev-pill').textContent = jevOn ? 'On' : 'Off';
+    $('jev-pill').classList.toggle('on', jevOn);
+
+    renderStats(local.stats || {});
+    renderSite(scanning || siteState(local, status, enabled), status);
+}
+
+// Decide what to say about the current tab
+function siteState(local, status, enabled) {
+    if (!host) return { state: 'idle', title: 'Nothing to do here', detail: 'Cookie Away only runs on websites.', actions: false };
+    if (!enabled) return { state: 'idle', title: 'Cookie Away is off', detail: 'Turn it on with the switch above.', actions: false };
+
+    if ((local.ignoredSites || []).includes(host)) {
+        return { state: 'idle', title: 'Off on this site', detail: 'Banners here are left alone.', retry: false, siteOn: false };
     }
 
-    const zip = new JSZip();
-    // ... (Export logic would go here, but for now let's just alert if it's missing)
-    // Actually, I should probably restore the export logic if I can find it in history, 
-    // but the user said "The download icon... doesn't work", implying the logic might be missing or disconnected.
-    // I will add a simple alert for now if I can't find the original code, or better, 
-    // I will just ensure the listener is attached.
-    // The previous `popup.js` had it. I will re-add a robust version.
+    const pausedUntil = (local.cooldowns || {})[host];
+    if (status.state === 'paused' || (pausedUntil && pausedUntil > Date.now())) {
+        const until = pausedUntil ? new Date(pausedUntil).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'tomorrow';
+        return {
+            state: 'paused',
+            title: 'Paused on this site',
+            detail: `The banner kept coming back after each click, so Cookie Away stopped to avoid a reload loop. Resumes at ${until}.`,
+            retryLabel: 'Resume'
+        };
+    }
 
-    // For this step, I am just attaching the listener. I will add the export function in a separate block if needed.
+    const via = status.source === 'jev' ? ' with Jev' : '';
+    if (status.state === 'handled') {
+        if (status.kind === 'settings' || status.toggles) {
+            const n = status.toggles || 0;
+            return {
+                state: 'handled',
+                title: 'Rejected through the settings',
+                detail: n ? `Switched off ${n} setting${n === 1 ? '' : 's'}${via}.` : `Saved with everything off${via}.`
+            };
+        }
+        if (status.kind === 'accept') {
+            const detail = status.payWall
+                ? 'This site only lets you reject if you pay for a subscription.'
+                : `This banner had no way to reject${via}.`;
+            return { state: 'accepted', title: 'Accepted', detail };
+        }
+        if (status.kind === 'dismiss') return { state: 'handled', title: 'Banner closed', detail: `No choice was offered${via}.` };
+        return { state: 'handled', title: 'Cookies rejected', detail: via ? `Handled${via}.` : '' };
+    }
+
+    if (status.state === 'missed' && status.reason === 'pay-wall') {
+        return { state: 'missed', title: 'Left alone', detail: 'This site only lets you reject if you pay. Close it yourself, or set "If that doesn\'t work" to Accept.', retry: false };
+    }
+
+    if (status.state === 'missed') {
+        const detail = status.reason === 'still-visible'
+            ? 'It clicked, but the banner stayed. Try again, or handle this one yourself.'
+            : "Found a banner but couldn't work out which button to press.";
+        return { state: 'missed', title: "Couldn't handle the banner", detail };
+    }
+
+    return { state: 'idle', title: 'No cookie banner seen', detail: '' };
+}
+
+function renderSite(s, status) {
+    $('site').dataset.state = s.state;
+    $('site-host').textContent = host ? host.replace(/^www\./, '') : 'This page';
+    $('site-avatar').textContent = host ? host.replace(/^www\./, '').charAt(0) : '·';
+    $('site-cmp').textContent = status.cmp ? `Uses ${status.cmp}` : '';
+    $('status-title').textContent = s.title;
+    $('status-detail').textContent = s.detail || '';
+
+    $('site-actions').hidden = s.actions === false;
+    $('retry-btn').hidden = s.retry === false;
+    $('retry-btn').disabled = s.state === 'scanning';
+    // Only shout when something needs attention
+    $('retry-btn').classList.toggle('btn-quiet', !['missed', 'paused'].includes(s.state));
+    $('retry-btn').querySelector('span').textContent = s.retryLabel || 'Try again';
+    $('site-toggle-btn').textContent = s.siteOn === false ? 'Turn on here' : 'Turn off here';
+}
+
+function renderStats(stats) {
+    const n = stats.bannersHandled || 0;
+    if (!n) {
+        $('stats').textContent = 'No banners handled yet';
+        return;
+    }
+    $('stats').textContent = `${n.toLocaleString()} banner${n === 1 ? '' : 's'} · ~${formatTime(n * SECONDS_SAVED_PER_BANNER)} saved`;
 }
 
 function formatTime(seconds) {
-    if (seconds < 60) return seconds + 's';
-    const minutes = Math.floor(seconds / 60);
-    return minutes + 'm';
+    if (seconds < 60) return `${seconds}s`;
+    const minutes = Math.round(seconds / 60);
+    if (minutes < 60) return `${minutes}m`;
+    return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 }
 
-async function exportExtension() {
-    try {
-        const zip = new JSZip();
-        const root = zip.folder("Cookie Away 4.0");
+function bindEvents() {
+    $('master-toggle').addEventListener('change', (e) => {
+        chrome.storage.local.set({ enabled: e.target.checked });
+    });
 
-        // Add manifest
-        const manifest = await fetch('../manifest.json').then(r => r.text());
-        root.file("manifest.json", manifest);
+    $('deep-toggle').addEventListener('change', (e) => {
+        chrome.storage.local.set({ deepReject: e.target.checked });
+    });
 
-        // Add folders (recursively or manually for key files)
-        // For simplicity/robustness, we'll just grab the known structure
-        const files = [
-            'popup/index.html', 'popup/style.css', 'popup/script.js',
-            'content/content.js',
-            'background/service_worker.js',
-            'options/options.html', 'options/options.css', 'options/options.js',
-            'icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png'
-        ];
+    document.querySelectorAll('input[name="fallback"]').forEach(radio => {
+        radio.addEventListener('change', (e) => chrome.storage.local.set({ fallback: e.target.value, fallbackChosen: true }));
+    });
 
-        for (const file of files) {
-            try {
-                const content = await fetch('../' + file).then(r => r.blob());
-                root.file(file, content);
-            } catch (e) {
-                console.warn('Skipping file:', file);
-            }
-        }
+    $('retry-btn').addEventListener('click', retry);
+    $('site-toggle-btn').addEventListener('click', toggleSite);
+    $('jev-row').addEventListener('click', () => chrome.runtime.openOptionsPage());
+    $('open-settings').addEventListener('click', () => chrome.runtime.openOptionsPage());
+}
 
-        const content = await zip.generateAsync({ type: "blob" });
-        const url = URL.createObjectURL(content);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = "cookie-away-source.zip";
-        a.click();
-        URL.revokeObjectURL(url);
-    } catch (err) {
-        console.error('Export failed:', err);
-        alert('Export failed. See console for details.');
+// Clear any pause, then ask the page to scan again (or reload if the script isn't there)
+async function retry() {
+    const { cooldowns = {} } = await chrome.storage.local.get('cooldowns');
+    if (cooldowns[host]) {
+        delete cooldowns[host];
+        await chrome.storage.local.set({ cooldowns });
     }
+    await chrome.storage.session.remove(`tab:${tab.id}`);
+    chrome.action.setBadgeText({ tabId: tab.id, text: '' }).catch(() => { });
+
+    scanning = { state: 'scanning', title: 'Looking for a banner…', detail: '' };
+    await render();
+
+    try {
+        await chrome.tabs.sendMessage(tab.id, { type: 'RESCAN' });
+    } catch (e) {
+        // No content script on this page yet (e.g. opened before the extension loaded)
+        chrome.tabs.reload(tab.id);
+    }
+
+    // If nothing reports back, there was nothing to handle
+    clearTimeout(rescanTimer);
+    rescanTimer = setTimeout(() => {
+        scanning = null;
+        render();
+    }, 6000);
+}
+
+async function toggleSite() {
+    const { ignoredSites = [] } = await chrome.storage.local.get('ignoredSites');
+    const ignored = ignoredSites.includes(host);
+    const next = ignored ? ignoredSites.filter(h => h !== host) : [...ignoredSites, host];
+    await chrome.storage.local.set({ ignoredSites: next });
+    await chrome.storage.session.remove(`tab:${tab.id}`);
+    chrome.tabs.reload(tab.id);
+    render();
 }
