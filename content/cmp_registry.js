@@ -222,13 +222,27 @@
         return null;
     }
 
-    // Document plus every open shadow root.
+    // Open and closed shadow roots. Extensions can reach closed ones (Transcend uses them);
+    // pages like the settings page that load this file without chrome.dom only see open ones.
+    function shadowOf(el) {
+        if (el.shadowRoot) return el.shadowRoot;
+        try {
+            return (typeof chrome !== 'undefined' && chrome.dom && chrome.dom.openOrClosedShadowRoot)
+                ? chrome.dom.openOrClosedShadowRoot(el) || null
+                : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Document plus every shadow root.
     function collectRoots(root = document) {
         const roots = [root];
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
         let node = walker.nextNode();
         while (node) {
-            if (node.shadowRoot) roots.push(...collectRoots(node.shadowRoot));
+            const shadow = shadowOf(node);
+            if (shadow) roots.push(...collectRoots(shadow));
             node = walker.nextNode();
         }
         return roots;
@@ -446,6 +460,18 @@
             reject: ['.sp_choice_type_REJECT_ALL', '.sp_choice_type_13'],
             settings: { open: ['.sp_choice_type_12'], handoff: true },
             accept: ['.sp_choice_type_11']
+        },
+        {
+            name: 'Transcend',
+            // Lives in a closed shadow root
+            checkGlobal: () => !!document.getElementById('transcend-consent-manager'),
+            detect: () => {
+                const host = document.getElementById('transcend-consent-manager');
+                const root = host && shadowOf(host);
+                if (!root) return null;
+                return [...root.querySelectorAll('[role="dialog"], [aria-modal="true"], div')]
+                    .find(el => el.querySelector('button') && /cookie|consent|privacy/i.test(el.textContent || '') && isVisible(el)) || null;
+            }
         },
         {
             name: 'Usercentrics',

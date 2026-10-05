@@ -27,9 +27,9 @@
         watchMs: 30000,          // Stop watching the DOM after this long
         maxScans: 40,
         verifyDelay: 1500,       // Wait before checking the banner is gone
-        maxActionsPerPage: 2,
+        maxActionsPerPage: 3,
         loopWindowMs: 2 * 60 * 1000,
-        loopMaxActions: 3        // This many actions on one site within loopWindowMs = loop
+        loopMaxActions: 3        // Acting on this many page loads of one site within loopWindowMs = loop
     };
 
     const LOOP_KEY = '__cookieAwayActions';
@@ -348,7 +348,9 @@
         }
 
         page.actions++;
-        recordAction();
+        // The loop guard counts page loads we acted on, not clicks, so handling
+        // two banners on one page doesn't look like a loop
+        if (page.actions === 1) recordAction();
 
         // Banners in their own iframe (Sourcepoint etc.) are usually removed together with the
         // frame, so this code never gets to verify. Report now; a miss below corrects it.
@@ -361,7 +363,10 @@
         const gone = !isVisible(banner) && !(result.layer && isVisible(result.layer));
         if (gone) {
             if (IS_TOP) send('BANNER_HANDLED', report);
-            stop();
+            // Some sites stack two consent tools (e.g. a hidden OneTrust plus Google's dialog),
+            // so keep looking until the per-page cap or the watch window runs out.
+            if (page.actions >= LIMITS.maxActionsPerPage) stop();
+            else schedule();
             return;
         }
 
