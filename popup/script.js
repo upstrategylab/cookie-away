@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Live updates while the popup is open (e.g. after "Try again")
     chrome.storage.onChanged.addListener((changes, area) => {
-        const change = area === 'session' && changes[`tab:${tab.id}`];
+        const change = area === 'session' && (changes[`tab:${tab.id}`] || changes[`site:${host}`]);
         if (change) {
             if (change.newValue) {
                 scanning = null;
@@ -39,7 +39,10 @@ async function render() {
         'enabled', 'ignoredSites', 'cooldowns', 'stats', 'fallback', 'deepReject', 'jevEnabled', 'jevApiKey'
     ]);
     const key = `tab:${tab.id}`;
-    const { [key]: status = {} } = await chrome.storage.session.get(key);
+    const siteKey = `site:${host}`;
+    const session = await chrome.storage.session.get([key, siteKey]);
+    const status = session[key] || {};
+    const earlier = host ? session[siteKey] : null;
 
     const enabled = local.enabled !== false;
     $('master-toggle').checked = enabled;
@@ -54,11 +57,11 @@ async function render() {
     $('jev-pill').classList.toggle('on', jevOn);
 
     renderStats(local.stats || {});
-    renderSite(scanning || siteState(local, status, enabled), status);
+    renderSite(scanning || siteState(local, status, enabled, earlier), status);
 }
 
 // Decide what to say about the current tab
-function siteState(local, status, enabled) {
+function siteState(local, status, enabled, earlier) {
     if (!host) return { state: 'idle', title: 'Nothing to do here', detail: 'Cookie Away only runs on websites.', actions: false };
     if (!enabled) return { state: 'idle', title: 'Cookie Away is off', detail: 'Turn it on with the switch above.', actions: false };
 
@@ -106,6 +109,18 @@ function siteState(local, status, enabled) {
             ? 'It clicked, but the banner stayed. Try again, or handle this one yourself.'
             : "Found a banner but couldn't work out which button to press.";
         return { state: 'missed', title: "Couldn't handle the banner", detail };
+    }
+
+    // Nothing on this page load, but handled earlier in this session (the site remembers the choice)
+    if (earlier) {
+        const at = new Date(earlier.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const what = earlier.kind === 'accept' ? 'accepted' : 'rejected';
+        const n = earlier.toggles || 0;
+        return {
+            state: earlier.kind === 'accept' ? 'accepted' : 'handled',
+            title: `Cookies ${what} earlier`,
+            detail: `At ${at}${n ? `, with ${n} setting${n === 1 ? '' : 's'} switched off` : ''}. The site remembers the choice, so there's no banner now.`
+        };
     }
 
     return { state: 'idle', title: 'No cookie banner seen', detail: '' };

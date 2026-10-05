@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     if (message.type === 'BANNER_HANDLED') {
         setBadge(tabId, '✓', '#16A34A');
-        setTabStatus(tabId, { state: 'handled', kind: message.kind, source: message.source, toggles: message.toggles || 0, payWall: !!message.payWall });
+        setTabStatus(tabId, { state: 'handled', kind: message.kind, source: message.source, toggles: message.toggles || 0, payWall: !!message.payWall }, false, pageHost(sender));
         chrome.storage.local.get('stats', (data) => {
             const stats = data.stats || { bannersHandled: 0 };
             stats.bannersHandled = (stats.bannersHandled || 0) + 1;
@@ -62,8 +62,22 @@ function setBadge(tabId, text, color) {
 
 // What happened on each tab, for the popup. Session storage is cleared when Chrome
 // restarts, so tab IDs from a previous session can never show up here.
-async function setTabStatus(tabId, patch, correction = false) {
+// The page's own host (not the iframe a banner may live in)
+function pageHost(sender) {
+    try {
+        return new URL(sender.tab.url).hostname;
+    } catch (e) {
+        return null;
+    }
+}
+
+async function setTabStatus(tabId, patch, correction = false, host = null) {
     if (tabId == null) return;
+    // Remember handled results per site for this browser session: after consenting,
+    // sites often reload or show no banner on later pages because they remember the choice.
+    if (host && patch.state === 'handled') {
+        chrome.storage.session.set({ [`site:${host}`]: { ...patch, at: Date.now() } });
+    }
     const key = `tab:${tabId}`;
     const { [key]: current = {} } = await chrome.storage.session.get(key);
     // A banner handled in one frame shouldn't be overwritten by a miss in another,
