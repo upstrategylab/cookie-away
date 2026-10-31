@@ -9,7 +9,7 @@ Most banners offer "Accept all" in one click and make you work for "Reject". Coo
 On each page, Cookie Away tries these in order:
 
 1. **Known consent tools.** It recognises 27 common consent platforms (OneTrust, Cookiebot, Didomi, Sourcepoint, Usercentrics, TrustArc, Google Funding Choices and others) and uses their own reject controls.
-2. **Heuristics.** For banners it doesn't recognise, it looks for consent-looking overlays and reads the button labels in several languages.
+2. **Heuristics.** For banners it doesn't recognise, it looks for consent-looking overlays and reads the wording and button labels (in about 20 languages).
 3. **The settings route.** When there's no reject button, it opens "Manage options", clicks "Reject all" or "Object all", switches off anything still on, and saves. If that fails, it either leaves the banner alone or accepts it, whichever you choose in the options.
 4. **Jev (optional).** For banners it can't read, it can ask [Jev by TypeSafe](https://typesafe.ai) which button is which. This is off by default and needs your own TypeSafe API key.
 

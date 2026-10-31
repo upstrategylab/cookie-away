@@ -1,5 +1,5 @@
 /**
- * Cookie Away 4.0 - Smart Content Script
+ * Cookie Away - Smart Content Script
  * 1. Known CMPs (cmp_registry.js) by selector
  * 2. Heuristics: consent-looking overlays + multilingual button labels
  * 3. No reject button? Open "Manage options", switch everything off, save
@@ -401,7 +401,7 @@
 
     function reportLoop() {
         stop();
-        console.warn(`Cookie Away 4.0: Banner keeps coming back on ${host}. Pausing here to avoid a click/reload loop.`);
+        console.warn(`Cookie Away: Banner keeps coming back on ${host}. Pausing here to avoid a click/reload loop.`);
         send('LOOP_DETECTED', { host });
     }
 
@@ -435,6 +435,6 @@
     }
 
     function log(...args) {
-        console.log('Cookie Away 4.0:', ...args);
+        console.log('Cookie Away:', ...args);
     }
 })();

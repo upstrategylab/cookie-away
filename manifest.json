@@ -1,12 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Cookie Away 4.0",
-  "version": "4.2.1",
-  "description": "The next generation of cookie banner handling. Fast, smooth, and reliable.",
+  "name": "Cookie Away",
+  "version": "4.2.2",
+  "description": "Rejects cookie banners for you, including the ones that hide Reject behind a settings screen.",
   "permissions": [
-    "storage",
-    "activeTab",
-    "scripting"
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>"

@@ -1,5 +1,5 @@
 /**
- * Cookie Away 4.0 - CMP Registry + shared helpers
+ * Cookie Away - CMP Registry + shared helpers
  * Loaded before content.js. Everything shared lives on window.CA.
  *
  * Each provider is data, resolved by resolveBanner() in this order:
