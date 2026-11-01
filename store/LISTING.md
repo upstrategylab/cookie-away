@@ -44,7 +44,7 @@ Found a banner it can't handle? Open an issue with the URL.
 
 **Small promo tile** (440×280): `store/promo-small-440x280.png`
 
-**Official URL / Homepage:** https://github.com/upstrategylab/cookie-away
+**Official URL / Homepage:** https://www.cookieaway.com
 **Support URL:** https://github.com/upstrategylab/cookie-away/issues
 
 ## Privacy practices tab

@@ -2,6 +2,8 @@
 
 A Chrome extension that rejects cookie banners for you, including the awkward ones that hide "Reject" behind a settings screen.
 
+**[cookieaway.com](https://www.cookieaway.com)** · [Test results](https://www.cookieaway.com/benchmarks) · Meet Kooky, the monster on the icon whose eyes never quite agree.
+
 Most banners offer "Accept all" in one click and make you work for "Reject". Cookie Away does that work: it finds the banner, picks the reject option, and if there isn't one, it opens the settings, switches everything off and saves.
 
 ## How it works
@@ -13,11 +15,15 @@ On each page, Cookie Away tries these in order:
 3. **The settings route.** When there's no reject button, it opens "Manage options", clicks "Reject all" or "Object all", switches off anything still on, and saves. If that fails, it either leaves the banner alone or accepts it, whichever you choose in the options.
 4. **Jev (optional).** For banners it can't read, it can ask [Jev by TypeSafe](https://typesafe.ai) which button is which. This is off by default and needs your own TypeSafe API key.
 
-It also has some safety rails. Every click is checked: the banner has to actually go away. It never clicks links that navigate away from the page. If it ends up acting again and again on the same site (a reload loop), it pauses itself on that site.
+It also has some safety rails. Every click is checked: the banner has to actually go away. It never clicks links that navigate away from the page, and it never pays to say no: on pay-or-accept walls it leaves the choice to you. If it ends up acting again and again on the same site (a reload loop), it pauses itself on that site.
+
+## How well it works
+
+We test it against [Consent-O-Matic](https://github.com/cavi-au/Consent-O-Matic) on 69 European sites and publish every result, misses included: [cookieaway.com/benchmarks](https://www.cookieaway.com/benchmarks). The scripts are in [`bench/`](bench/).
 
 ## Install
 
-Cookie Away isn't on the Chrome Web Store yet, so you load it from the source:
+Cookie Away is in review on the Chrome Web Store. Until it's approved, load it from the source:
 
 1. Download this repository (green **Code** button → **Download ZIP**) and unzip it, or `git clone` it.
 2. Open `chrome://extensions` in Chrome.
@@ -48,6 +54,8 @@ Pull requests are welcome. There's no build step: the extension is plain JavaScr
 - `content/content.js` finds banners, runs the heuristics and applies the loop guard.
 - `background/service_worker.js` handles stats, per-site pauses and the Jev calls.
 - `popup/` and `options/` contain the extension's popup and its settings page.
+- `site/` is cookieaway.com: plain HTML and CSS on Vercel, with a style sheet at [/styleguide](https://www.cookieaway.com/styleguide).
+- `bench/` runs the headless comparison behind the published test results.
 
 ## Similar projects
 
