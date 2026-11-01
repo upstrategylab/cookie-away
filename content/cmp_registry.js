@@ -24,12 +24,12 @@
         'reject all', 'reject', 'decline all', 'decline', 'deny all', 'deny', 'refuse all', 'refuse',
         'only necessary', 'necessary only', 'essential only', 'only essential', 'necessary cookies only',
         'use necessary cookies only', 'continue without accepting', 'i do not agree', 'disagree',
-        'refuse non-essential cookies', 'no thanks', 'no, thanks',
+        'refuse non-essential cookies', 'no thanks', 'no, thanks', 'nein danke', 'non merci', 'nee bedankt', 'nei takk', 'nej tak',
         // "Legitimate interest" objections in TCF settings screens
         'object all', 'object to all', 'alle widersprechen', 'widersprechen', "s'opposer à tout", 'oponerse a todo',
         'opporsi a tutto', 'opponiti a tutto', 'invänd mot alla', 'bezwaar maken tegen alles',
         // German
-        'alle ablehnen', 'ablehnen', 'verweigern', 'nur notwendige', 'nur essenzielle', 'nur erforderliche',
+        'alle ablehnen', 'ablehnen', 'verweigern', 'nur notwendige', 'nur essenzielle', 'nur erforderliche', 'weiter ohne einwilligung', 'ohne einwilligung fortfahren',
         // French
         'tout refuser', 'refuser', 'continuer sans accepter', 'je refuse',
         // Spanish
@@ -39,9 +39,9 @@
         // Portuguese
         'rejeitar tudo', 'rejeitar', 'recusar',
         // Dutch
-        'alles weigeren', 'weigeren', 'afwijzen', 'alleen noodzakelijke',
+        'alles weigeren', 'weigeren', 'afwijzen', 'alleen noodzakelijke', 'doorgaan zonder te accepteren', 'zonder te accepteren',
         // Swedish
-        'avvisa alla', 'avvisa', 'neka alla', 'neka', 'endast nödvändiga', 'bara nödvändiga', 'jag godkänner inte',
+        'avvisa alla', 'avvisa', 'neka alla', 'neka', 'endast nödvändiga', 'bara nödvändiga', 'jag godkänner inte', 'fortsätt utan att godkänna', 'nej tack',
         // Danish / Norwegian
         'afvis alle', 'afvis', 'kun nødvendige', 'avslå alle', 'avslå',
         // Finnish
@@ -86,7 +86,7 @@
         'gestionar opciones', 'más opciones', 'configurar', 'opciones', 'personalizar',
         'gestisci opzioni', 'più opzioni', 'personalizza', 'impostazioni',
         'gerenciar opções', 'configurações', 'opções',
-        'opties beheren', 'instellingen', 'aanpassen',
+        'opties beheren', 'instellingen', 'instellen', 'aanpassen',
         'fler alternativ', 'inställningar', 'hantera', 'anpassa',
         'indstillinger', 'tilpas', 'innstillinger', 'administrer', 'asetukset', 'muokkaa',
         'więcej opcji', 'zarządzaj', 'ustawienia', 'spravovat', 'nastavení'
@@ -128,7 +128,8 @@
         'subscribe', 'subscription', 'pay', 'ad-free', 'ad-lite', 'abonnieren', 'abonnement', 'abo', 'werbefrei', 'zahlen',
         "s'abonner", 'abonnez', 'payer', 'sans publicité', 'suscribirse', 'suscríbete', 'suscripción', 'pagar',
         'abbonati', 'abbonamento', 'assinar', 'abonneren', 'betalen', 'prenumerera', 'prenumeration', 'betala',
-        'abonner', 'tilaa', 'subskrybuj', 'zapłać', 'předplatit'
+        'abonner', 'tilaa', 'subskrybuj', 'zapłać', 'předplatit',
+        'purchase', 'buy', 'kaufen', 'acheter', 'comprar', 'acquista', 'köp', 'betaltjänst', 'contentpass', 'pur-abo'
     ];
 
     // Words that make an element look like a consent banner.
@@ -184,8 +185,11 @@
     }
 
     function labelOf(el) {
-        const raw = el.getAttribute('aria-label') || el.value || el.textContent || el.title || '';
-        return raw.replace(/\s+/g, ' ').trim().toLowerCase();
+        const options = [el.getAttribute('aria-label'), el.value, el.textContent, el.title]
+            .map(t => (t || '').replace(/\s+/g, ' ').trim().toLowerCase())
+            .filter(Boolean);
+        // Prefer the first label short enough to be a button label
+        return options.find(t => t.length <= 60) || options[0] || '';
     }
 
     // Links that navigate away are the main cause of reload loops.
@@ -203,7 +207,7 @@
     }
 
     function safeClick(el) {
-        if (!el || !isVisible(el) || wouldNavigate(el)) return false;
+        if (!el || !isVisible(el) || wouldNavigate(el) || el.disabled || el.getAttribute('aria-disabled') === 'true') return false;
         el.click();
         return true;
     }
@@ -275,8 +279,8 @@
             if (!label || label.length > 60) continue;
             buttons.push({ element: el, label });
         }
-        // When a wrapper and its child carry the same label, keep the child
-        return buttons.filter(b => !buttons.some(o => o !== b && b.element.contains(o.element) && o.label === b.label));
+        // A wrapper around other buttons isn't a button itself: keep the innermost ones
+        return buttons.filter(b => !buttons.some(o => o !== b && b.element.contains(o.element)));
     }
 
     // Strongest button whose label is in `phrases`, skipping links away and `exclude` labels.
@@ -309,6 +313,15 @@
         return best;
     }
 
+    // Buttons in a banner, minus any the provider says never to click
+    function usableButtons(root, provider = {}) {
+        const buttons = findButtons(root);
+        if (!provider.skip) return buttons;
+        return buttons.filter(b => {
+            try { return !b.element.matches(provider.skip); } catch (e) { return true; }
+        });
+    }
+
     // --- Settings layer ("Manage options" -> untick everything -> Save) -----
 
     // Switched-on, changeable toggles. Hidden inputs behind custom switches count too.
@@ -329,8 +342,12 @@
         return match ? match.element : null;
     }
 
+    function rejectButtonsIn(el) {
+        return findButtons(el).filter(b => matchesAny(b.label, REJECT) && !matchesAny(b.label, PAYWALL) && !wouldNavigate(b.element));
+    }
+
     function hasLayerControls(el) {
-        return findToggles(el).length > 0 && !!findSave(el);
+        return (findToggles(el).length > 0 || rejectButtonsIn(el).length >= 2) && !!findSave(el);
     }
 
     const LAYER_SELECTOR = [
@@ -363,7 +380,7 @@
 
         if (!layer) {
             const open = hints.openElement || query(hints.open) ||
-                (findByLabel(findButtons(banner), OPEN, [...REJECT, ...ACCEPT]) || {}).element;
+                (findByLabel(usableButtons(banner, hints), OPEN, [...ACCEPT, ...PAYWALL]) || {}).element;
             if (!open || !safeClick(open)) return null;
             // The settings open somewhere this frame can't see (e.g. a new iframe); that frame takes over
             if (hints.handoff) return { kind: 'handoff' };
@@ -371,12 +388,23 @@
             if (!layer) return null;
         }
 
-        // 1. "Reject all" / "Object all" inside the layer
-        const rejectButtons = query(hints.reject) ? [query(hints.reject)] :
-            findButtons(layer).filter(b => matchesAny(b.label, REJECT) && !matchesAny(b.label, PAYWALL) && !wouldNavigate(b.element)).map(b => b.element);
-        for (const btn of rejectButtons.slice(0, 4)) {
-            safeClick(btn);
-            await wait(300);
+        // 1. "Reject all" / "Object all" inside the layer. The layer's container can appear
+        //    before its content (Didomi), so give a known reject button a moment to render.
+        let hinted = hints.reject ? await waitFor(() => query(hints.reject), 2500) : null;
+        // Let the layer finish rendering before clicking (Didomi ignores early clicks)
+        if (hinted) {
+            await wait(600);
+            hinted = query(hints.reject);
+        }
+        const rejectButtons = hinted ? [hinted] : usableButtons(layer, hints)
+            .filter(b => matchesAny(b.label, REJECT) && !matchesAny(b.label, PAYWALL) && !wouldNavigate(b.element))
+            .map(b => b.element);
+        // "Reject all" closes the layer; per-purpose "Reject" buttons don't, so click them all (capped)
+        let clicked = 0;
+        for (const btn of rejectButtons.slice(0, 40)) {
+            if (!safeClick(btn)) continue;
+            clicked++;
+            await wait(clicked === 1 ? 400 : 120);
             if (!isVisible(layer)) return { kind: 'reject', toggles: 0, layer };
         }
 
@@ -400,8 +428,8 @@
 
         // 4. Save
         const save = findSave(layer, hints);
-        if (!save || !safeClick(save)) return rejectButtons.length ? { kind: 'reject', toggles, layer } : null;
-        return { kind: 'settings', toggles, layer };
+        if (!save || !safeClick(save)) return clicked ? { kind: 'reject', toggles, layer } : null;
+        return { kind: 'settings', toggles: toggles + clicked, layer };
     }
 
     // --- Providers ----------------------------------------------------------
@@ -448,7 +476,7 @@
             name: 'Didomi',
             banner: '#didomi-notice, #didomi-popup, .didomi-popup-container',
             reject: ['#didomi-notice-disagree-button', '.didomi-continue-without-agreeing'],
-            settings: { open: ['#didomi-notice-learn-more-button'], layer: '#didomi-popup, .didomi-consent-popup' },
+            settings: { open: ['#didomi-notice-learn-more-button'], layer: '#didomi-popup, .didomi-consent-popup', reject: ['#btn-toggle-disagree'], save: ['#btn-toggle-save'] },
             accept: ['#didomi-notice-agree-button']
         },
         {
@@ -458,8 +486,9 @@
             checkGlobal: () => !!(window._sp_ || document.querySelector('[id^="sp_message_container"]')),
             detect: () => sourcepointFrame(),
             reject: ['.sp_choice_type_REJECT_ALL', '.sp_choice_type_13'],
-            settings: { open: ['.sp_choice_type_12'], handoff: true },
-            accept: ['.sp_choice_type_11']
+            settings: { open: ['.sp_choice_type_12'], handoff: true, save: ['.sp_choice_type_SAVE_AND_EXIT'] },
+            accept: ['.sp_choice_type_11'],
+            skip: '[class*="sp_choice_type_"]:not(.sp_choice_type_11):not(.sp_choice_type_12):not(.sp_choice_type_13):not(.sp_choice_type_REJECT_ALL):not(.sp_choice_type_SE)'
         },
         {
             name: 'Transcend',
@@ -476,8 +505,8 @@
         {
             name: 'Usercentrics',
             checkGlobal: () => !!window.UC_UI,
-            banner: '[data-testid="uc-default-banner"], #uc-center-container, #usercentrics-cmp-ui, #usercentrics-root',
-            reject: ['[data-testid="uc-deny-all-button"]', '#uc-btn-deny', '[data-action-type="deny"]'],
+            banner: '[data-testid="uc-default-banner"], #uc-center-container, #uc-main-dialog, #usercentrics-cmp-ui, #usercentrics-root',
+            reject: ['[data-testid="uc-deny-all-button"]', '#uc-btn-deny', '[data-action-type="deny"]', 'button.uc-deny-button'],
             settings: { open: ['[data-testid="uc-more-button"]'], save: ['[data-testid="uc-save-button"]'] },
             accept: ['[data-testid="uc-accept-all-button"]']
         },
@@ -536,16 +565,26 @@
     // Returns { kind, toggles?, layer? } on a click, or null if nothing suitable was found.
     async function resolveBanner(banner, provider = {}, { deep = true, allowAccept = true } = {}) {
         const rejectSel = query(provider.reject);
-        if (rejectSel && !matchesAny(labelOf(rejectSel), PAYWALL) && safeClick(rejectSel)) return { kind: 'reject' };
+        if (rejectSel && !matchesAny(labelOf(rejectSel), PAYWALL) && safeClick(rejectSel)) return { kind: 'reject', label: labelOf(rejectSel) };
 
         // Consent-or-pay: the only way to reject is a subscription. Never go there.
-        const payWall = findButtons(banner).some(b => matchesAny(b.label, REJECT) && matchesAny(b.label, PAYWALL));
+        if (deep && hasLayerControls(banner)) {
+            const viaSettings = await rejectViaSettings(banner, { ...(provider.settings || {}), skip: provider.skip });
+            if (viaSettings) return viaSettings;
+        }
 
-        const reject = pickButton(findButtons(banner), { allowAccept: false });
-        if (reject && safeClick(reject.button.element)) return { kind: 'reject' };
+        const buttons = usableButtons(banner, provider);
+        // A reject-looking button the provider says never to click (Schibsted's "reject ads") is a paid route too
+        const payWall = findButtons(banner).some(b => matchesAny(b.label, REJECT) &&
+            (matchesAny(b.label, PAYWALL) || !buttons.some(u => u.element === b.element)));
 
-        if (deep) {
-            const viaSettings = await rejectViaSettings(banner, provider.settings || {});
+        const reject = pickButton(buttons, { allowAccept: false });
+        if (reject && safeClick(reject.button.element)) return { kind: 'reject', label: reject.button.label };
+
+        // On a consent-or-pay wall the settings route tends to end on a payment page
+        // (rejecting the ads purpose is what costs money), so don't go there.
+        if (deep && !payWall) {
+            const viaSettings = await rejectViaSettings(banner, { ...(provider.settings || {}), skip: provider.skip });
             if (viaSettings) return viaSettings;
         }
 
@@ -553,7 +592,7 @@
         const acceptSel = query(provider.accept);
         if (acceptSel && safeClick(acceptSel)) return { kind: 'accept', payWall };
         if (!isVisible(banner)) return null;
-        const accept = pickButton(findButtons(banner), { allowAccept: true });
+        const accept = pickButton(usableButtons(banner, provider), { allowAccept: true });
         if (accept && safeClick(accept.button.element)) return { kind: accept.kind, payWall };
         return payWall ? { kind: 'none', payWall } : null;
     }

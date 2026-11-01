@@ -27,6 +27,7 @@
         watchMs: 30000,          // Stop watching the DOM after this long
         maxScans: 40,
         verifyDelay: 1500,       // Wait before checking the banner is gone
+        retryDelay: 2000,        // Pause before a second try on a banner that ignored the first click
         maxActionsPerPage: 3,
         loopWindowMs: 2 * 60 * 1000,
         loopMaxActions: 3        // Acting on this many page loads of one site within loopWindowMs = loop
@@ -58,6 +59,7 @@
             jevAsked: false,
             cmpReported: false,
             tried: new WeakSet(),
+            retried: new WeakSet(),
             timer: null,
             observer: null
         };
@@ -159,6 +161,8 @@
             const scriptPresent = !banner && provider.checkGlobal && safe(provider.checkGlobal);
             if (banner || scriptPresent) reportCmp(provider.name);
             if (!banner || page.tried.has(banner)) continue;
+            // The container can appear before its buttons (Didomi); wait for the next DOM change
+            if (findButtons(banner).length === 0) continue;
 
             log(`Detected ${provider.name}`);
             handle(banner, provider, provider.name);
@@ -327,7 +331,17 @@
     // Verify the banner (and any settings layer) actually went away.
     async function finish(banner, result, source) {
         if (!result) {
+            // Buttons may still be rendering: one more go after a pause
+            if (!page.retried.has(banner) && isVisible(banner)) {
+                page.retried.add(banner);
+                page.tried.delete(banner);
+                await wait(LIMITS.retryDelay);
+                page.busy = false;
+                schedule();
+                return;
+            }
             page.busy = false;
+            log(`Couldn't find a way to reject (${source})`);
             send('BANNER_MISSED', { reason: 'no-button', source });
             return;
         }
@@ -341,6 +355,7 @@
 
         // Consent-or-pay wall and the user chose "Leave it"
         if (result.kind === 'none') {
+            log(`Left ${source} alone: rejecting costs money here`);
             page.busy = false;
             send('BANNER_MISSED', { reason: 'pay-wall', source });
             stop();
@@ -362,6 +377,7 @@
 
         const gone = !isVisible(banner) && !(result.layer && isVisible(result.layer));
         if (gone) {
+            log(`Handled ${source}: ${result.kind}${result.label ? ` "${result.label}"` : ''}${result.toggles ? `, ${result.toggles} switched off` : ''}`);
             if (IS_TOP) send('BANNER_HANDLED', report);
             // Some sites stack two consent tools (e.g. a hidden OneTrust plus Google's dialog),
             // so keep looking until the per-page cap or the watch window runs out.
@@ -370,7 +386,17 @@
             return;
         }
 
-        log(`Banner still visible after ${result.kind} (${source})`);
+        log(`Banner still visible after ${result.kind}${result.label ? ` "${result.label}"` : ''} (${source})`);
+
+        // Some consent tools render their buttons before their click handlers are ready.
+        // Give each banner one more go after a short pause.
+        if (!page.retried.has(banner) && page.actions < LIMITS.maxActionsPerPage) {
+            page.retried.add(banner);
+            page.tried.delete(banner);
+            await wait(LIMITS.retryDelay);
+            schedule();
+            return;
+        }
         send('BANNER_MISSED', { reason: 'still-visible', source, correction: !IS_TOP });
 
         if (recentActions().length >= LIMITS.loopMaxActions) reportLoop();
@@ -435,6 +461,7 @@
     }
 
     function log(...args) {
-        console.log('Cookie Away:', ...args);
+        const where = IS_TOP ? '' : ` [frame ${location.host}${location.pathname.slice(0, 24)}]`;
+        console.log(`Cookie Away${where}:`, ...args);
     }
 })();

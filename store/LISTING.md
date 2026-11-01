@@ -16,7 +16,7 @@ Rejects cookie banners for you, including the ones that hide Reject behind a set
 **Description:**
 
 ```
-Cookie banners make "Accept all" one click and "Reject" a small project. Cookie Away does the rejecting for you.
+Tired of hitting "Accept all" on every cookie banner just to get to the page? Cookie Away says no for you, automatically.
 
 When a page shows a consent banner, Cookie Away finds it and clicks the reject option. If there isn't one (common on news sites), it opens the settings, clicks "Reject all" or "Object all", switches off whatever is still on, and saves. If even that fails, it leaves the banner alone, or accepts it if you'd rather not see it at all. You choose.
 
