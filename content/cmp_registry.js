@@ -41,9 +41,9 @@
         // Dutch
         'alles weigeren', 'weigeren', 'afwijzen', 'alleen noodzakelijke', 'doorgaan zonder te accepteren', 'zonder te accepteren',
         // Swedish
-        'avvisa alla', 'avvisa', 'neka alla', 'neka', 'endast nödvändiga', 'bara nödvändiga', 'jag godkänner inte', 'fortsätt utan att godkänna', 'nej tack',
+        'avvisa alla', 'avvisa', 'neka alla', 'neka', 'endast nödvändiga', 'bara nödvändiga', 'jag godkänner inte', 'fortsätt utan att godkänna', 'nej tack', 'tillåt endast nödvändiga', 'tillåt nödvändiga', 'endast nödvändiga cookies',
         // Danish / Norwegian
-        'afvis alle', 'afvis', 'kun nødvendige', 'avslå alle', 'avslå',
+        'afvis alle', 'afvis', 'kun nødvendige', 'tillad kun nødvendige', 'tillad nødvendige', 'tillat kun nødvendige', 'avslå alle', 'avslå',
         // Finnish
         'hylkää kaikki', 'hylkää', 'vain välttämättömät',
         // Polish / Czech / Slovak
@@ -100,7 +100,7 @@
         'auswahl speichern', 'auswahl bestätigen', 'einstellungen speichern', 'auswahl erlauben', 'speichern', 'bestätigen',
         'enregistrer et quitter', 'confirmer mes choix', 'enregistrer', 'confirmer', 'valider',
         'guardar y salir', 'guardar', 'confirmar', 'salva e esci', 'salva', 'conferma', 'guardar e sair', 'salvar',
-        'keuze opslaan', 'opslaan', 'spara och avsluta', 'spara', 'bekräfta', 'gem', 'bekræft', 'lagre', 'bekreft',
+        'keuze opslaan', 'opslaan', 'spara och avsluta', 'tillåt urval', 'tillåt valda', 'spara', 'bekräfta', 'gem', 'bekræft', 'tillad udvalgte', 'tillad valgte', 'tillat utvalgte', 'lagre', 'bekreft',
         'tallenna', 'vahvista', 'zapisz', 'potvrdit', 'uložit'
     ];
 
@@ -580,6 +580,14 @@
 
         const reject = pickButton(buttons, { allowAccept: false });
         if (reject && safeClick(reject.button.element)) return { kind: 'reject', label: reject.button.label };
+
+        // "Allow selection" with every optional box already unticked is a reject (Cookiebot's first layer, DR)
+        const boxes = [...banner.querySelectorAll('input[type="checkbox"], [role="switch"], [role="checkbox"]')]
+            .filter(el => !(el.disabled || el.getAttribute('aria-disabled') === 'true'));
+        if (!payWall && boxes.length && !findToggles(banner).length) {
+            const save = findSave(banner, provider.settings || {});
+            if (save && isVisible(save) && banner.contains(save) && safeClick(save)) return { kind: 'reject', label: labelOf(save) };
+        }
 
         // On a consent-or-pay wall the settings route tends to end on a payment page
         // (rejecting the ads purpose is what costs money), so don't go there.

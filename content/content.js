@@ -18,7 +18,7 @@
     window.__cookieAwayLoaded = true;
 
     const {
-        BANNER, AVOID, matchesAny, isVisible, wouldNavigate, safeClick, findButtons,
+        BANNER, AVOID, REJECT, ACCEPT, matchesAny, isVisible, wouldNavigate, safeClick, findButtons,
         collectRoots, detectProvider, rejectViaSettings, resolveBanner
     } = window.CA;
 
@@ -109,6 +109,8 @@
 
         if (IS_TOP) log('Active');
         scan();
+        // Banners that fade in (opacity) don't change the DOM, so the observer never fires for them
+        for (const ms of [1500, 4000, 8000]) setTimeout(schedule, ms);
 
         page.observer = new MutationObserver(schedule);
         page.observer.observe(document.documentElement, {
@@ -175,6 +177,8 @@
 
             const buttons = findButtons(candidate.el);
             if (buttons.length === 0) continue;
+            // A lone "Cookie settings" link (site footers) isn't a banner: it has nothing to answer with
+            if (buttons.length === 1 && !matchesAny(buttons[0].label, [...REJECT, ...ACCEPT])) continue;
 
             const verdict = classify(candidate);
             if (verdict === 'yes') {
@@ -222,8 +226,8 @@
             return len >= 20 && len <= 6000 && isVisible(c.el);
         });
 
-        // Keep the outermost match, so nested ".cookie-banner__text" etc. collapse into one banner.
-        return list.filter(c => !list.some(o => o !== c && o.el.contains(c.el)));
+        // Outermost match only, so nested ".cookie-banner__text" etc. collapse into one banner; overlays first.
+        return list.filter(c => !list.some(o => o !== c && o.el.contains(c.el))).sort((a, b) => b.overlay - a.overlay);
     }
 
     // 'yes' = consent banner, 'maybe' = overlay we can't read (Jev may), 'no' = skip

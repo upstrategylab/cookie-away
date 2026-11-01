@@ -4,3 +4,7 @@
 .env.*
 *.zip
 promo/
+
+bench/out-*
+bench/com/
+bench/node_modules/
