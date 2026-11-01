@@ -1,0 +1,124 @@
+/* Homepage and benchmarks page layout. Components come from components.css. */
+
+.h-hero { display: grid; gap: var(--s-7); align-items: center; padding-block: var(--s-6) var(--s-9); }
+@media (min-width: 920px) { .h-hero { grid-template-columns: 1.1fr 1fr; } }
+.h-hero__copy .ca-lead { margin-top: var(--s-5); max-width: 32rem; }
+.h-hero__copy .ca-row { margin-top: var(--s-6); }
+.h-hero__proof { margin-top: var(--s-5); font-size: var(--t-small); color: var(--ca-ink-2); max-width: 32rem; }
+.h-hero__proof a { color: var(--ca-ink); font-weight: 600; }
+.h-hero__note { margin-top: var(--s-4); display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.h-hero__art { margin: 0; position: relative; }
+/* ── Hero illustration: Noel's drawing, rebuilt as SVG and animated ──────────
+   Timeline (ms): window 0–700 · Kooky bursts out 450–1350 · eyes 1050–1500 · bites 1500 + 1900
+   with "nom" "nom" · cards spat out 1750–2700 · motion lines draw 2050–2900 · then idle:
+   breathe, cards drift, a nom every ~5s (js/hero.js), eyes follow the pointer. */
+.hz { width: 100%; height: auto; max-width: 600px; margin-inline: auto; overflow: visible; display: block; }
+.hz * { transform-box: fill-box; }
+.hz-window { transform-origin: 50% 100%; animation: hz-window 700ms var(--ease-out) both; }
+.hz-kooky-wrap { transform-origin: 50% 90%; animation: hz-burst 900ms var(--ease-out) 450ms both; }
+.hz-kooky { transform-origin: 50% 100%; cursor: pointer; outline: none; animation: hz-breathe 3.6s ease-in-out 2.8s infinite; }
+.hz-kooky:focus-visible { filter: drop-shadow(0 0 0 var(--ca-pink-deep)) drop-shadow(0 0 6px rgba(194,18,122,.6)); }
+.hz-eye { transform-origin: 50% 60%; animation: hz-eye 450ms var(--ease-boing) both; }
+.hz-eye:first-of-type { animation-delay: 1050ms; } .hz-eye:last-of-type { animation-delay: 1150ms; }
+.hz-mouth { transform-origin: 50% 0; animation: hz-bite 380ms var(--ease-inout) 1500ms 2; }
+.hz.is-nom .hz-mouth { animation: hz-bite 340ms var(--ease-inout) 2; }
+.hz-ot { transform-origin: 50% 50%; animation: hz-pop 400ms var(--ease-boing) 1350ms both; }
+.hz-scrap { transform-origin: 50% 50%; animation: hz-pop 400ms var(--ease-boing) 1450ms both; }
+.hz-nom { transform-origin: 50% 100%; opacity: 0; }
+.hz-nom--1 { animation: hz-nom 1.3s var(--ease-out) 1560ms forwards; }
+.hz-nom--2 { animation: hz-nom 1.3s var(--ease-out) 1940ms forwards; }
+.hz.is-nom .hz-nom--1 { animation: hz-nom 1.6s var(--ease-out) 60ms forwards; }
+.hz.is-nom .hz-nom--2 { animation: hz-nom 1.6s var(--ease-out) 400ms forwards; }
+.hz-fly { transform-origin: 50% 50%; }
+.hz-fly--key { animation: hz-spit-key 900ms var(--ease-out) 1750ms both; }
+.hz-fly--shield { animation: hz-spit-shield 1000ms var(--ease-out) 1900ms both; }
+.hz-fly--paper { animation: hz-spit-paper 1100ms var(--ease-out) 2000ms both; }
+.hz-float { transform-origin: 50% 50%; }
+.hz-float--a { animation: hz-drift 5.2s ease-in-out 3.2s infinite; }
+.hz-float--b { animation: hz-drift 4.4s ease-in-out 2.8s infinite reverse; }
+.hz-float--c { animation: hz-drift 4.8s ease-in-out 3s infinite; }
+.hz-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: hz-draw 650ms var(--ease-out) forwards; }
+.hz-line--1 { animation-delay: 2050ms; } .hz-line--2 { animation-delay: 2150ms; } .hz-line--3 { animation-delay: 2000ms; }
+.hz-line--4 { animation-delay: 2120ms; } .hz-line--5 { animation-delay: 2250ms; } .hz-line--6 { animation-delay: 2200ms; }
+
+@keyframes hz-window { from { opacity: 0; translate: 0 24px; scale: .97; } }
+@keyframes hz-burst {
+  0%   { opacity: 0; translate: 0 150px; scale: .35 .5; }
+  45%  { opacity: 1; translate: 0 -22px; scale: .94 1.12; }
+  70%  { translate: 0 6px; scale: 1.07 .93; }
+  86%  { translate: 0 -2px; scale: .98 1.02; }
+  100% { translate: 0 0; scale: 1; }
+}
+@keyframes hz-breathe { 0%, 100% { scale: 1; } 50% { scale: 1.012 .99; } }
+@keyframes hz-eye { 0% { scale: 0; } 70% { scale: 1.12; } 100% { scale: 1; } }
+@keyframes hz-bite { 0%, 100% { scale: 1; } 40% { scale: 1 .22; } 70% { scale: 1 1.06; } }
+@keyframes hz-pop { from { scale: 0; } }
+@keyframes hz-nom {
+  0%   { opacity: 0; translate: 0 14px; scale: .7; }
+  25%  { opacity: 1; translate: 0 -4px; scale: 1.06; }
+  45%  { translate: 0 0; scale: 1; }
+  100% { opacity: 1; }
+}
+/* Cards start inside the mouth, arc out with a spin, and settle */
+@keyframes hz-spit-key {
+  0%   { opacity: 0; translate: 143px -75px; rotate: -160deg; scale: .2; }
+  15%  { opacity: 1; }
+  55%  { translate: -14px 18px; rotate: 12deg; scale: 1.06; }
+  100% { translate: 0 0; rotate: 0deg; scale: 1; }
+}
+@keyframes hz-spit-shield {
+  0%   { opacity: 0; translate: -176px -170px; rotate: 140deg; scale: .2; }
+  15%  { opacity: 1; }
+  55%  { translate: 18px 22px; rotate: -10deg; scale: 1.05; }
+  100% { translate: 0 0; rotate: 0deg; scale: 1; }
+}
+@keyframes hz-spit-paper {
+  0%   { opacity: 0; translate: 380px -205px; rotate: -220deg; scale: .2; }
+  15%  { opacity: 1; }
+  60%  { translate: -20px 12px; rotate: 16deg; scale: 1.04; }
+  100% { translate: 0 0; rotate: 0deg; scale: 1; }
+}
+@keyframes hz-drift { 0%, 100% { translate: 0 0; rotate: 0deg; } 50% { translate: 0 -7px; rotate: 2.5deg; } }
+@keyframes hz-draw { to { stroke-dashoffset: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hz *, .hz { animation: none !important; }
+  .hz-nom { opacity: 1; }
+  .hz-line { stroke-dashoffset: 0; }
+}
+
+.h-sec { padding-block: var(--section); }
+.h-sec + .h-sec { border-top: 1px solid var(--ca-line); }
+.h-sec.ca-ink, .h-sec.ca-pinkband, .h-sec.ca-white + .h-sec, .h-sec + .h-sec.ca-white { border-top: 0; }
+.h-head { max-width: 46rem; margin-bottom: var(--s-7); }
+.h-head .ca-lead { margin-top: var(--s-4); }
+.h-head--center { margin-inline: auto; text-align: center; }
+
+.h-cards { display: grid; gap: var(--gap); }
+@media (min-width: 760px) { .h-cards--3 { grid-template-columns: repeat(3, 1fr); } .h-cards--4 { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1080px) { .h-cards--4 { grid-template-columns: repeat(4, 1fr); } }
+.ca-ink .ca-card { background: #1C1C20; border-color: #2E2E35; box-shadow: none; color: #C9C9CF; }
+.ca-ink .ca-card .ca-icon-sticker { background: var(--ca-pink); }
+
+.h-results { display: grid; gap: var(--gap); }
+@media (min-width: 760px) { .h-results { grid-template-columns: repeat(3, 1fr); } }
+.h-results + .ca-row { margin-top: var(--s-6); }
+
+.h-split { display: grid; gap: var(--s-7); align-items: start; }
+@media (min-width: 920px) { .h-split { grid-template-columns: 1fr 1.2fr; } }
+
+.h-open { display: grid; gap: var(--s-6); grid-template-columns: auto 1fr; align-items: center; }
+.h-open [data-mascot] { display: block; width: clamp(90px, 14vw, 180px); }
+.h-open .ca-lead { color: var(--ca-ink); }
+
+.h-report { max-width: 40rem; margin-top: var(--s-7); }
+.h-nocookies { color: #fff; font-weight: 600; }
+
+/* Benchmarks page */
+.b-table td:nth-child(n+2), .b-table th:nth-child(n+2) { white-space: nowrap; }
+.b-table td:first-child { font-weight: 600; color: var(--ca-ink); }
+.b-filter { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: var(--s-4); }
+.b-filter button { font: 600 .8125rem/1 var(--f-sans); padding: .6em .9em; border-radius: var(--r-pill); border: 1.5px solid var(--ca-ink); background: #fff; cursor: pointer; }
+.b-filter button[aria-pressed="true"] { background: var(--ca-ink); color: #fff; }
+.b-note { font-size: var(--t-small); color: var(--ca-muted); max-width: 46rem; }
+.b-note + .b-note { margin-top: var(--s-3); }

@@ -3,10 +3,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cookie Away Style Sheet</title>
-<link rel="icon" href="../icons/icon48.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles/fonts.css">
 <link rel="stylesheet" href="styles/tokens.css">
 <link rel="stylesheet" href="styles/motion.css">
 <link rel="stylesheet" href="styles/components.css">
@@ -57,14 +55,14 @@
     <div>
       <span class="ca-eyebrow">Brand style sheet · Landing page and everything after</span>
       <h1 class="ca-mega" style="margin-top:var(--s-4)">Say no to <span class="ca-hl">cookies</span>, nicely.</h1>
-      <p class="ca-lead">One small system for the Cookie Away website: a pink monster with googly eyes, ink outlines, hard shadows and very little else. Everything on this page is a working component you can lift into the landing page.</p>
+      <p class="ca-lead">One small system for cookieaway.com: Kooky, a pink monster with googly eyes, ink outlines, hard shadows and very little else. Everything on this page is a working component you can lift into the landing page.</p>
       <div class="ca-row">
         <a class="ca-btn ca-btn--lg" href="#components">See the components <svg class="ca-i"><use href="#i-arrow"/></svg></a>
-        <button class="ca-btn ca-btn--line ca-btn--lg" data-googly-toggle aria-pressed="false"><svg class="ca-i"><use href="#i-eye"/></svg>Googly mode</button>
+        <button class="ca-btn ca-btn--line ca-btn--lg" data-googly-toggle aria-pressed="false"><svg class="ca-i"><use href="#i-eye"/></svg><span data-label>Googly mode</span></button>
       </div>
     </div>
     <div class="sg-hero__art">
-      <span data-mascot aria-label="The Cookie Away monster"></span>
+      <span data-mascot aria-label="Kooky, the Cookie Away monster"></span>
       <span class="ca-cookie" style="--c:54px;left:4%;top:12%;rotate:-14deg"></span>
       <span class="ca-cookie" style="--c:34px;right:6%;top:2%"></span>
       <span class="ca-cookie" style="--c:42px;right:2%;bottom:10%;rotate:20deg"></span>
@@ -93,7 +91,7 @@
   <div class="sg-voice">
     <div class="sg-say"><span class="ca-eyebrow">Plain, a bit dry</span><p class="yes">Cookie Away clicks "Reject" so you don't have to.</p><p class="no">Revolutionary AI-powered consent management.</p></div>
     <div class="sg-say"><span class="ca-eyebrow">Honest about limits</span><p class="yes">Some banners still get past it. Send us the link.</p><p class="no">Blocks 100% of cookie banners, guaranteed.</p></div>
-    <div class="sg-say"><span class="ca-eyebrow">The monster can joke, the copy can't shout</span><p class="yes">It found the reject button hidden three screens deep.</p><p class="no">NO MORE COOKIES!!! 🍪🔥 Game-changer!</p></div>
+    <div class="sg-say"><span class="ca-eyebrow">Kooky can joke, the copy can't shout</span><p class="yes">It found the reject button hidden three screens deep.</p><p class="no">NO MORE COOKIES!!! 🍪🔥 Game-changer!</p></div>
   </div>
   <p class="ca-micro" style="margin-top:var(--s-5)">No long dashes in copy, sentence case everywhere, "consent tools" not "CMPs" (except in the code), and we say "reject", never "block".</p>
 </div></section>
@@ -101,15 +99,15 @@
 <!-- 02 MASCOT -->
 <section class="sg ca-white" id="mascot"><div class="ca-wrap">
   <div class="sg-head">
-    <div><span class="ca-eyebrow">02 · Mascot &amp; logo</span><h2>The monster <span class="ca-hl">is the logo</span>.</h2></div>
-    <p>Redrawn from the extension icon as clean SVG: an 18-point scalloped body, the mouth, and two mismatched eyes. On the site the pupils follow your pointer and it blinks now and then. Same drawing at every size; below 24px use the PNG icon.</p>
+    <div><span class="ca-eyebrow">02 · Kooky</span><h2>Meet Kooky. <span class="ca-hl">He is the logo</span>.</h2></div>
+    <p>Kooky is a bit kooky: a pink bottle-cap of a monster whose eyes never quite agree. Noel's drawing, with the pupils split out so they follow your pointer, each at its own pace, and drift back to his cross-eyed rest when you stop. He blinks now and then. Same drawing at every size; the favicon is the SVG too.</p>
   </div>
   <div class="sg-mascots">
     <figure><span data-mascot style="display:block;width:220px"></span><figcaption class="sg-label">Hero · 220–340px</figcaption></figure>
     <figure><span data-mascot style="display:block;width:120px"></span><figcaption class="sg-label">Section · 120px</figcaption></figure>
     <figure><span data-mascot style="display:block;width:64px"></span><figcaption class="sg-label">Inline · 64px</figcaption></figure>
     <figure><span data-mascot style="display:block;width:40px"></span><figcaption class="sg-label">Nav · 40px</figcaption></figure>
-    <figure><img src="../icons/icon48.png" width="24" height="24" alt=""><figcaption class="sg-label">Favicon · PNG</figcaption></figure>
+    <figure><img src="assets/favicon.svg" width="24" height="24" alt=""><figcaption class="sg-label">Favicon · SVG</figcaption></figure>
   </div>
 
   <h3 class="sg-h3">Lockups <span class="ca-eyebrow">Wordmark is Inter 800, −0.05em</span></h3>
@@ -118,9 +116,11 @@
     <div class="sg-lockup" style="background:var(--ca-ink)"><span class="sg-wordmark" style="color:#fff"><span data-mascot></span>Cookie Away</span></div>
     <div class="sg-lockup" style="background:var(--ca-pink)"><span class="sg-wordmark"><span data-mascot></span>Cookie Away</span></div>
   </div>
-  <p class="ca-micro" style="margin-top:var(--s-3)">On pink, the monster keeps its own pink body: the ink outline separates it. Clear space is one eye's width on every side.</p>
+  <h3 class="sg-h3">Illustration <span class="ca-eyebrow">assets/kooky-nom-nom.png</span></h3>
+  <div class="ca-cols-2" style="align-items:center"><img src="assets/kooky-nom-nom.png" width="930" height="864" alt="Kooky bursting out of a browser window, munching cookie banners, with consent-tool logos flying off" style="max-width:420px"><div class="ca-stack"><p>Kooky bursting out of a browser window and munching the banners, consent-tool logos flying off. It's the one illustration that explains the product without words, so it leads the homepage.</p><p class="ca-micro">Use it on white or paper, never cropped tighter than the window. The consent-tool logos are part of the joke: keep them small and tumbling, never as endorsements.</p></div></div>
+  <p class="ca-micro" style="margin-top:var(--s-3)">On pink, Kooky keeps his own pink body: the ink outline separates it. Clear space is one eye's width on every side.</p>
 
-  <h3 class="sg-h3">Don't <span class="ca-eyebrow">Keep the monster recognisable</span></h3>
+  <h3 class="sg-h3">Don't <span class="ca-eyebrow">Keep Kooky recognisable</span></h3>
   <div class="sg-dont">
     <figure><div class="box"><span data-mascot style="filter:hue-rotate(160deg)"></span></div><figcaption>Recolour the body</figcaption></figure>
     <figure><div class="box"><span data-mascot style="transform:scaleX(1.5)"></span></div><figcaption>Stretch it</figcaption></figure>
@@ -128,7 +128,7 @@
     <figure><div class="box" style="background:#1a5cff"><span data-mascot></span></div><figcaption>Put it on banner blue</figcaption></figure>
     <figure><div class="box"><span data-mascot style="opacity:.35"></span></div><figcaption>Fade it into a watermark</figcaption></figure>
   </div>
-  <p class="ca-micro" style="margin-top:var(--s-4)">It's our own monster, not a borrowed one. No blue fur, no Sesame Street references, and it never eats the cookies in a way that suggests it's a famous character.</p>
+  <p class="ca-micro" style="margin-top:var(--s-4)">Kooky is our own monster, not a borrowed one. No blue fur and no Sesame Street references.</p>
 </div></section>
 
 <!-- 03 COLOUR -->
@@ -275,7 +275,7 @@
 
   <h3 class="sg-h3">Forms <span class="ca-eyebrow">.ca-field · .ca-input · .ca-switch</span></h3>
   <div class="sg-comp sg-comp--split">
-    <form class="ca-field" id="report" novalidate>
+    <form class="ca-field" id="report" data-report novalidate>
       <label for="report-url">Found a banner it can't handle?</label>
       <div class="ca-inline-form"><input class="ca-input" id="report-url" type="url" placeholder="https://example.com/article" autocomplete="off"><button class="ca-btn ca-btn--ink" type="submit"><svg class="ca-i"><use href="#i-bug"/></svg>Report it</button></div>
       <small>Opens a pre-filled GitHub issue. Nothing is sent anywhere else.</small>
@@ -290,7 +290,7 @@
   <h3 class="sg-h3">Tabs, install steps &amp; code <span class="ca-eyebrow">.ca-tabs · .ca-steps · .ca-codeblock</span></h3>
   <div class="ca-tabs" data-tabs>
     <div class="ca-tabs__list" role="tablist"><button role="tab" aria-selected="true" aria-controls="t-store" id="tb-store">Chrome Web Store</button><button role="tab" aria-selected="false" aria-controls="t-src" id="tb-src">From source</button></div>
-    <div class="ca-tabs__panel" role="tabpanel" id="t-store" aria-labelledby="tb-store"><ol class="ca-steps"><li><div><b>Open the store page.</b> One click on "Add to Chrome".</div></li><li><div><b>That's it.</b> It starts on the next page you open. The pink monster in your toolbar shows what it did.</div></li></ol></div>
+    <div class="ca-tabs__panel" role="tabpanel" id="t-store" aria-labelledby="tb-store"><ol class="ca-steps"><li><div><b>Open the store page.</b> One click on "Add to Chrome".</div></li><li><div><b>That's it.</b> It starts on the next page you open. Kooky in your toolbar shows what he did.</div></li></ol></div>
     <div class="ca-tabs__panel" role="tabpanel" id="t-src" aria-labelledby="tb-src" hidden>
       <ol class="ca-steps"><li><div>Clone or download the repository.</div></li><li><div>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b>.</div></li><li><div>Click <b>Load unpacked</b> and pick the folder.</div></li></ol>
       <pre class="ca-codeblock" style="margin-top:var(--s-5)"><button class="ca-copy" data-copy="git clone https://github.com/upstrategylab/cookie-away.git">Copy</button><code><span class="c"># no build step, it's plain JavaScript</span>
@@ -340,7 +340,7 @@
   <h3 class="sg-h3">Banner demo <span class="ca-eyebrow">Hero, plays once on view, replay on click</span></h3>
   <div class="sg-bannerdemo">
     <div class="ca-browser" id="demo">
-      <div class="ca-browser__bar"><i></i><i></i><i></i><span class="ca-browser__url">news.example.com/the-article-you-wanted</span><img class="ca-browser__ext" src="../icons/icon48.png" alt=""></div>
+      <div class="ca-browser__bar"><i></i><i></i><i></i><span class="ca-browser__url">news.example.com/the-article-you-wanted</span><img class="ca-browser__ext" src="assets/icon48.png" alt=""></div>
       <div class="ca-browser__page">
         <div class="ca-skel ca-skel--h"></div><div class="ca-skel"></div><div class="ca-skel" style="width:92%"></div><div class="ca-skel ca-skel--img"></div><div class="ca-skel"></div><div class="ca-skel" style="width:80%"></div>
         <div class="ca-dim"></div>
@@ -352,8 +352,8 @@
     <div class="ca-stack">
       <ol class="sg-list">
         <li>A generic banner slides in. It is deliberately grey and blue: the villain looks like the web.</li>
-        <li>The monster pops in at the extension icon and looks at the banner.</li>
-        <li>"Reject all" gets a pink ring, the monster chomps, the banner is eaten with crumbs.</li>
+        <li>Kooky pops in at the extension icon and eyes up the banner.</li>
+        <li>"Reject all" gets a pink ring, Kooky chomps, the banner is eaten with crumbs.</li>
         <li>A toast says what it clicked. The page underneath is finally readable.</li>
       </ol>
       <button class="ca-btn ca-btn--ink" id="replay"><svg class="ca-i"><use href="#i-loop"/></svg>Replay</button>
@@ -361,13 +361,14 @@
   </div>
 
   <h3 class="sg-h3">Googly mode <span class="ca-eyebrow">Click any shape · click eyes to peel · Esc to stop</span></h3>
+  <p class="ca-small" style="margin:-.5rem 0 var(--s-4);max-width:44rem">When it's on you can tell: the toggle turns ink with a pink pulse, the window gets a pink frame, the cursor becomes an eye, and a pill at the bottom counts the eyes and has Peel off and Done.</p>
   <div class="sg-play" id="play">
     <div class="s1"></div><div class="s2"></div><div class="s3"></div><div class="s4"></div><span class="ca-cookie s5"></span>
   </div>
   <div class="ca-row" style="margin-top:var(--s-4)">
-    <button class="ca-btn" data-googly-toggle aria-pressed="false"><svg class="ca-i"><use href="#i-eye"/></svg>Googly mode</button>
+    <button class="ca-btn ca-btn--line" data-googly-toggle aria-pressed="false"><svg class="ca-i"><use href="#i-eye"/></svg><span data-label>Googly mode</span></button>
     <button class="ca-btn ca-btn--line" id="peel">Peel them all off</button>
-    <span class="ca-micro" id="eyecount">Works on the whole page, not just this box.</span>
+    <span class="ca-micro">Works on the whole page, not just this box.</span>
   </div>
   <p class="ca-micro" style="margin-top:var(--s-3)">Eye size follows the thing you click (22% of its shorter side, 14–64px). Pupils are springs with a little gravity, so they wobble when you move fast. All of it switches off with prefers-reduced-motion.</p>
 </div></section>
@@ -430,7 +431,7 @@
 <section class="sg ca-night" id="arcade" style="padding-top:0"><div class="ca-wrap">
   <div class="sg-head">
     <div><span class="ca-eyebrow">12 · Arcade easter egg</span><h2>Type “cookie”.</h2></div>
-    <p>A hidden maze game for later. Our monster runs a maze of consent banners eating cookies; the ghosts are "Accept all" buttons. It's our own game in the maze-chase genre, not a copy of anyone's: our sprite, our maze, our rules. This sheet only sets the look and the trigger.</p>
+    <p>A hidden maze game for later. Kooky runs a maze of consent banners eating cookies; the ghosts are "Accept all" buttons. It's our own game in the maze-chase genre, not a copy of anyone's: our sprite, our maze, our rules. This sheet only sets the look and the trigger.</p>
   </div>
   <div class="sg-arcade" style="background:var(--ca-night);border:2px solid var(--ca-night-2)">
     <span class="ca-chomper"></span>
@@ -447,16 +448,16 @@
 <!-- 13 DECISIONS -->
 <section class="sg" id="decisions"><div class="ca-wrap">
   <div class="sg-head">
-    <div><span class="ca-eyebrow">13 · Open decisions</span><h2>For Noel to <span class="ca-hl">pick</span>.</h2></div>
+    <div><span class="ca-eyebrow">13 · Open decisions</span><h2>Decided, and <span class="ca-hl">still open</span>.</h2></div>
     <p>Defaults are set so the page can be built now. Each of these changes something visible.</p>
   </div>
   <div class="sg-decisions">
-    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Domain</span><h3>Where does it live?</h3><p class="ca-small">cookieaway.com / .app, a subpath on upstrategylab.com, or GitHub Pages. Default: GitHub Pages from <code>/site</code>, zero cost, and the star bar sits naturally there.</p></article>
-    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Mascot</span><h3>Does the monster get a name?</h3><p class="ca-small">Right now it's "the monster". A name helps the arcade and the toasts ("Chompy rejected 3 banners"). Default: no name until the game ships.</p></article>
-    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Googly mode</span><h3>Where's the switch?</h3><p class="ca-small">A visible button in the hero (fun, discoverable) or hidden in the footer (an easter egg). Default: footer, next to the cookie, so the hero stays about the product.</p></article>
-    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Numbers</span><h3>Do we publish benchmark results?</h3><p class="ca-small">Only after the unseen-sites test. Until then the stats row is facts only (27 tools, ~20 languages, 0 servers).</p></article>
-    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Promo pink</span><h3>Retire #FF3EA5</h3><p class="ca-small">The promo video and store art use #FF3EA5, a near-miss of the icon's #FF3FAF. Default: switch them to #FF3FAF on the next render.</p></article>
-    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Stack</span><h3>Static HTML or the USL stack?</h3><p class="ca-small">A one-pager with no CMS. Default: plain HTML on these files, no Next.js, no Payload. Move later only if it grows a blog.</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-tag ca-tag--ok">Decided</span><h3>cookieaway.com on Vercel</h3><p class="ca-small">Static files from <code>/site</code>, one edge function for the star count. No analytics, no cookies, fonts self-hosted.</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-tag ca-tag--ok">Decided</span><h3>His name is Kooky</h3><p class="ca-small">Because he's a bit kooky and his eyes are all funny. He can be "he" in copy, and the toasts can say "Kooky rejected…".</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-tag ca-tag--ok">Decided</span><h3>We publish the benchmarks</h3><p class="ca-small">Every site, both extensions, the method and the caveats, on cookieaway.com/benchmarks. The homepage shows the headline numbers only.</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-tag ca-tag--ok">Decided</span><h3>Minimal homepage</h3><p class="ca-small">Hero with the illustration, how it works, careful by design, results, install, FAQ, footer. Copy checked with Jev Writer.</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Open</span><h3>Where's the googly switch?</h3><p class="ca-small">Default: a small button in the footer next to "This site uses no cookies. Obviously." The hero stays about the product.</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Open</span><h3>Retire #FF3EA5</h3><p class="ca-small">The promo video and store art use #FF3EA5, a near-miss of the icon's #FF3FAF. Default: switch them on the next render.</p></article>
   </div>
 </div></section>
 
@@ -464,5 +465,6 @@
 
 <script src="js/mascot.js"></script>
 <script src="js/googly.js"></script>
+<script src="js/site.js"></script>
 <script src="styleguide.js"></script>
 </html>

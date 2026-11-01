@@ -37,18 +37,6 @@
   // ── Spacing
   $('#space').innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => `<div style="width:var(--s-${n});height:var(--s-${n})" title="--s-${n}"></div>`).join('') + '<span class="sg-label" style="margin:0 0 0 8px">--s-1 … --s-10 · 4, 8, 12, 16, 24, 32, 48, 64, 96, 144px</span>';
 
-  // ── GitHub stars (public API, cached an hour in localStorage; no cookies, obviously)
-  (async () => {
-    const KEY = 'ca-stars', hit = JSON.parse(localStorage.getItem(KEY) || 'null');
-    let n = hit && Date.now() - hit.t < 36e5 ? hit.n : null;
-    if (n == null) try {
-      const r = await fetch('https://api.github.com/repos/upstrategylab/cookie-away');
-      if (r.ok) { n = (await r.json()).stargazers_count; localStorage.setItem(KEY, JSON.stringify({ n, t: Date.now() })); }
-    } catch {}
-    const txt = n == null ? 'Star' : n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n);
-    $$('[data-stars]').forEach(el => { el.textContent = txt; });
-  })();
-
   // ── Banner demo
   const demo = $('#demo');
   const crumbs = (host, x, y, n = 12) => {
@@ -84,30 +72,7 @@
   $('#replay').addEventListener('click', play);
 
   // ── Googly playground
-  CA.onStick = n => { $('#eyecount').textContent = `${n} pair${n === 1 ? '' : 's'} of eyes on the page.`; };
-  $('#peel').addEventListener('click', e => { e.stopPropagation(); CA.googlyMode(false); CA.peelAll(); $('#eyecount').textContent = 'All peeled off.'; });
-
-  // ── Tabs
-  $$('[data-tabs]').forEach(t => {
-    const tabs = $$('[role=tab]', t);
-    tabs.forEach(b => b.addEventListener('click', () => {
-      tabs.forEach(x => { const on = x === b; x.setAttribute('aria-selected', on); $('#' + x.getAttribute('aria-controls')).hidden = !on; });
-    }));
-  });
-  $$('[data-copy]').forEach(b => b.addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'Copied'; } catch { b.textContent = 'Select it'; }
-    setTimeout(() => { b.textContent = 'Copy'; }, 1500);
-  }));
-
-  // ── Report form → pre-filled GitHub issue
-  $('#report').addEventListener('submit', e => {
-    e.preventDefault();
-    const input = $('#report-url'); let u;
-    try { u = new URL(input.value.trim()); if (!/^https?:$/.test(u.protocol)) throw 0; } catch { input.setAttribute('aria-invalid', 'true'); input.focus(); return; }
-    input.removeAttribute('aria-invalid');
-    const q = new URLSearchParams({ title: `Banner not handled: ${u.hostname}`, body: `URL: ${u.href}\n\nWhat happened (banner stayed, wrong button, page kept reloading):\n\nBrowser and version:\n` });
-    window.open('https://github.com/upstrategylab/cookie-away/issues/new?' + q, '_blank', 'noopener');
-  });
+  $('#peel').addEventListener('click', e => { e.stopPropagation(); CA.googlyMode(false); CA.peelAll(); });
 
   // ── Motion: curves, pop, crumbs, chomp
   const CURVES = [['--ease-out', 'cubic-bezier(.16,1,.3,1)', 'Default. Arrive and settle'], ['--ease-boing', 'cubic-bezier(.34,1.56,.64,1)', 'Stickers, eyes, buttons'], ['--ease-inout', 'cubic-bezier(.65,0,.35,1)', 'Banners leaving, wipes']];

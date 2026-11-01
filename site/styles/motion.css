@@ -11,6 +11,10 @@
 .ca-mascot.is-chomping .ca-mascot__mouth { animation: ca-chomp 420ms var(--ease-inout) 2; }
 .ca-mascot.is-chomping { animation: ca-wobble 840ms var(--ease-boing); }
 
+@keyframes ca-pulse { 0% { box-shadow: 0 0 0 0 rgba(255,63,175,.7); } 100% { box-shadow: 0 0 0 .7em rgba(255,63,175,0); } }
+@keyframes ca-frame-in { from { opacity: 0; transform: scale(1.02); } }
+@keyframes ca-pill-in { from { opacity: 0; translate: -50% 24px; } }
+
 @keyframes ca-wobble { 0%, 100% { rotate: 0deg; } 25% { rotate: -5deg; } 60% { rotate: 4deg; } }
 
 /* Sticker landing: scale from 0 with overshoot, slight turn */

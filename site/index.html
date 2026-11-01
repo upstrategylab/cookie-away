@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cookie Away · Reject cookie banners automatically</title>
+<meta name="description" content="Cookie Away is a free, open-source Chrome extension that rejects cookie banners for you, even when Reject is hidden behind a settings screen.">
+<link rel="canonical" href="https://cookieaway.com/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cookieaway.com/">
+<meta property="og:title" content="Cookie Away · Say no to cookies, nicely">
+<meta property="og:description" content="Cookie Away is a free, open-source Chrome extension that rejects cookie banners for you, even when Reject is hidden behind a settings screen.">
+<meta property="og:image" content="https://cookieaway.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FF3FAF">
+<link rel="preload" href="/assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles/fonts.css">
+<link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/motion.css">
+<link rel="stylesheet" href="/styles/components.css">
+<link rel="stylesheet" href="/styles/home.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "SoftwareApplication", "name": "Cookie Away", "url": "https://cookieaway.com/", "applicationCategory": "BrowserApplication", "operatingSystem": "Chrome, Edge, Brave, Arc", "description": "A free, open-source Chrome extension that rejects cookie banners for you, even when Reject is hidden behind a settings screen.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "license": "https://opensource.org/licenses/MIT", "codeRepository": "https://github.com/upstrategylab/cookie-away", "author": {"@type": "Organization", "name": "Up Strategy Lab", "url": "https://upstrategylab.com"}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does Cookie Away send my browsing anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. Cookie Away has no server and no analytics, and your settings stay in your browser. The only exception is the optional Jev feature, which is off by default, needs your own API key, and sends only the site’s name, the banner text and its button labels."}}, {"@type": "Question", "name": "How is rejecting different from hiding the banner?", "acceptedAnswer": {"@type": "Answer", "text": "Hiding a banner doesn’t tell the site you said no, and some sites keep tracking until you answer. Cookie Away actually answers, by clicking reject or switching everything off in the settings and saving."}}, {"@type": "Question", "name": "What does Cookie Away do on pay-or-accept cookie walls?", "acceptedAnswer": {"@type": "Answer", "text": "Cookie Away leaves pay-or-accept walls alone and doesn’t click anything on them. On those sites rejecting cookies means paying for a subscription, and the extension never pays for anything or makes that choice for you, so you decide whether to accept, subscribe or leave."}}, {"@type": "Question", "name": "Which browsers does Cookie Away work in?", "acceptedAnswer": {"@type": "Answer", "text": "Chrome, and other Chromium browsers such as Edge, Brave and Arc. It’s in review on the Chrome Web Store; until then you can install it from GitHub in about a minute."}}, {"@type": "Question", "name": "Does Cookie Away reject every cookie banner?", "acceptedAnswer": {"@type": "Answer", "text": "No, Cookie Away doesn’t reject every cookie banner, and its test results are published so you can check that for yourself. When you find a banner it didn’t answer, send us the link to the site, because every report makes the next version better."}}]}]}</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-github" viewBox="0 0 16 16"><path fill="currentColor" stroke="none" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3L12 17.1l-5.6 3 1.1-6.3L2.9 9.4l6.3-.9z"/></symbol>
+    <symbol id="i-chrome" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="3.6"/><path d="M12 8.4h8.6M8.9 13.8 4.6 6.3M15.1 13.8l-4.3 7.6"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1V7zM4 7l11-3v3"/><path d="M16 13.5h.01"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+    <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3v8M7.5 6.3a7 7 0 1 0 9 0"/></symbol>
+    <symbol id="i-bug" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 11v9M7 12H3M21 12h-4M7 17l-3 2M17 17l3 2M8 5l1.5 2M16 5l-1.5 2"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  </defs>
+</svg>
+
+<div class="ca-starbar" role="region" aria-label="GitHub">
+  <div class="ca-wrap">
+    <span>Cookie Away is free and open source.</span>
+    <a href="https://github.com/upstrategylab/cookie-away" target="_blank" rel="noopener"><svg class="ca-i"><use href="#i-github"/></svg>Star it on GitHub <span class="ca-starbar__pill"><svg><use href="#i-star"/></svg><span data-stars>Star</span></span></a>
+  </div>
+</div>
+
+<header class="ca-wrap">
+  <nav class="ca-nav" aria-label="Main">
+    <a class="ca-nav__brand" href="/"><span data-mascot></span>Cookie Away</a>
+    <ul class="ca-nav__links">
+      <li><a href="#how">How it works</a></li><li><a href="#results">Results</a></li><li><a href="#install">Install</a></li><li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="ca-nav__end"><a class="ca-ghstar" href="https://github.com/upstrategylab/cookie-away" target="_blank" rel="noopener"><span><svg><use href="#i-github"/></svg>Star</span><span class="ca-ghstar__count"><svg class="ca-ghstar__star"><use href="#i-star"/></svg><span data-stars>…</span></span></a></div>
+  </nav>
+</header>
+
+<main>
+  <section class="h-hero ca-wrap">
+    <div class="h-hero__copy">
+      <h1 class="ca-mega">Say no to <span class="ca-hl">cookies</span>, nicely.</h1>
+      <p class="ca-lead">Cookie Away is a free Chrome extension that clicks “Reject” on cookie banners for you, even when it’s hidden three screens deep.</p>
+      <div class="ca-row">
+        <a class="ca-btn ca-btn--lg" href="#install"><svg class="ca-i"><use href="#i-chrome"/></svg>Install it free</a>
+        <a class="ca-btn ca-btn--line ca-btn--lg" href="https://github.com/upstrategylab/cookie-away" target="_blank" rel="noopener"><svg class="ca-i"><use href="#i-github"/></svg>View on GitHub</a>
+      </div>
+      <p class="h-hero__proof">Install it free in about a minute. We tested it on <a href="/benchmarks"><span data-bench="tested">69</span> European sites and published every result</a>.</p>
+      <p class="ca-micro h-hero__note"><span class="ca-tag ca-tag--soon">Chrome Web Store: in review</span> Works in Chrome, Edge, Brave and Arc.</p>
+    </div>
+    <figure class="h-hero__art">
+      <svg class="hz" viewBox="0 0 930 864" role="img" aria-labelledby="hz-title">
+        <title id="hz-title">Kooky, a pink monster with googly eyes, bursting out of a browser window and munching cookie banners</title>
+        <defs>
+          <clipPath id="hz-mouthclip"><path d="M128.54 194.326C205.242 194.326 176.177 121.037 217.098 107.296C217.098 107.296 188.797 105.871 170.822 103.479C154.189 101.265 128.54 94.3885 128.54 94.3885C128.54 94.3885 101.744 101.238 84.3903 103.479C67.1448 105.705 40.0269 107.296 40.0269 107.296C68.3277 117.984 56.0896 194.326 128.54 194.326Z"/></clipPath>
+          <path id="hz-arc1" d="M300 262 Q465 168 630 262"/>
+        </defs>
+      
+        <!-- Browser window -->
+        <g class="hz-window">
+          <rect x="2" y="2" width="926" height="514" rx="16" fill="#fff" stroke="#DADADA" stroke-width="2"/>
+          <path d="M2 80V18A16 16 0 0 1 18 2H912A16 16 0 0 1 928 18V80Z" fill="#F7F7F7"/>
+          <path d="M2 80H928" stroke="#DADADA" stroke-width="2"/>
+          <circle cx="48" cy="41" r="15" fill="#FF6159" stroke="#E0443E" stroke-width="1.5"/>
+          <circle cx="96" cy="41" r="15" fill="#FFD15A" stroke="#E1A73E" stroke-width="1.5"/>
+          <circle cx="144" cy="41" r="15" fill="#5FF07E" stroke="#3EBB55" stroke-width="1.5"/>
+          <rect class="hz-url" x="414" y="20" width="102" height="38" rx="6" fill="#fff"/>
+          <text class="hz-url" x="465" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="30" font-weight="500" fill="#111">www.</text>
+        </g>
+      
+        <!-- nom nom -->
+        <text class="hz-nom hz-nom--1" font-family="Inter, sans-serif" font-size="44" font-weight="500" letter-spacing="9" fill="#111"><textPath href="#hz-arc1" startOffset="31%" text-anchor="middle">nom</textPath></text>
+        <text class="hz-nom hz-nom--2" font-family="Inter, sans-serif" font-size="44" font-weight="500" letter-spacing="9" fill="#111"><textPath href="#hz-arc1" startOffset="70%" text-anchor="middle">nom</textPath></text>
+      
+        <!-- Motion lines (drawn behind the flying cards) -->
+        <g class="hz-lines" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round">
+          <path class="hz-line hz-line--1" pathLength="1" d="M108 771C150 734 196 714 244 706"/>
+          <path class="hz-line hz-line--2" pathLength="1" d="M203 734C210 729 220 724 229 721"/>
+          <path class="hz-line hz-line--3" pathLength="1" d="M247 718C285 708 314 677 323 650"/>
+          <path class="hz-line hz-line--4" pathLength="1" d="M268 664C262 680 252 690 240 699"/>
+          <path class="hz-line hz-line--5" pathLength="1" d="M668 783C676 798 684 810 692 818"/>
+          <path class="hz-line hz-line--6" pathLength="1" d="M690 797C716 826 752 840 795 841"/>
+        </g>
+      
+        <!-- Paper scrap, far left -->
+        <g class="hz-fly hz-fly--paper"><g class="hz-float hz-float--a">
+          <path d="M10 683C38 680 56 676 74 671L108 700C92 717 66 732 38 734Z" fill="#fff" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/>
+        </g></g>
+      
+        <!-- Kooky -->
+        <g class="hz-kooky-wrap"><g class="hz-kooky" tabindex="0" role="button" aria-label="Make Kooky chomp">
+          <g transform="translate(276 296) scale(1.47)">
+            <path d="M123.888 42.5911C126.491 40.0612 130.634 40.0612 133.237 42.5911L142.831 51.9154C144.865 53.8926 147.923 54.3761 150.468 53.123L163.794 46.562C167.168 44.901 171.247 46.3375 172.836 49.7459L177.448 59.6403C178.735 62.4025 181.723 63.9496 184.722 63.4067L199.173 60.7907C203.208 60.0603 206.948 63.0891 207.072 67.1876L207.327 75.5973C207.43 79.0017 210.068 81.7884 213.462 82.0774L226.241 83.1655C230.725 83.5473 233.569 88.15 231.903 92.331L229.368 98.6938C227.974 102.192 229.733 106.151 233.262 107.463L242.676 110.962C247.161 112.629 248.508 118.32 245.247 121.821L240.528 126.886C237.831 129.781 238.213 134.369 241.351 136.778L247.402 141.424C251.246 144.375 250.788 150.303 246.536 152.629L238.896 156.808C235.483 158.674 234.369 163.044 236.471 166.317L240.069 171.919C242.591 175.845 240.433 181.082 235.878 182.092L224.677 184.576C221.165 185.354 218.893 188.765 219.526 192.306L220.841 199.649C221.599 203.886 218.226 207.731 213.926 207.53L200.003 206.881C196.79 206.731 193.924 208.882 193.17 212.008L190.917 221.346C190 225.149 186.037 227.363 182.318 226.151L168.06 221.502C165.286 220.598 162.246 221.59 160.54 223.958L153.398 233.868C151.257 236.84 147.126 237.544 144.121 235.449L132.398 227.278C130.093 225.671 127.032 225.671 124.727 227.278L113.004 235.449C109.998 237.544 105.868 236.84 103.727 233.868L96.5851 223.958C94.8792 221.59 91.8385 220.598 89.0644 221.502L74.8068 226.151C71.0879 227.363 67.1247 225.149 66.2075 221.346L63.9549 212.008C63.2009 208.882 60.3344 206.731 57.1222 206.881L43.199 207.53C38.8989 207.731 35.5258 203.886 36.2842 199.649L37.5984 192.306C38.2321 188.765 35.9598 185.354 32.448 184.576L21.247 182.092C16.6918 181.082 14.534 175.845 17.0555 171.919L20.6538 166.317C22.7562 163.044 21.642 158.674 18.229 156.808L10.5885 152.629C6.3369 150.303 5.87875 144.375 9.72256 141.424L15.7737 136.778C18.9119 134.369 19.2937 129.781 16.5968 126.886L11.8779 121.821C8.61662 118.32 9.96415 112.629 14.4488 110.962L23.8624 107.463C27.392 106.151 29.1504 102.192 27.7568 98.6938L25.2219 92.331C23.5562 88.15 26.3994 83.5473 30.8838 83.1655L43.6632 82.0774C47.0569 81.7884 49.6952 79.0017 49.7983 75.5973L50.0529 67.1876C50.177 63.0891 53.9171 60.0603 57.9519 60.7907L72.4029 63.4067C75.4017 63.9496 78.3896 62.4025 79.677 59.6403L84.2888 49.7459C85.8774 46.3376 89.9572 44.901 93.3308 46.562L106.656 53.123C109.201 54.3761 112.26 53.8926 114.294 51.9154L123.888 42.5911Z" fill="#FF3FAF" stroke="#000" stroke-width="4.2" stroke-linejoin="round"/>
+            <g class="hz-mouth">
+              <path d="M128.54 194.326C205.242 194.326 176.177 121.037 217.098 107.296C217.098 107.296 188.797 105.871 170.822 103.479C154.189 101.265 128.54 94.3885 128.54 94.3885C128.54 94.3885 101.744 101.238 84.3903 103.479C67.1448 105.705 40.0269 107.296 40.0269 107.296C68.3277 117.984 56.0896 194.326 128.54 194.326Z" fill="#000"/>
+              <g clip-path="url(#hz-mouthclip)">
+                <g class="hz-ot"><rect x="146" y="104" width="58" height="44" rx="5" fill="#57A35C" transform="rotate(10 175 126)"/><text x="175" y="117" transform="rotate(190 175 126)" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="24" fill="#fff">OT</text></g>
+                <path class="hz-scrap" d="M84 159L106 148L112 162L91 170Z" fill="#fff"/>
+              </g>
+            </g>
+            <g class="hz-eye" data-eye data-rest="10.73 6.71"><circle cx="97.71" cy="50.12" r="29.51" fill="#fff" stroke="#000" stroke-width="2.68"/><circle class="ca-pupil" cx="97.71" cy="50.12" r="10.73" fill="#000" transform="translate(10.73 6.71)"/></g>
+            <g class="hz-eye" data-eye data-rest="-9.39 -10.73"><circle cx="158.07" cy="50.12" r="29.51" fill="#fff" stroke="#000" stroke-width="2.68"/><circle class="ca-pupil" cx="158.07" cy="50.12" r="10.73" fill="#000" transform="translate(-9.39 -10.73)"/></g>
+          </g>
+        </g></g>
+      
+        <!-- Consent cards being spat out -->
+        <g class="hz-fly hz-fly--key"><g class="hz-float hz-float--b">
+          <g transform="rotate(-12 322 575)">
+            <rect x="275" y="527" width="94" height="96" rx="9" fill="#fff" stroke="#1EC08F" stroke-width="2.5"/>
+            <path d="M322 543a14 14 0 0 1 8 25.5L340 608H304L314 568.5A14 14 0 0 1 322 543Z" fill="#1EC08F"/>
+            <circle cx="322" cy="557" r="5" fill="#fff"/><rect x="319" y="570" width="6" height="28" rx="2" fill="#fff"/>
+          </g>
+        </g></g>
+        <g class="hz-fly hz-fly--shield"><g class="hz-float hz-float--c">
+          <g transform="rotate(-11 641 670)">
+            <rect x="566" y="595" width="150" height="150" rx="16" fill="#00A0F5"/>
+            <path d="M603 638H679V672C679 694 663 709 641 716C619 709 603 694 603 672Z" fill="none" stroke="#111" stroke-width="9" stroke-linejoin="round"/>
+            <path d="M624 668L638 682L662 657" fill="none" stroke="#111" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </g></g>
+      </svg>
+    </figure>
+  </section>
+
+  <section class="h-sec ca-white" id="how"><div class="ca-wrap">
+    <div class="h-head"><span class="ca-eyebrow">How it works</span><h2>It finds the reject button so you don’t have to.</h2></div>
+    <div class="h-cards h-cards--3">
+      <article class="ca-card" data-reveal style="--i:0"><span class="ca-num">1</span><h3>Finds the banner</h3><p class="ca-small">It knows 27 consent tools by name, and reads the wording of the rest in about 20 languages.</p></article>
+      <article class="ca-card ca-card--soft" data-reveal style="--i:1"><span class="ca-num">2</span><h3>Says no for you</h3><p class="ca-small">No reject button? Kooky opens the settings, turns off what it can and saves your answer.</p></article>
+      <article class="ca-card ca-card--pink" data-reveal style="--i:2"><span class="ca-num" style="background:#fff">3</span><h3>Checks it’s gone</h3><p class="ca-small">After each click it checks the banner has gone from your screen. If it hasn’t, it has one more try.</p><span data-googly="22" data-googly-pos="ca-eyes--corner"></span></article>
+    </div>
+  </div></section>
+
+  <section class="h-sec ca-ink" id="careful"><div class="ca-wrap">
+    <div class="h-head"><span class="ca-eyebrow">Careful by design</span><h2>Careful, not clever.</h2></div>
+    <div class="h-cards h-cards--4">
+      <article class="ca-card"><span class="ca-icon-sticker"><svg class="ca-i"><use href="#i-wallet"/></svg></span><h3>Never pays to say no</h3><p class="ca-small">Some news sites only let you reject if you subscribe. Cookie Away leaves those banners for you to decide.</p></article>
+      <article class="ca-card"><span class="ca-icon-sticker"><svg class="ca-i"><use href="#i-pin"/></svg></span><h3>You keep your place</h3><p class="ca-small">Cookie Away never clicks a link that takes you off the page, so you carry on reading what you came for.</p></article>
+      <article class="ca-card"><span class="ca-icon-sticker"><svg class="ca-i"><use href="#i-pause"/></svg></span><h3>Knows when to stop</h3><p class="ca-small">If a banner keeps coming back, it pauses on that site for 24 hours instead of looping.</p></article>
+      <article class="ca-card"><span class="ca-icon-sticker"><svg class="ca-i"><use href="#i-power"/></svg></span><h3>Off when you want it</h3><p class="ca-small">Turn it off for any site from the popup.</p></article>
+    </div>
+  </div></section>
+
+  <section class="h-sec" id="results"><div class="ca-wrap">
+    <div class="h-head"><span class="ca-eyebrow">In our tests</span><h2>See which banners it misses before you install.</h2><p class="ca-lead">We tested Cookie Away against Consent-O-Matic on <span data-bench="tested">69</span> European sites and published every result, misses included.</p></div>
+    <div class="h-results">
+      <div class="ca-statcard"><p class="ca-stat" data-bench="free">26/27</p><p>banners with a free “no” answered</p></div>
+      <div class="ca-statcard"><p class="ca-stat" data-bench="wall">31/31</p><p>pay-or-accept walls handled without paying</p></div>
+      <div class="ca-statcard"><p class="ca-stat"><em data-bench="pay">0</em></p><p>trips to a payment page</p></div>
+    </div>
+    <div class="ca-row"><a class="ca-btn ca-btn--line" href="/benchmarks">See every site <svg class="ca-i"><use href="#i-arrow"/></svg></a></div>
+  </div></section>
+
+  <section class="h-sec ca-white" id="install"><div class="ca-wrap h-split">
+    <div class="h-head" style="margin:0"><span class="ca-eyebrow">Install</span><h2>Private by default.</h2><p class="ca-lead">No account, no server, no analytics. Your settings stay in your browser, and the code is open for anyone to read.</p></div>
+    <div class="ca-tabs" data-tabs>
+      <div class="ca-tabs__list" role="tablist"><button role="tab" aria-selected="true" aria-controls="t-src" id="tb-src">From GitHub</button><button role="tab" aria-selected="false" aria-controls="t-store" id="tb-store">Chrome Web Store</button></div>
+      <div class="ca-tabs__panel" role="tabpanel" id="t-src" aria-labelledby="tb-src">
+        <ol class="ca-steps"><li><div><a href="https://github.com/upstrategylab/cookie-away/archive/refs/heads/main.zip">Download the code</a> and unzip it.</div></li><li><div>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b>.</div></li><li><div>Click <b>Load unpacked</b> and pick the folder. Kooky appears in your toolbar.</div></li></ol>
+      </div>
+      <div class="ca-tabs__panel" role="tabpanel" id="t-store" aria-labelledby="tb-store" hidden><p>Cookie Away is in review on the Chrome Web Store. Once it’s approved, this becomes one click.</p></div>
+    </div>
+  </div></section>
+
+  <section class="h-sec ca-pinkband"><div class="ca-wrap h-open">
+    <span data-mascot></span>
+    <div class="ca-stack"><span class="ca-eyebrow">Open source</span><h2>Fewer banners to fight, and code you can read.</h2><p class="ca-lead">Still seeing a banner on a site you use? Send us the link. You’re free to read, fork and change the code under the MIT licence.</p><div class="ca-row"><a class="ca-btn ca-btn--ink" href="https://github.com/upstrategylab/cookie-away"><svg class="ca-i"><use href="#i-github"/></svg>Contribute</a><a class="ca-ghstar" href="https://github.com/upstrategylab/cookie-away"><span><svg><use href="#i-github"/></svg>Star</span><span class="ca-ghstar__count" style="background:#fff"><svg class="ca-ghstar__star"><use href="#i-star"/></svg><span data-stars>…</span></span></a></div></div>
+  </div></section>
+
+  <section class="h-sec" id="faq"><div class="ca-wrap">
+    <div class="h-head"><span class="ca-eyebrow">Questions</span><h2>Good questions.</h2></div>
+    <div>
+      <details class="ca-faq"><summary>Does Cookie Away send my browsing anywhere?</summary><div class="ca-faq__body"><p>No. Cookie Away has no server and no analytics, and your settings stay in your browser. The only exception is the optional Jev feature, which is off by default, needs your own API key, and sends only the site’s name, the banner text and its button labels.</p></div></details>
+      <details class="ca-faq"><summary>How is rejecting different from hiding the banner?</summary><div class="ca-faq__body"><p>Hiding a banner doesn’t tell the site you said no, and some sites keep tracking until you answer. Cookie Away actually answers, by clicking reject or switching everything off in the settings and saving.</p></div></details>
+      <details class="ca-faq"><summary>What does Cookie Away do on pay-or-accept cookie walls?</summary><div class="ca-faq__body"><p>Cookie Away leaves pay-or-accept walls alone and doesn’t click anything on them. On those sites rejecting cookies means paying for a subscription, and the extension never pays for anything or makes that choice for you, so you decide whether to accept, subscribe or leave.</p></div></details>
+      <details class="ca-faq"><summary>Which browsers does Cookie Away work in?</summary><div class="ca-faq__body"><p>Chrome, and other Chromium browsers such as Edge, Brave and Arc. It’s in review on the Chrome Web Store; until then you can install it from GitHub in about a minute.</p></div></details>
+      <details class="ca-faq"><summary>Does Cookie Away reject every cookie banner?</summary><div class="ca-faq__body"><p>No, Cookie Away doesn’t reject every cookie banner, and its <a href="/benchmarks">test results are published</a> so you can check that for yourself. When you find a banner it didn’t answer, send us the link to the site, because every report makes the next version better.</p></div></details>
+    </div>
+    <form class="ca-field h-report" data-report novalidate>
+      <label for="report-url">Found a banner it can’t handle?</label>
+      <div class="ca-inline-form"><input class="ca-input" id="report-url" type="url" placeholder="https://example.com/article" autocomplete="off"><button class="ca-btn ca-btn--ink" type="submit"><svg class="ca-i"><use href="#i-bug"/></svg>Report it</button></div>
+      <small>Opens a pre-filled GitHub issue. Nothing is sent anywhere else.</small>
+    </form>
+  </div></section>
+</main>
+
+<footer class="ca-footer">
+  <div class="ca-wrap">
+    <div class="ca-footer__top">
+      <div><span class="ca-nav__brand" style="color:#fff"><span data-mascot></span>Cookie Away</span><p style="margin-top:var(--s-4);max-width:24rem">A small Chrome extension that says no to cookie banners for you. Free and open source, made by <a href="https://upstrategylab.com">Up Strategy Lab</a>.</p></div>
+      <div><h4>Extension</h4><ul><li><a href="#install">Install</a></li><li><a href="#how">How it works</a></li><li><a href="/benchmarks">Test results</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h4>Project</h4><ul><li><a href="https://github.com/upstrategylab/cookie-away">GitHub</a></li><li><a href="https://github.com/upstrategylab/cookie-away/issues">Report a site</a></li><li><a href="https://github.com/upstrategylab/cookie-away/blob/main/PRIVACY.md">Privacy</a></li><li><a href="/styleguide">Style sheet</a></li></ul></div>
+      <div><h4>Play</h4><button class="ca-btn ca-btn--light ca-btn--sm" data-googly-toggle aria-pressed="false"><svg class="ca-i"><use href="#i-eye"/></svg><span data-label>Googly mode</span></button><p class="ca-micro" style="margin-top:var(--s-3);color:#8B8B95">Or type “cookie”.</p></div>
+    </div>
+    <div class="ca-footer__base"><span>© 2026 Up Strategy Lab · MIT licence</span><span class="h-nocookies">This site uses no cookies. Obviously.</span></div>
+  </div>
+</footer>
+
+<script src="/js/mascot.js"></script>
+<script src="/js/googly.js"></script>
+<script src="/js/site.js"></script>
+<script src="/js/home.js"></script>
+<script src="/js/hero.js"></script>
+</body>
+</html>

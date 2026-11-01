@@ -1,0 +1,494 @@
+{
+ "date": "1 November 2026",
+ "cookieAway": "4.2.4",
+ "consentOMatic": "1.1.5",
+ "sites": [
+  {
+   "site": "lidl.de",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "techradar.com",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "nu.nl",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "up",
+   "note": ""
+  },
+  {
+   "site": "gp.se",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "up",
+   "note": ""
+  },
+  {
+   "site": "marktplaats.nl",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "booking.com",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "expressen.se",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "blocket.se",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "up",
+   "note": ""
+  },
+  {
+   "site": "zara.com",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "idealo.de",
+   "kind": "free",
+   "ca": "gone",
+   "com": "up",
+   "note": ""
+  },
+  {
+   "site": "bbc.com",
+   "kind": "free",
+   "ca": "up",
+   "com": "up",
+   "note": "Reject is on a separate settings page"
+  },
+  {
+   "site": "aftonbladet.se",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "svd.se",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "dailymail.co.uk",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "elmundo.es",
+   "kind": "wall",
+   "ca": "left",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "gazzetta.it",
+   "kind": "wall",
+   "ca": "left",
+   "com": "paypage",
+   "note": "Consent-O-Matic ended on the subscription page"
+  },
+  {
+   "site": "ansa.it",
+   "kind": "wall",
+   "ca": "left",
+   "com": "paypage",
+   "note": "Consent-O-Matic ended on the subscription page"
+  },
+  {
+   "site": "chip.de",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "elpais.com",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "repubblica.it",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "faz.net",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "bild.de",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "allocine.fr",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "corriere.it",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "as.com",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "spiegel.de",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "mirror.co.uk",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "leboncoin.fr",
+   "kind": "captcha",
+   "ca": null,
+   "com": null,
+   "note": "The site showed our test browser a captcha"
+  },
+  {
+   "site": "telegraph.co.uk",
+   "kind": "none",
+   "ca": null,
+   "com": null,
+   "note": ""
+  },
+  {
+   "site": "zeit.de",
+   "kind": "none",
+   "ca": null,
+   "com": null,
+   "note": ""
+  },
+  {
+   "site": "independent.co.uk",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "up",
+   "note": ""
+  },
+  {
+   "site": "dn.se",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "hemnet.se",
+   "kind": "captcha",
+   "ca": null,
+   "com": null,
+   "note": "The site showed our test browser a Cloudflare check"
+  },
+  {
+   "site": "zalando.se",
+   "kind": "free",
+   "ca": "gone",
+   "com": "up",
+   "note": ""
+  },
+  {
+   "site": "otto.de",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "ad.nl",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "up",
+   "note": ""
+  },
+  {
+   "site": "spotify.com",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "ikea.com",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "ryanair.com",
+   "kind": "free",
+   "ca": "gone",
+   "com": "up",
+   "note": ""
+  },
+  {
+   "site": "theguardian.com",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "standard.co.uk",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "t-online.de",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "lemonde.fr",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "lefigaro.fr",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": "“Continue without accepting” leads to the subscription page"
+  },
+  {
+   "site": "marca.com",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "20minutes.fr",
+   "kind": "wall",
+   "ca": "left",
+   "com": "paypage",
+   "note": "Consent-O-Matic ended on the subscription page"
+  },
+  {
+   "site": "marmiton.org",
+   "kind": "wall",
+   "ca": "refused-wall",
+   "com": "refused-wall",
+   "note": "Refusing leads to a second “accept or subscribe” screen"
+  },
+  {
+   "site": "bol.com",
+   "kind": "none",
+   "ca": null,
+   "com": null,
+   "note": ""
+  },
+  {
+   "site": "reddit.com",
+   "kind": "none",
+   "ca": null,
+   "com": null,
+   "note": ""
+  },
+  {
+   "site": "stackoverflow.com",
+   "kind": "none",
+   "ca": null,
+   "com": null,
+   "note": ""
+  },
+  {
+   "site": "rtve.es",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "svt.se",
+   "kind": "free",
+   "ca": "gone",
+   "com": "up",
+   "note": ""
+  },
+  {
+   "site": "dr.dk",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "politiken.dk",
+   "kind": "free",
+   "ca": "gone",
+   "com": "up",
+   "note": ""
+  },
+  {
+   "site": "asos.com",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "hm.com",
+   "kind": "free",
+   "ca": "gone",
+   "com": "blocked",
+   "note": "Consent-O-Matic’s run got “Access Denied” from the site"
+  },
+  {
+   "site": "trustpilot.com",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "wetransfer.com",
+   "kind": "free",
+   "ca": "rejected",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "welt.de",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "heise.de",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "chefkoch.de",
+   "kind": "wall",
+   "ca": "left",
+   "com": "accepted",
+   "note": "Consent-O-Matic accepted all 11 purposes"
+  },
+  {
+   "site": "leparisien.fr",
+   "kind": "wall",
+   "ca": "left",
+   "com": "rejected",
+   "note": ""
+  },
+  {
+   "site": "ouest-france.fr",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "elconfidencial.com",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "vg.no",
+   "kind": "wall",
+   "ca": "left",
+   "com": "left",
+   "note": ""
+  },
+  {
+   "site": "nos.nl",
+   "kind": "notice",
+   "ca": null,
+   "com": null,
+   "note": "An information bar with no choice to make"
+  },
+  {
+   "site": "lequipe.fr",
+   "kind": "none",
+   "ca": null,
+   "com": null,
+   "note": ""
+  },
+  {
+   "site": "telegraaf.nl",
+   "kind": "none",
+   "ca": null,
+   "com": null,
+   "note": ""
+  },
+  {
+   "site": "ebay.de",
+   "kind": "none",
+   "ca": null,
+   "com": null,
+   "note": ""
+  }
+ ],
+ "firstRunUnseen": {
+  "ca": "13 of 16",
+  "com": "9 of 15"
+ }
+}
