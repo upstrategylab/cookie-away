@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cookie Away Style Sheet</title>
+<link rel="icon" href="../icons/icon48.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/motion.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="stylesheet" href="styles/styleguide.css">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-github" viewBox="0 0 16 16"><path fill="currentColor" stroke="none" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3L12 17.1l-5.6 3 1.1-6.3L2.9 9.4l6.3-.9z"/></symbol>
+    <symbol id="i-chrome" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="3.6"/><path d="M12 8.4h8.6M8.9 13.8 4.6 6.3M15.1 13.8l-4.3 7.6"/></symbol>
+    <symbol id="i-cookie" viewBox="0 0 24 24"><path d="M21 12.5A9 9 0 1 1 11.5 3a3 3 0 0 0 3.5 3.5 3 3 0 0 0 3 3 3 3 0 0 0 3 3z"/><path d="M8.5 9.5h.01M12 15h.01M7.5 15.5h.01M15.5 17h.01"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol>
+    <symbol id="i-bug" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 11v9M7 12H3M21 12h-4M7 17l-3 2M17 17l3 2M8 5l1.5 2M16 5l-1.5 2"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+    <symbol id="i-loop" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1V7zM4 7l11-3v3"/><path d="M16 13.5h.01"/></symbol>
+    <symbol id="cookie" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#C99A55" stroke="#111113" stroke-width="4"/><circle cx="40" cy="38" r="20" fill="#E2BC7E" opacity=".5"/><g fill="#3B2416"><ellipse cx="32" cy="32" rx="7" ry="6"/><ellipse cx="62" cy="26" rx="5" ry="6"/><ellipse cx="56" cy="58" rx="8" ry="7"/><ellipse cx="28" cy="64" rx="5" ry="5"/><ellipse cx="74" cy="56" rx="4" ry="5"/><ellipse cx="44" cy="80" rx="5" ry="4"/></g></symbol>
+  </defs>
+</svg>
+
+<!-- The star bar is a real component: it ships on the landing page exactly like this. -->
+<div class="ca-starbar" role="region" aria-label="GitHub">
+  <div class="ca-wrap">
+    <span>Cookie Away is free and open source.</span>
+    <a href="https://github.com/upstrategylab/cookie-away" target="_blank" rel="noopener"><svg class="ca-i"><use href="#i-github"/></svg>Star it on GitHub <span class="ca-starbar__pill"><svg><use href="#i-star"/></svg><span data-stars>…</span></span></a>
+  </div>
+</div>
+
+<header class="sg-hero">
+  <div class="ca-wrap">
+    <nav class="ca-nav" aria-label="Style sheet">
+      <a class="ca-nav__brand" href="#top"><span data-mascot></span>Cookie Away</a>
+      <ul class="ca-nav__links">
+        <li><a href="#mascot">Mascot</a></li><li><a href="#colour">Colour</a></li><li><a href="#type">Type</a></li><li><a href="#components">Components</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#arcade">Arcade</a></li>
+      </ul>
+      <div class="ca-nav__end"><span class="ca-tag ca-tag--soon">Draft v0.1</span></div>
+    </nav>
+  </div>
+  <div class="ca-wrap sg-hero__body" id="top">
+    <div>
+      <span class="ca-eyebrow">Brand style sheet · Landing page and everything after</span>
+      <h1 class="ca-mega" style="margin-top:var(--s-4)">Say no to <span class="ca-hl">cookies</span>, nicely.</h1>
+      <p class="ca-lead">One small system for the Cookie Away website: a pink monster with googly eyes, ink outlines, hard shadows and very little else. Everything on this page is a working component you can lift into the landing page.</p>
+      <div class="ca-row">
+        <a class="ca-btn ca-btn--lg" href="#components">See the components <svg class="ca-i"><use href="#i-arrow"/></svg></a>
+        <button class="ca-btn ca-btn--line ca-btn--lg" data-googly-toggle aria-pressed="false"><svg class="ca-i"><use href="#i-eye"/></svg>Googly mode</button>
+      </div>
+    </div>
+    <div class="sg-hero__art">
+      <span data-mascot aria-label="The Cookie Away monster"></span>
+      <span class="ca-cookie" style="--c:54px;left:4%;top:12%;rotate:-14deg"></span>
+      <span class="ca-cookie" style="--c:34px;right:6%;top:2%"></span>
+      <span class="ca-cookie" style="--c:42px;right:2%;bottom:10%;rotate:20deg"></span>
+    </div>
+  </div>
+  <div class="ca-wrap sg-meta"><span>Up Strategy Lab × Cookie Away</span><span>1 November 2026</span><span>Inter 800 · Cookie Pink #FF3FAF · Ink #111113</span><span>Type “cookie” anywhere 🍪</span></div>
+</header>
+
+<nav class="toc" aria-label="Sections"><div class="ca-wrap"><ol>
+  <li><a href="#idea">01 Idea &amp; voice</a></li><li><a href="#mascot">02 Mascot</a></li><li><a href="#colour">03 Colour</a></li><li><a href="#type">04 Type</a></li><li><a href="#shape">05 Shape</a></li><li><a href="#glyphs">06 Glyphs</a></li><li><a href="#grid">07 Grid</a></li><li><a href="#components">08 Components</a></li><li><a href="#interactive">09 Interactive</a></li><li><a href="#page">10 The page</a></li><li><a href="#motion">11 Motion</a></li><li><a href="#arcade">12 Arcade</a></li><li><a href="#decisions">13 Decisions</a></li>
+</ol></div></nav>
+
+<!-- 01 IDEA -->
+<section class="sg" id="idea"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">01 · Idea &amp; voice</span><h2>A sticker on <span class="ca-hl">a grey web</span>.</h2></div>
+    <p>Cookie banners all look the same: blue buttons, grey text, a giant "Accept all". Cookie Away should look like the opposite, something you'd stick on your laptop. The icon already says it: flat pink, a thick black outline, googly eyes and a mouth that's mostly appetite.</p>
+  </div>
+  <div class="ca-cols-3">
+    <article class="ca-card"><span class="ca-icon-sticker"><svg class="ca-i"><use href="#i-x"/></svg></span><h3>It says no for you</h3><p>The one job. Every page leads back to it: you stop clicking "Accept all", and the extension does the boring rejecting.</p></article>
+    <article class="ca-card"><span class="ca-icon-sticker"><svg class="ca-i"><use href="#i-shield"/></svg></span><h3>Careful, not clever</h3><p>It checks its own clicks, leaves pay-or-accept walls alone and never follows a link away from the page. We say that plainly rather than promising magic.</p></article>
+    <article class="ca-card"><span class="ca-icon-sticker"><svg class="ca-i"><use href="#i-code"/></svg></span><h3>Small and open</h3><p>Free, MIT, no server, no analytics. One person built it to make browsing a little less annoying, and the site should feel that size.</p></article>
+  </div>
+
+  <h3 class="sg-h3">How it talks <span class="ca-eyebrow">Voice</span></h3>
+  <div class="sg-voice">
+    <div class="sg-say"><span class="ca-eyebrow">Plain, a bit dry</span><p class="yes">Cookie Away clicks "Reject" so you don't have to.</p><p class="no">Revolutionary AI-powered consent management.</p></div>
+    <div class="sg-say"><span class="ca-eyebrow">Honest about limits</span><p class="yes">Some banners still get past it. Send us the link.</p><p class="no">Blocks 100% of cookie banners, guaranteed.</p></div>
+    <div class="sg-say"><span class="ca-eyebrow">The monster can joke, the copy can't shout</span><p class="yes">It found the reject button hidden three screens deep.</p><p class="no">NO MORE COOKIES!!! 🍪🔥 Game-changer!</p></div>
+  </div>
+  <p class="ca-micro" style="margin-top:var(--s-5)">No long dashes in copy, sentence case everywhere, "consent tools" not "CMPs" (except in the code), and we say "reject", never "block".</p>
+</div></section>
+
+<!-- 02 MASCOT -->
+<section class="sg ca-white" id="mascot"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">02 · Mascot &amp; logo</span><h2>The monster <span class="ca-hl">is the logo</span>.</h2></div>
+    <p>Redrawn from the extension icon as clean SVG: an 18-point scalloped body, the mouth, and two mismatched eyes. On the site the pupils follow your pointer and it blinks now and then. Same drawing at every size; below 24px use the PNG icon.</p>
+  </div>
+  <div class="sg-mascots">
+    <figure><span data-mascot style="display:block;width:220px"></span><figcaption class="sg-label">Hero · 220–340px</figcaption></figure>
+    <figure><span data-mascot style="display:block;width:120px"></span><figcaption class="sg-label">Section · 120px</figcaption></figure>
+    <figure><span data-mascot style="display:block;width:64px"></span><figcaption class="sg-label">Inline · 64px</figcaption></figure>
+    <figure><span data-mascot style="display:block;width:40px"></span><figcaption class="sg-label">Nav · 40px</figcaption></figure>
+    <figure><img src="../icons/icon48.png" width="24" height="24" alt=""><figcaption class="sg-label">Favicon · PNG</figcaption></figure>
+  </div>
+
+  <h3 class="sg-h3">Lockups <span class="ca-eyebrow">Wordmark is Inter 800, −0.05em</span></h3>
+  <div class="sg-lockups">
+    <div class="sg-lockup" style="background:var(--ca-paper)"><span class="sg-wordmark"><span data-mascot></span>Cookie Away</span></div>
+    <div class="sg-lockup" style="background:var(--ca-ink)"><span class="sg-wordmark" style="color:#fff"><span data-mascot></span>Cookie Away</span></div>
+    <div class="sg-lockup" style="background:var(--ca-pink)"><span class="sg-wordmark"><span data-mascot></span>Cookie Away</span></div>
+  </div>
+  <p class="ca-micro" style="margin-top:var(--s-3)">On pink, the monster keeps its own pink body: the ink outline separates it. Clear space is one eye's width on every side.</p>
+
+  <h3 class="sg-h3">Don't <span class="ca-eyebrow">Keep the monster recognisable</span></h3>
+  <div class="sg-dont">
+    <figure><div class="box"><span data-mascot style="filter:hue-rotate(160deg)"></span></div><figcaption>Recolour the body</figcaption></figure>
+    <figure><div class="box"><span data-mascot style="transform:scaleX(1.5)"></span></div><figcaption>Stretch it</figcaption></figure>
+    <figure><div class="box"><span data-mascot style="filter:drop-shadow(0 12px 18px rgba(0,0,0,.45))"></span></div><figcaption>Soft drop shadows (use hard ink ones)</figcaption></figure>
+    <figure><div class="box" style="background:#1a5cff"><span data-mascot></span></div><figcaption>Put it on banner blue</figcaption></figure>
+    <figure><div class="box"><span data-mascot style="opacity:.35"></span></div><figcaption>Fade it into a watermark</figcaption></figure>
+  </div>
+  <p class="ca-micro" style="margin-top:var(--s-4)">It's our own monster, not a borrowed one. No blue fur, no Sesame Street references, and it never eats the cookies in a way that suggests it's a famous character.</p>
+</div></section>
+
+<!-- 03 COLOUR -->
+<section class="sg" id="colour"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">03 · Colour</span><h2>One loud pink, <span class="ca-hl">lots of ink</span>.</h2></div>
+    <p>Cookie Pink is the icon's exact pink. It is a fill, never text on paper: pink text uses Pink Deep. Ink text on pink passes AAA, so primary buttons are pink with ink labels. Night comes from the arcade reference and only shows up in the dark band and the easter egg.</p>
+  </div>
+  <div class="swatches" id="swatches"></div>
+  <h3 class="sg-h3">Cookies <span class="ca-eyebrow">Illustration only, never UI</span></h3>
+  <div class="swatches" id="swatches-cookie"></div>
+  <h3 class="sg-h3">Contrast pairs <span class="ca-eyebrow">WCAG 2.2, checked live</span></h3>
+  <div class="pairs" id="pairs"></div>
+  <h3 class="sg-h3">Proportion <span class="ca-eyebrow">Roughly, per page</span></h3>
+  <div class="sg-ratio"><span style="flex:56;background:var(--ca-paper)">Paper 56</span><span style="flex:18;background:#fff">White 18</span><span style="flex:16;background:var(--ca-ink);color:#fff">Ink 16</span><span style="flex:8;background:var(--ca-pink)">Pink 8</span><span style="flex:2;background:var(--ca-cookie)"></span></div>
+</div></section>
+
+<!-- 04 TYPE -->
+<section class="sg ca-white" id="type"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">04 · Type</span><h2>Inter, <span class="ca-hl">tight and heavy</span>.</h2></div>
+    <p>Same face as the promo video and store art. Headlines at 800 with negative tracking feel like stickers; body at 400, 17px, 1.6 line height. JetBrains Mono only for code and specs. Fluid sizes run from 360px to 1440px.</p>
+  </div>
+  <div class="spec"><span class="sg-label">Mega · 800 · −0.055em<br>clamp(3rem → 7.5rem)</span><p class="ca-mega" style="color:var(--ca-ink)">Reject all.</p></div>
+  <div class="spec"><span class="sg-label">H1 · 800 · −0.045em</span><h1>Cookie banners, handled.</h1></div>
+  <div class="spec"><span class="sg-label">H2 · 800 · −0.04em</span><h2>It finds the reject button for you.</h2></div>
+  <div class="spec"><span class="sg-label">H3 · 700 · −0.025em</span><h3>Even when it's three screens deep</h3></div>
+  <div class="spec"><span class="sg-label">H4 · 700</span><h4>Careful by design</h4></div>
+  <div class="spec"><span class="sg-label">Lead · 400 · 18–22px</span><p class="ca-lead">When a page shows a consent banner, Cookie Away finds it and clicks the reject option. If there isn't one, it opens the settings and switches everything off.</p></div>
+  <div class="spec"><span class="sg-label">Body · 400 · 17px / 1.6</span><p class="ca-read">News sites often hide "Reject" behind a settings screen full of "legitimate interests". Cookie Away opens it, clicks "Object all", switches off whatever is still on, and saves. If even that fails, it leaves the banner alone. <a href="#type">Links are Pink Deep with a 2px underline.</a></p></div>
+  <div class="spec"><span class="sg-label">Eyebrow · 700 · caps +0.14em</span><span class="ca-eyebrow">How it works</span></div>
+  <div class="spec"><span class="sg-label">Stat · 800 · tabular</span><p class="ca-stat">27</p></div>
+  <div class="spec"><span class="sg-label">Small / micro</span><div><p class="ca-small">Works in Chrome, Edge, Brave and Arc.</p><p class="ca-micro">Last updated 1 November 2026</p></div></div>
+  <div class="spec"><span class="sg-label">Highlight · one per heading</span><h3>Say no <span class="ca-hl">automatically</span></h3></div>
+  <div class="spec"><span class="sg-label">Code · JetBrains Mono 500</span><p>Load it from <code>chrome://extensions</code>, then press <span class="ca-kbd">⌘</span> <span class="ca-kbd">R</span> to reload.</p></div>
+</div></section>
+
+<!-- 05 SHAPE -->
+<section class="sg" id="shape"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">05 · Shape &amp; elevation</span><h2>Outlines and <span class="ca-hl">hard shadows</span>.</h2></div>
+    <p>Anything you can press or that holds content gets a 2px ink outline and a hard offset shadow, no blur. Hover lifts it up and left, press pushes it flat. Screenshots of real sites are the exception: they get the soft shadow so they read as "the web", not as us.</p>
+  </div>
+  <div class="sg-shapes">
+    <div><div class="sg-shape ca-card" style="padding:0">--shadow-1 · 3px</div><span class="sg-label">Buttons, small cards</span></div>
+    <div><div class="sg-shape ca-card" style="padding:0;box-shadow:var(--shadow-2)">--shadow-2 · 6px</div><span class="sg-label">Browser frames, hero cards</span></div>
+    <div><div class="sg-shape ca-card" style="padding:0;box-shadow:var(--shadow-pink)">--shadow-pink</div><span class="sg-label">On ink, or one highlight per page</span></div>
+    <div><div class="sg-shape" style="background:#fff;border-radius:var(--r-2);box-shadow:var(--shadow-soft)">--shadow-soft</div><span class="sg-label">Real-site screenshots only</span></div>
+  </div>
+  <div class="sg-shapes" style="margin-top:var(--gap)">
+    <div><div class="sg-shape" style="background:#fff;border:2px solid var(--ca-ink);border-radius:var(--r-1)">--r-1 · 8px</div><span class="sg-label">Chips, inputs, code</span></div>
+    <div><div class="sg-shape" style="background:#fff;border:2px solid var(--ca-ink);border-radius:var(--r-2)">--r-2 · 16px</div><span class="sg-label">Cards, frames</span></div>
+    <div><div class="sg-shape" style="background:#fff;border:2px solid var(--ca-ink);border-radius:var(--r-3)">--r-3 · 28px</div><span class="sg-label">Panels, demo stage</span></div>
+    <div><div class="sg-shape" style="background:var(--ca-pink);border:2px solid var(--ca-ink);border-radius:999px;height:64px;margin-top:28px">--r-pill</div><span class="sg-label">Buttons, tags</span></div>
+  </div>
+</div></section>
+
+<!-- 06 GLYPHS -->
+<section class="sg ca-white" id="glyphs"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">06 · Glyphs &amp; illustration</span><h2>Simple icons, <span class="ca-hl">real cookies</span>.</h2></div>
+    <p>Icons are drawn on a 24px grid with a 2px round stroke, the same family as the extension popup. Put them in a pink sticker square when they lead a card. Cookies are the only illustration: one SVG symbol for big sizes, a CSS one for crumbs and inline use.</p>
+  </div>
+  <div class="sg-icons" id="icons"></div>
+  <h3 class="sg-h3">Cookies &amp; crumbs</h3>
+  <div class="ca-row" style="gap:28px;align-items:end">
+    <svg width="120" height="120"><use href="#cookie"/></svg>
+    <svg width="64" height="64" style="rotate:30deg"><use href="#cookie"/></svg>
+    <span class="ca-cookie" style="--c:40px"></span><span class="ca-cookie" style="--c:24px"></span><span class="ca-cookie" style="--c:14px"></span>
+  </div>
+  <span class="sg-label">&lt;svg&gt;&lt;use href="#cookie"/&gt;&lt;/svg&gt; above 40px · .ca-cookie with --c below</span>
+</div></section>
+
+<!-- 07 GRID -->
+<section class="sg" id="grid"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">07 · Grid &amp; spacing</span><h2>Twelve columns, <span class="ca-hl">one page</span>.</h2></div>
+    <p>Max width 1200px, fluid gutters, reading width 40rem. It's a single landing page, so most sections are a heading plus two or three columns. Spacing runs on a 4px base.</p>
+  </div>
+  <div class="sg-gridview"><div class="ca-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+  <span class="sg-label">.ca-grid · 12 cols · gap clamp(16 → 28px) · .ca-cols-2 / -3 / -4 for the common cases</span>
+  <div class="sg-space" style="margin-top:var(--s-6)" id="space"></div>
+</div></section>
+
+<!-- 08 COMPONENTS -->
+<section class="sg ca-white" id="components" style="padding-bottom:0"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">08 · Components</span><h2>Everything <span class="ca-hl">the page needs</span>.</h2></div>
+    <p>All classes are prefixed <code>ca-</code> and live in <code>styles/components.css</code>. Copy the markup from this page; nothing depends on a framework.</p>
+  </div>
+
+  <h3 class="sg-h3">Buttons <span class="ca-eyebrow">.ca-btn</span></h3>
+  <div class="sg-demo">
+    <div class="ca-row">
+      <a class="ca-btn" href="#components"><svg class="ca-i"><use href="#i-chrome"/></svg>Add to Chrome</a>
+      <a class="ca-btn ca-btn--line" href="#components"><svg class="ca-i"><use href="#i-github"/></svg>View on GitHub</a>
+      <a class="ca-btn ca-btn--ink" href="#components">How it works <svg class="ca-i"><use href="#i-arrow"/></svg></a>
+      <button class="ca-btn ca-btn--ghost">Ghost</button>
+      <button class="ca-btn ca-btn--sm">Small</button>
+      <span class="ca-btn" aria-disabled="true"><svg class="ca-i"><use href="#i-chrome"/></svg>Chrome Web Store · in review</span>
+    </div>
+    <span class="sg-label">Primary: pink + ink label. One per view. --line beside it, --ink for "next step", aria-disabled while the store listing is in review.</span>
+  </div>
+  <div class="sg-demo sg-demo--ink" style="margin-top:12px"><div class="ca-row"><a class="ca-btn ca-btn--light" href="#components">On ink and night</a><a class="ca-btn" href="#components">Primary still works</a></div></div>
+
+  <h3 class="sg-h3">GitHub star button &amp; star bar <span class="ca-eyebrow">.ca-ghstar · .ca-starbar</span></h3>
+  <div class="sg-comp">
+    <div class="sg-demo"><div class="ca-row"><a class="ca-ghstar" href="https://github.com/upstrategylab/cookie-away" target="_blank" rel="noopener"><span><svg><use href="#i-github"/></svg>Star</span><span class="ca-ghstar__count"><svg class="ca-ghstar__star"><use href="#i-star"/></svg><span data-stars>…</span></span></a><span class="ca-micro">Live count from the GitHub API, cached for an hour. Falls back to "Star" with no number.</span></div></div>
+    <div class="sg-demo" style="padding:0;overflow:hidden"><div class="ca-starbar"><div class="ca-wrap"><span>Cookie Away is free and open source.</span><a href="https://github.com/upstrategylab/cookie-away" target="_blank" rel="noopener"><svg class="ca-i"><use href="#i-github"/></svg>Star it on GitHub <span class="ca-starbar__pill"><svg><use href="#i-star"/></svg><span data-stars>…</span></span></a></div></div></div>
+  </div>
+
+  <h3 class="sg-h3">Tags &amp; chips <span class="ca-eyebrow">.ca-tag · .ca-chips</span></h3>
+  <div class="sg-demo">
+    <div class="ca-row"><span class="ca-tag ca-tag--ok">Rejected</span><span class="ca-tag ca-tag--warn">Left alone · pay wall</span><span class="ca-tag ca-tag--bad">Accepted</span><span class="ca-tag ca-tag--pink ca-tag--plain">MIT licence</span><span class="ca-tag ca-tag--soon">In review</span><span class="ca-tag">v4.2.2</span></div>
+    <ul class="ca-chips" style="margin-top:var(--s-5)"><li>OneTrust</li><li>Cookiebot</li><li>Didomi</li><li>Sourcepoint</li><li>Usercentrics</li><li>TrustArc</li><li>Google Funding Choices</li><li>Quantcast</li><li>Complianz</li><li>+18 more</li></ul>
+  </div>
+
+  <h3 class="sg-h3">Cards <span class="ca-eyebrow">.ca-card + --lift / --soft / --pink / --flat</span></h3>
+  <div class="ca-cols-4">
+    <article class="ca-card ca-card--lift"><span class="ca-num">1</span><h3>Finds the banner</h3><p class="ca-small">Rules for 27 consent tools, and wording in about 20 languages for the rest.</p></article>
+    <article class="ca-card ca-card--lift ca-card--soft"><span class="ca-num">2</span><h3>Clicks reject</h3><p class="ca-small">Or opens the settings, objects to everything and saves.</p></article>
+    <article class="ca-card ca-card--lift ca-card--pink" style="position:relative"><span class="ca-num" style="background:#fff">3</span><h3>Checks it worked</h3><p class="ca-small">The banner has to actually go away. If not, it tries once more.</p><span data-googly="22" data-googly-pos="ca-eyes--corner"></span></article>
+    <article class="ca-card ca-card--flat"><span class="ca-icon-sticker"><svg class="ca-i"><use href="#i-pause"/></svg></span><h3>Knows when to stop</h3><p class="ca-small">Stuck in a reload loop? It pauses on that site for 24 hours.</p></article>
+  </div>
+  <span class="sg-label">A card can wear googly eyes: &lt;span data-googly="22" data-googly-pos="ca-eyes--corner"&gt;. Use on one card per section at most.</span>
+
+  <h3 class="sg-h3">Stats <span class="ca-eyebrow">.ca-statcard</span></h3>
+  <div class="ca-cols-4">
+    <div class="ca-statcard"><p class="ca-stat">27</p><p>consent tools it knows by name</p></div>
+    <div class="ca-statcard"><p class="ca-stat">~20</p><p>languages it reads banners in</p></div>
+    <div class="ca-statcard"><p class="ca-stat">0</p><p>servers, accounts or analytics</p></div>
+    <div class="ca-statcard"><p class="ca-stat"><em>1</em> click</p><p>to turn it off for a site</p></div>
+  </div>
+  <p class="ca-micro" style="margin-top:var(--s-3)">Only facts we can stand behind. Benchmark numbers wait until we've tested on sites we haven't tuned for.</p>
+
+  <h3 class="sg-h3">Toast &amp; callout <span class="ca-eyebrow">.ca-toast · .ca-callout</span></h3>
+  <div class="sg-comp sg-comp--split">
+    <div class="sg-demo" style="display:grid;gap:12px;justify-items:start">
+      <span class="ca-toast"><span data-mascot></span>Rejected on techradar.com <small>"Reject all"</small></span>
+      <span class="ca-toast"><span data-mascot></span>Left alone on aftonbladet.se <small>rejecting costs money</small></span>
+    </div>
+    <div class="ca-callout"><span data-mascot></span><div><h4>Pay-or-accept walls</h4><p class="ca-small" style="margin-top:.35rem">Some news sites only let you reject if you subscribe. Cookie Away never clicks "subscribe", so on those it leaves the banner for you to decide.</p></div></div>
+  </div>
+
+  <h3 class="sg-h3">Forms <span class="ca-eyebrow">.ca-field · .ca-input · .ca-switch</span></h3>
+  <div class="sg-comp sg-comp--split">
+    <form class="ca-field" id="report" novalidate>
+      <label for="report-url">Found a banner it can't handle?</label>
+      <div class="ca-inline-form"><input class="ca-input" id="report-url" type="url" placeholder="https://example.com/article" autocomplete="off"><button class="ca-btn ca-btn--ink" type="submit"><svg class="ca-i"><use href="#i-bug"/></svg>Report it</button></div>
+      <small>Opens a pre-filled GitHub issue. Nothing is sent anywhere else.</small>
+    </form>
+    <div class="sg-demo sg-demo--white" style="display:grid;gap:14px">
+      <label class="ca-switch"><input type="checkbox" checked><span class="ca-switch__track"></span>Cookie Away is on</label>
+      <label class="ca-switch"><input type="checkbox"><span class="ca-switch__track"></span>Accept when there's no way to reject</label>
+      <input class="ca-input" aria-invalid="true" value="not a url"><span class="ca-micro" style="color:var(--ca-bad)">That doesn't look like a web address.</span>
+    </div>
+  </div>
+
+  <h3 class="sg-h3">Tabs, install steps &amp; code <span class="ca-eyebrow">.ca-tabs · .ca-steps · .ca-codeblock</span></h3>
+  <div class="ca-tabs" data-tabs>
+    <div class="ca-tabs__list" role="tablist"><button role="tab" aria-selected="true" aria-controls="t-store" id="tb-store">Chrome Web Store</button><button role="tab" aria-selected="false" aria-controls="t-src" id="tb-src">From source</button></div>
+    <div class="ca-tabs__panel" role="tabpanel" id="t-store" aria-labelledby="tb-store"><ol class="ca-steps"><li><div><b>Open the store page.</b> One click on "Add to Chrome".</div></li><li><div><b>That's it.</b> It starts on the next page you open. The pink monster in your toolbar shows what it did.</div></li></ol></div>
+    <div class="ca-tabs__panel" role="tabpanel" id="t-src" aria-labelledby="tb-src" hidden>
+      <ol class="ca-steps"><li><div>Clone or download the repository.</div></li><li><div>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b>.</div></li><li><div>Click <b>Load unpacked</b> and pick the folder.</div></li></ol>
+      <pre class="ca-codeblock" style="margin-top:var(--s-5)"><button class="ca-copy" data-copy="git clone https://github.com/upstrategylab/cookie-away.git">Copy</button><code><span class="c"># no build step, it's plain JavaScript</span>
+<span class="p">$ </span>git clone https://github.com/upstrategylab/cookie-away.git</code></pre>
+    </div>
+  </div>
+
+  <h3 class="sg-h3">FAQ <span class="ca-eyebrow">details.ca-faq</span></h3>
+  <div>
+    <details class="ca-faq" open><summary>Does it send my browsing anywhere?</summary><div class="ca-faq__body"><p>No. There's no server and no analytics. The only exception is the optional Jev feature, which is off by default and needs your own API key.</p></div></details>
+    <details class="ca-faq"><summary>What happens on pay-or-accept walls?</summary><div class="ca-faq__body"><p>It leaves them alone. Rejecting there means paying, and that's your call, not the extension's.</p></div></details>
+    <details class="ca-faq"><summary>Why not just block the banners?</summary><div class="ca-faq__body"><p>Hiding a banner doesn't tell the site you said no, and some sites keep tracking until you answer. Cookie Away actually answers.</p></div></details>
+  </div>
+
+  <h3 class="sg-h3">Comparison table <span class="ca-eyebrow">.ca-table</span></h3>
+  <div style="overflow-x:auto"><table class="ca-table">
+    <thead><tr><th></th><th class="is-us">Cookie Away</th><th>Consent-O-Matic</th><th>Banner hiders</th></tr></thead>
+    <tbody>
+      <tr><td>Answers "no" to the site</td><td class="is-us"><span class="ca-yes">✓</span></td><td><span class="ca-yes">✓</span></td><td><span class="ca-no">–</span></td></tr>
+      <tr><td>Digs into settings screens</td><td class="is-us"><span class="ca-yes">✓</span></td><td><span class="ca-yes">✓</span></td><td><span class="ca-no">–</span></td></tr>
+      <tr><td>Reads unknown banners by their wording</td><td class="is-us"><span class="ca-yes">✓</span></td><td><span class="ca-no">–</span></td><td><span class="ca-meh">~</span></td></tr>
+      <tr><td>Works with zero setup</td><td class="is-us"><span class="ca-yes">✓</span></td><td><span class="ca-meh">~</span></td><td><span class="ca-yes">✓</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="ca-micro" style="margin-top:var(--s-3)">Placeholder rows to show the component. Be generous to the others; the README already recommends them.</p>
+
+  <h3 class="sg-h3">Footer <span class="ca-eyebrow">.ca-footer</span></h3>
+</div>
+<footer class="ca-footer"><div class="ca-wrap">
+  <div class="ca-footer__top">
+    <div><span class="ca-nav__brand" style="color:#fff"><span data-mascot></span>Cookie Away</span><p style="margin-top:var(--s-4);max-width:22rem">A small Chrome extension that says no to cookie banners for you. Free and open source.</p></div>
+    <div><h4>Extension</h4><ul><li><a href="#components">Install</a></li><li><a href="#components">How it works</a></li><li><a href="#components">FAQ</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="https://github.com/upstrategylab/cookie-away">GitHub</a></li><li><a href="https://github.com/upstrategylab/cookie-away/issues">Report a site</a></li><li><a href="https://github.com/upstrategylab/cookie-away/blob/main/PRIVACY.md">Privacy</a></li></ul></div>
+    <div><h4>Made by</h4><ul><li><a href="https://upstrategylab.com">Up Strategy Lab</a></li><li><a href="https://github.com/upstrategylab/cookie-away/blob/main/LICENSE">MIT licence</a></li></ul></div>
+  </div>
+  <div class="ca-footer__base"><span>© 2026 Up Strategy Lab</span><span>This site uses no cookies. Obviously.</span></div>
+</div></footer>
+</section>
+
+<!-- 09 INTERACTIVE -->
+<section class="sg" id="interactive"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">09 · Interactive</span><h2>Show it, <span class="ca-hl">then let them play</span>.</h2></div>
+    <p>Two pieces carry the page. The banner demo explains the product in four seconds without words. Googly mode is the fun bit: switch it on and click anything on this page to stick a pair of eyes on it, the way the icon has them.</p>
+  </div>
+
+  <h3 class="sg-h3">Banner demo <span class="ca-eyebrow">Hero, plays once on view, replay on click</span></h3>
+  <div class="sg-bannerdemo">
+    <div class="ca-browser" id="demo">
+      <div class="ca-browser__bar"><i></i><i></i><i></i><span class="ca-browser__url">news.example.com/the-article-you-wanted</span><img class="ca-browser__ext" src="../icons/icon48.png" alt=""></div>
+      <div class="ca-browser__page">
+        <div class="ca-skel ca-skel--h"></div><div class="ca-skel"></div><div class="ca-skel" style="width:92%"></div><div class="ca-skel ca-skel--img"></div><div class="ca-skel"></div><div class="ca-skel" style="width:80%"></div>
+        <div class="ca-dim"></div>
+        <div class="ca-cbanner"><b>We value your privacy</b>We and our 847 partners use cookies to personalise ads and content, measure performance and develop products. You can change your choices at any time.<div class="ca-cbanner__btns"><button class="is-accept" tabindex="-1">Accept all</button><button tabindex="-1" class="is-reject">Reject all</button><button class="is-manage" tabindex="-1">Manage options</button></div></div>
+        <span class="sg-demo-mascot" data-mascot></span>
+        <span class="ca-toast sg-demo-toast"><span data-mascot></span>Rejected <small>"Reject all"</small></span>
+      </div>
+    </div>
+    <div class="ca-stack">
+      <ol class="sg-list">
+        <li>A generic banner slides in. It is deliberately grey and blue: the villain looks like the web.</li>
+        <li>The monster pops in at the extension icon and looks at the banner.</li>
+        <li>"Reject all" gets a pink ring, the monster chomps, the banner is eaten with crumbs.</li>
+        <li>A toast says what it clicked. The page underneath is finally readable.</li>
+      </ol>
+      <button class="ca-btn ca-btn--ink" id="replay"><svg class="ca-i"><use href="#i-loop"/></svg>Replay</button>
+    </div>
+  </div>
+
+  <h3 class="sg-h3">Googly mode <span class="ca-eyebrow">Click any shape · click eyes to peel · Esc to stop</span></h3>
+  <div class="sg-play" id="play">
+    <div class="s1"></div><div class="s2"></div><div class="s3"></div><div class="s4"></div><span class="ca-cookie s5"></span>
+  </div>
+  <div class="ca-row" style="margin-top:var(--s-4)">
+    <button class="ca-btn" data-googly-toggle aria-pressed="false"><svg class="ca-i"><use href="#i-eye"/></svg>Googly mode</button>
+    <button class="ca-btn ca-btn--line" id="peel">Peel them all off</button>
+    <span class="ca-micro" id="eyecount">Works on the whole page, not just this box.</span>
+  </div>
+  <p class="ca-micro" style="margin-top:var(--s-3)">Eye size follows the thing you click (22% of its shorter side, 14–64px). Pupils are springs with a little gravity, so they wobble when you move fast. All of it switches off with prefers-reduced-motion.</p>
+</div></section>
+
+<!-- 10 THE PAGE -->
+<section class="sg ca-white" id="page" style="padding-bottom:0"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">10 · The page</span><h2>One page, <span class="ca-hl">top to bottom</span>.</h2></div>
+    <p>The landing page is short. Someone arrives from LinkedIn, GitHub or the store, sees what it does in the first screen, and either installs it, stars it, or reads on to check it's safe.</p>
+  </div>
+  <ol class="sg-pagemap">
+    <li><b>Star bar</b><span>.ca-starbar · live GitHub stars, always on top</span></li>
+    <li><b>Nav</b><span>Mascot + wordmark · How it works, Privacy, FAQ · .ca-ghstar on the right</span></li>
+    <li><b>Hero</b><span>Mega headline with one highlight · lead · Add to Chrome + View on GitHub · banner demo on the right</span></li>
+    <li><b>How it works</b><span>Three step cards (.ca-num) · finds, rejects, checks</span></li>
+    <li><b>Works with</b><span>Consent-tool chips + "and anything that says cookies in about 20 languages"</span></li>
+    <li><b>Careful by design</b><span>Ink band · four icon cards: checks clicks, leaves pay walls, never navigates, pauses on loops</span></li>
+    <li><b>Private</b><span>Stat row: 0 servers, 0 analytics, settings stay on your device · link to PRIVACY.md</span></li>
+    <li><b>Install</b><span>Tabs: Chrome Web Store / From source · steps + code block</span></li>
+    <li><b>Open source</b><span>Pink band · mascot · "Built by one person to make browsing less annoying" · star + contribute buttons</span></li>
+    <li><b>Similar projects</b><span>Comparison table, generous to the others</span></li>
+    <li><b>FAQ</b><span>4–6 questions</span></li>
+    <li><b>Report a site</b><span>The form that opens a GitHub issue</span></li>
+    <li><b>Footer</b><span>Ink · "This site uses no cookies. Obviously." · the arcade hides here</span></li>
+  </ol>
+  <h3 class="sg-h3">Band example <span class="ca-eyebrow">.ca-pinkband</span></h3>
+</div>
+<div class="ca-pinkband" style="padding-block:var(--s-8)"><div class="ca-wrap" style="display:grid;gap:var(--s-6);grid-template-columns:auto 1fr;align-items:center">
+  <span data-mascot style="display:block;width:clamp(90px,14vw,180px)"></span>
+  <div class="ca-stack"><span class="ca-eyebrow">Open source</span><h2>Built to make browsing a little less annoying.</h2><p class="ca-lead" style="color:var(--ca-ink)">It's free under the MIT licence. If you find a site where it doesn't work, send the link, or fix it and send a pull request.</p><div class="ca-row"><a class="ca-btn ca-btn--ink" href="https://github.com/upstrategylab/cookie-away"><svg class="ca-i"><use href="#i-github"/></svg>Contribute</a><a class="ca-ghstar" href="https://github.com/upstrategylab/cookie-away"><span><svg><use href="#i-github"/></svg>Star</span><span class="ca-ghstar__count" style="background:#fff"><svg class="ca-ghstar__star"><use href="#i-star"/></svg><span data-stars>…</span></span></a></div></div>
+</div></div>
+</section>
+
+<!-- 11 MOTION -->
+<section class="sg ca-night" id="motion"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">11 · Motion</span><h2>Quick in, <span class="ca-hl">a little bounce</span>.</h2></div>
+    <p>Stickers land with an overshoot, banners leave like they've been eaten, eyes follow you. Nothing loops except the arcade sprite and the occasional blink. Click a curve to run it.</p>
+  </div>
+  <div class="sg-curves" id="curves"></div>
+  <h3 class="sg-h3">Signature moves</h3>
+  <div class="ca-cols-3">
+    <div class="ca-card ca-card--night" style="text-align:center"><span data-mascot data-chomp style="display:block;width:110px;margin:0 auto;cursor:pointer"></span><h3>Chomp</h3><p class="ca-small">Two bites and a wobble, 840ms. Click it.</p></div>
+    <div class="ca-card ca-card--night" style="text-align:center"><div style="display:flex;justify-content:center;gap:10px;height:110px;align-items:center" id="poprow"><span class="ca-cookie" style="--c:40px"></span><span class="ca-cookie" style="--c:40px"></span><span class="ca-cookie" style="--c:40px"></span></div><h3>Pop</h3><p class="ca-small">Stickers landing, staggered 70ms. Click to replay.</p></div>
+    <div class="ca-card ca-card--night" style="text-align:center;position:relative"><div style="height:110px;display:grid;place-items:center;position:relative" id="crumbs"><svg width="70" height="70"><use href="#cookie"/></svg></div><h3>Crumbs</h3><p class="ca-small">Twelve crumbs fly out when a banner goes. Click it.</p></div>
+  </div>
+  <div style="overflow-x:auto;margin-top:var(--s-7)"><table class="ca-table" style="background:var(--ca-night-2);border-color:var(--ca-night-2);color:#C3CBE0">
+    <thead><tr><th style="background:#16233F;color:#fff;border-color:#2B3A5E">Token</th><th style="background:#16233F;color:#fff;border-color:#2B3A5E">Value</th><th style="background:#16233F;color:#fff;border-color:#2B3A5E">Use</th></tr></thead>
+    <tbody>
+      <tr><td><code>--d-1</code></td><td>120ms</td><td>Hover, press</td></tr>
+      <tr><td><code>--d-2</code></td><td>240ms</td><td>Toggles, accordions, menus</td></tr>
+      <tr><td><code>--d-3</code></td><td>480ms</td><td>Reveals, the banner leaving</td></tr>
+      <tr><td><code>--d-4</code></td><td>900ms</td><td>Hero entrance, the chomp sequence</td></tr>
+      <tr><td><code>--stagger</code></td><td>70ms</td><td>Lists, card rows</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- 12 ARCADE -->
+<section class="sg ca-night" id="arcade" style="padding-top:0"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">12 · Arcade easter egg</span><h2>Type “cookie”.</h2></div>
+    <p>A hidden maze game for later. Our monster runs a maze of consent banners eating cookies; the ghosts are "Accept all" buttons. It's our own game in the maze-chase genre, not a copy of anyone's: our sprite, our maze, our rules. This sheet only sets the look and the trigger.</p>
+  </div>
+  <div class="sg-arcade" style="background:var(--ca-night);border:2px solid var(--ca-night-2)">
+    <span class="ca-chomper"></span>
+    <span class="ca-cookie" style="--c:30px"></span><span class="ca-cookie" style="--c:30px"></span><span class="ca-cookie" style="--c:30px"></span><span class="ca-cookie" style="--c:30px"></span>
+    <span class="ca-tag ca-tag--plain" style="margin-left:auto;background:#1a5cff;color:#fff;border-color:#fff">Accept all</span>
+  </div>
+  <div class="ca-cols-3" style="margin-top:var(--gap)">
+    <div class="ca-card ca-card--night"><h3>Trigger</h3><p class="ca-small">Typing "cookie" anywhere fires a <code>ca:arcade</code> event (already wired in <code>js/googly.js</code>). Also a tiny cookie in the footer for people who don't type at websites.</p></div>
+    <div class="ca-card ca-card--night"><h3>Look</h3><p class="ca-small">Night background, pink chomper with one googly eye, cookies as pellets, banner-blue "Accept all" ghosts. Ink walls with pink edges.</p></div>
+    <div class="ca-card ca-card--night"><h3>Rules (draft)</h3><p class="ca-small">Eat every cookie. A "Reject all" power-up turns the ghosts grey for 6 seconds. Score is "banners rejected". Arrow keys and swipe.</p></div>
+  </div>
+</div></section>
+
+<!-- 13 DECISIONS -->
+<section class="sg" id="decisions"><div class="ca-wrap">
+  <div class="sg-head">
+    <div><span class="ca-eyebrow">13 · Open decisions</span><h2>For Noel to <span class="ca-hl">pick</span>.</h2></div>
+    <p>Defaults are set so the page can be built now. Each of these changes something visible.</p>
+  </div>
+  <div class="sg-decisions">
+    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Domain</span><h3>Where does it live?</h3><p class="ca-small">cookieaway.com / .app, a subpath on upstrategylab.com, or GitHub Pages. Default: GitHub Pages from <code>/site</code>, zero cost, and the star bar sits naturally there.</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Mascot</span><h3>Does the monster get a name?</h3><p class="ca-small">Right now it's "the monster". A name helps the arcade and the toasts ("Chompy rejected 3 banners"). Default: no name until the game ships.</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Googly mode</span><h3>Where's the switch?</h3><p class="ca-small">A visible button in the hero (fun, discoverable) or hidden in the footer (an easter egg). Default: footer, next to the cookie, so the hero stays about the product.</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Numbers</span><h3>Do we publish benchmark results?</h3><p class="ca-small">Only after the unseen-sites test. Until then the stats row is facts only (27 tools, ~20 languages, 0 servers).</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Promo pink</span><h3>Retire #FF3EA5</h3><p class="ca-small">The promo video and store art use #FF3EA5, a near-miss of the icon's #FF3FAF. Default: switch them to #FF3FAF on the next render.</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Stack</span><h3>Static HTML or the USL stack?</h3><p class="ca-small">A one-pager with no CMS. Default: plain HTML on these files, no Next.js, no Payload. Move later only if it grows a blog.</p></article>
+  </div>
+</div></section>
+
+<div class="ca-wrap sg-foot">Cookie Away style sheet · draft v0.1 · tokens, components and motion in <code>site/styles/</code>, googly eyes in <code>site/js/googly.js</code></div>
+
+<script src="js/mascot.js"></script>
+<script src="js/googly.js"></script>
+<script src="styleguide.js"></script>
+</html>

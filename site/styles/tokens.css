@@ -1,0 +1,83 @@
+/* Cookie Away · tokens v0.1
+   Concept: a sticker on the web. The icon is a pink monster with a thick black outline
+   and googly eyes, so the whole system is drawn like that: flat colour, ink outlines,
+   hard offset shadows, round everything. One loud pink, warm paper, ink. Cookies are
+   the only other colour, and they only ever appear as cookies. */
+
+:root {
+  /* ── Core palette ───────────────────────────────────────── */
+  --ca-pink:      #FF3FAF;  /* Cookie Pink, from the icon. Fills, primary buttons (ink text), highlights */
+  --ca-pink-deep: #C2127A;  /* Pink as text or links on light (AA), pressed states */
+  --ca-pink-soft: #FFE1F2;  /* Tint: callouts, selection, card fills */
+  --ca-ink:       #111113;  /* Outlines, headlines, body, dark bands. The icon's black */
+  --ca-ink-2:     #3A3A40;  /* Body text on paper when ink feels heavy */
+  --ca-muted:     #6E6E76;  /* Secondary text */
+  --ca-line:      #E3E2DE;  /* Hairlines on paper */
+  --ca-paper:     #F6F5F2;  /* Page ground */
+  --ca-white:     #FFFFFF;  /* Cards, browser frames, the eyes */
+  --ca-night:     #0F1B36;  /* Easter-egg game and the dark band. From the arcade reference */
+  --ca-night-2:   #1C2B4D;  /* Raised surfaces on night */
+
+  /* Cookies (illustration only, never UI) */
+  --ca-cookie:    #C99A55;  /* Dough */
+  --ca-cookie-lt: #E2BC7E;  /* Dough highlight */
+  --ca-chip:      #3B2416;  /* Chocolate chips, crumbs */
+
+  /* Status (UI feedback only) */
+  --ca-ok:   #16A34A;  /* "Rejected" */
+  --ca-warn: #D97706;  /* "Left alone" (pay-or-accept walls) */
+  --ca-bad:  #DC2626;  /* "Accepted" (the thing we avoid) */
+
+  /* ── Type ───────────────────────────────────────────────── */
+  --f-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  /* Fluid scale, 360 → 1440 */
+  --t-mega:  clamp(3rem, 1.7rem + 6.4vw, 7.5rem);    /* hero, 800, -.05em */
+  --t-h1:    clamp(2.4rem, 1.6rem + 3.6vw, 4.5rem);
+  --t-h2:    clamp(1.9rem, 1.4rem + 2.2vw, 3.25rem);
+  --t-h3:    clamp(1.3rem, 1.15rem + .7vw, 1.75rem);
+  --t-h4:    clamp(1.1rem, 1.05rem + .25vw, 1.25rem);
+  --t-stat:  clamp(2.75rem, 2rem + 3.4vw, 5rem);     /* numbers, 800, tabular */
+  --t-lead:  clamp(1.125rem, 1.05rem + .4vw, 1.375rem);
+  --t-body:  1.0625rem;   /* 17px */
+  --t-small: .9375rem;
+  --t-micro: .8125rem;
+  --t-eyebrow: .75rem;    /* caps, 700, +.14em */
+
+  /* ── Space (4px base) ───────────────────────────────────── */
+  --s-1: .25rem; --s-2: .5rem; --s-3: .75rem; --s-4: 1rem; --s-5: 1.5rem;
+  --s-6: 2rem;   --s-7: 3rem;  --s-8: 4rem;   --s-9: 6rem; --s-10: 9rem;
+  --section: clamp(4rem, 2.5rem + 6vw, 8rem);
+
+  /* ── Grid ───────────────────────────────────────────────── */
+  --max: 1200px;
+  --read: 40rem;
+  --gap: clamp(16px, 1vw + 10px, 28px);
+  --gutter: max(16px, env(safe-area-inset-left, 0px), 4vw);
+
+  /* ── Shape: stickers ───────────────────────────────────── */
+  --r-1: 8px;            /* chips, inputs, code */
+  --r-2: 16px;           /* cards, browser frames */
+  --r-3: 28px;           /* feature panels, the banner demo */
+  --r-pill: 999px;       /* buttons, tags */
+  --bw: 2px;             /* ink outline on stickers */
+  --bw-thick: 3px;       /* big stickers, the mascot */
+
+  /* ── Elevation: hard offset shadows, never blur (stickers don't glow) ── */
+  --shadow-1: 3px 3px 0 var(--ca-ink);
+  --shadow-2: 6px 6px 0 var(--ca-ink);
+  --shadow-pink: 6px 6px 0 var(--ca-pink);
+  --shadow-soft: 0 1px 2px rgba(17,17,19,.06), 0 12px 32px -12px rgba(17,17,19,.18); /* screenshots only */
+  --focus: 0 0 0 3px var(--ca-paper), 0 0 0 6px var(--ca-pink-deep);
+
+  /* ── Motion: chompy. Quick in, a little overshoot, never floaty ── */
+  --ease-out:    cubic-bezier(.16, 1, .3, 1);      /* default: arrive and settle */
+  --ease-inout:  cubic-bezier(.65, 0, .35, 1);     /* wipes, banner slide-outs */
+  --ease-boing:  cubic-bezier(.34, 1.56, .64, 1);  /* stickers landing, buttons, eyes */
+  --d-1: 120ms;   /* hover, press */
+  --d-2: 240ms;   /* menus, accordions, toggles */
+  --d-3: 480ms;   /* reveals, banner removal */
+  --d-4: 900ms;   /* hero, the chomp sequence */
+  --stagger: 70ms;
+}

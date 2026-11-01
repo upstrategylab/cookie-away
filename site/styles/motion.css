@@ -1,0 +1,40 @@
+/* Cookie Away · motion v0.1
+   Chompy: quick in, a little overshoot, then still. Things land like stickers, banners leave
+   like they've been eaten, eyes follow you. Nothing loops forever except the arcade sprite. */
+
+@property --m { syntax: "<angle>"; inherits: false; initial-value: 40deg; }
+
+@keyframes ca-chomp-mouth { from { --m: 42deg; } to { --m: 2deg; } }
+
+/* Mascot mouth: one bite. Add .is-chomping to the svg. */
+@keyframes ca-chomp { 0%, 100% { transform: scaleY(1); } 35% { transform: scaleY(.18); } 60% { transform: scaleY(1.06); } }
+.ca-mascot.is-chomping .ca-mascot__mouth { animation: ca-chomp 420ms var(--ease-inout) 2; }
+.ca-mascot.is-chomping { animation: ca-wobble 840ms var(--ease-boing); }
+
+@keyframes ca-wobble { 0%, 100% { rotate: 0deg; } 25% { rotate: -5deg; } 60% { rotate: 4deg; } }
+
+/* Sticker landing: scale from 0 with overshoot, slight turn */
+@keyframes ca-pop { from { scale: 0; rotate: -12deg; } to { scale: 1; rotate: 0deg; } }
+
+/* Banner being eaten: squash toward the bottom edge and drop */
+@keyframes ca-banner-out { 0% { transform: none; opacity: 1; } 30% { transform: scale(1.02, .92); } 100% { transform: translateY(40%) scale(.6, .2); opacity: 0; } }
+
+/* Crumbs: small chip-coloured dots flung on a reject. Created by JS as .ca-crumb with --dx/--dy */
+.ca-crumb { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--ca-cookie); border: 1.5px solid var(--ca-chip); pointer-events: none; animation: ca-crumb 700ms var(--ease-out) forwards; }
+@keyframes ca-crumb { to { transform: translate(var(--dx), var(--dy)) rotate(200deg); opacity: 0; } }
+
+/* Reveal on scroll: [data-reveal] → .is-in. Stagger with --i. */
+[data-reveal] { opacity: 0; translate: 0 18px; transition: opacity var(--d-3) var(--ease-out), translate var(--d-3) var(--ease-out); transition-delay: calc(var(--i, 0) * var(--stagger)); }
+[data-reveal].is-in { opacity: 1; translate: none; }
+[data-reveal="pop"] { translate: none; scale: .85; transition-property: opacity, scale; transition-timing-function: var(--ease-boing); }
+[data-reveal="pop"].is-in { scale: 1; }
+
+/* Blink: the mascot blinks every so often. JS toggles .is-blink */
+.ca-mascot [data-eye] { transform-box: fill-box; transform-origin: center; transition: transform 90ms ease-in; }
+.ca-mascot.is-blink [data-eye] { transform: scaleY(.1); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  [data-reveal] { opacity: 1; translate: none; scale: none; }
+  .ca-chomper { animation: none; }
+}
