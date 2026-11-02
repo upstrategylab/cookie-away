@@ -8,7 +8,7 @@
 .h-hero__proof a { color: var(--ca-ink); font-weight: 600; }
 .h-hero__note { margin-top: var(--s-4); display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
 .h-hero__art { margin: 0; position: relative; }
-/* ── Hero illustration: Noel's drawing, rebuilt as SVG and animated ──────────
+/* ── Hero illustration (assets/kooky-nom-nom.png), rebuilt as SVG and animated ─
    Timeline (ms): window 0–700 · Kooky bursts out 450–1350 · eyes 1050–1500 · bites 1500 + 1900
    with "nom" "nom" · cards spat out 1750–2700 · motion lines draw 2050–2900 · then idle:
    breathe, cards drift, a nom every ~5s (js/hero.js), eyes follow the pointer. */
@@ -92,7 +92,6 @@
 .h-sec.ca-ink, .h-sec.ca-pinkband, .h-sec.ca-white + .h-sec, .h-sec + .h-sec.ca-white { border-top: 0; }
 .h-head { max-width: 46rem; margin-bottom: var(--s-7); }
 .h-head .ca-lead { margin-top: var(--s-4); }
-.h-head--center { margin-inline: auto; text-align: center; }
 
 .h-cards { display: grid; gap: var(--gap); }
 @media (min-width: 760px) { .h-cards--3 { grid-template-columns: repeat(3, 1fr); } .h-cards--4 { grid-template-columns: repeat(2, 1fr); } }

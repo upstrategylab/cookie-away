@@ -100,7 +100,7 @@
 <section class="sg ca-white" id="mascot"><div class="ca-wrap">
   <div class="sg-head">
     <div><span class="ca-eyebrow">02 · Kooky</span><h2>Meet Kooky. <span class="ca-hl">He is the logo</span>.</h2></div>
-    <p>Kooky is a bit kooky: a pink bottle-cap of a monster whose eyes never quite agree. Noel's drawing, with the pupils split out so they follow your pointer, each at its own pace, and drift back to his cross-eyed rest when you stop. He blinks now and then. Same drawing at every size; the favicon is the SVG too.</p>
+    <p>Kooky is a bit kooky: a pink bottle-cap of a monster whose eyes never quite agree. The original drawing, with the pupils split out so they follow your pointer, each at its own pace, and drift back to his cross-eyed rest when you stop. He blinks now and then. Same drawing at every size; the favicon is the SVG too.</p>
   </div>
   <div class="sg-mascots">
     <figure><span data-mascot style="display:block;width:220px"></span><figcaption class="sg-label">Hero · 220–340px</figcaption></figure>
@@ -262,7 +262,7 @@
     <div class="ca-statcard"><p class="ca-stat">0</p><p>servers, accounts or analytics</p></div>
     <div class="ca-statcard"><p class="ca-stat"><em>1</em> click</p><p>to turn it off for a site</p></div>
   </div>
-  <p class="ca-micro" style="margin-top:var(--s-3)">Only facts we can stand behind. Benchmark numbers wait until we've tested on sites we haven't tuned for.</p>
+  <p class="ca-micro" style="margin-top:var(--s-3)">Only facts we can stand behind. Test results come from <code>site/data/benchmarks.json</code> through <code>scripts/build-benchmarks.py</code>, never typed in by hand.</p>
 
   <h3 class="sg-h3">Toast &amp; callout <span class="ca-eyebrow">.ca-toast · .ca-callout</span></h3>
   <div class="sg-comp sg-comp--split">
@@ -334,10 +334,10 @@
 <section class="sg" id="interactive"><div class="ca-wrap">
   <div class="sg-head">
     <div><span class="ca-eyebrow">09 · Interactive</span><h2>Show it, <span class="ca-hl">then let them play</span>.</h2></div>
-    <p>Two pieces carry the page. The banner demo explains the product in four seconds without words. Googly mode is the fun bit: switch it on and click anything on this page to stick a pair of eyes on it, the way the icon has them.</p>
+    <p>The animated hero (<code>js/hero.js</code>) carries the homepage. The banner demo below is a spare explainer for the store, socials or a future how-it-works page. Googly mode is the fun bit: switch it on and click anything on this page to stick a pair of eyes on it, the way the icon has them.</p>
   </div>
 
-  <h3 class="sg-h3">Banner demo <span class="ca-eyebrow">Hero, plays once on view, replay on click</span></h3>
+  <h3 class="sg-h3">Banner demo <span class="ca-eyebrow">Plays once on view, replay on click</span></h3>
   <div class="sg-bannerdemo">
     <div class="ca-browser" id="demo">
       <div class="ca-browser__bar"><i></i><i></i><i></i><span class="ca-browser__url">news.example.com/the-article-you-wanted</span><img class="ca-browser__ext" src="assets/icon48.png" alt=""></div>
@@ -377,22 +377,19 @@
 <section class="sg ca-white" id="page" style="padding-bottom:0"><div class="ca-wrap">
   <div class="sg-head">
     <div><span class="ca-eyebrow">10 · The page</span><h2>One page, <span class="ca-hl">top to bottom</span>.</h2></div>
-    <p>The landing page is short. Someone arrives from LinkedIn, GitHub or the store, sees what it does in the first screen, and either installs it, stars it, or reads on to check it's safe.</p>
+    <p>The homepage is short. Someone arrives from LinkedIn, GitHub or the store, sees what it does in the first screen, and either installs it, stars it, or reads on to check it's safe. The full test results live on <code>/benchmarks</code>.</p>
   </div>
   <ol class="sg-pagemap">
-    <li><b>Star bar</b><span>.ca-starbar · live GitHub stars, always on top</span></li>
-    <li><b>Nav</b><span>Mascot + wordmark · How it works, Privacy, FAQ · .ca-ghstar on the right</span></li>
-    <li><b>Hero</b><span>Mega headline with one highlight · lead · Add to Chrome + View on GitHub · banner demo on the right</span></li>
-    <li><b>How it works</b><span>Three step cards (.ca-num) · finds, rejects, checks</span></li>
-    <li><b>Works with</b><span>Consent-tool chips + "and anything that says cookies in about 20 languages"</span></li>
-    <li><b>Careful by design</b><span>Ink band · four icon cards: checks clicks, leaves pay walls, never navigates, pauses on loops</span></li>
-    <li><b>Private</b><span>Stat row: 0 servers, 0 analytics, settings stay on your device · link to PRIVACY.md</span></li>
-    <li><b>Install</b><span>Tabs: Chrome Web Store / From source · steps + code block</span></li>
-    <li><b>Open source</b><span>Pink band · mascot · "Built by one person to make browsing less annoying" · star + contribute buttons</span></li>
-    <li><b>Similar projects</b><span>Comparison table, generous to the others</span></li>
-    <li><b>FAQ</b><span>4–6 questions</span></li>
-    <li><b>Report a site</b><span>The form that opens a GitHub issue</span></li>
-    <li><b>Footer</b><span>Ink · "This site uses no cookies. Obviously." · the arcade hides here</span></li>
+    <li><b>Star bar</b><span>.ca-starbar · live GitHub stars (hidden while there are none)</span></li>
+    <li><b>Nav</b><span>Kooky + wordmark · How it works, Results, Install, FAQ · .ca-ghstar on the right</span></li>
+    <li><b>Hero</b><span>Mega headline with one highlight · lead · Install + View on GitHub · proof line · the animated illustration</span></li>
+    <li><b>How it works</b><span>Three step cards (.ca-num) · finds, says no, checks it’s gone</span></li>
+    <li><b>Careful by design</b><span>Ink band · four icon cards: never pays, keeps your place, knows when to stop, off when you want it</span></li>
+    <li><b>Results</b><span>Three stat cards filled from the test data · link to /benchmarks</span></li>
+    <li><b>Install</b><span>Private by default · tabs: From GitHub / Chrome Web Store · steps</span></li>
+    <li><b>Open source</b><span>Pink band · Kooky · Contribute + star buttons</span></li>
+    <li><b>FAQ</b><span>Five questions (FAQPage schema) · the report-a-site form</span></li>
+    <li><b>Footer</b><span>Ink · googly switch · “This site uses no cookies. Obviously.”</span></li>
   </ol>
   <h3 class="sg-h3">Band example <span class="ca-eyebrow">.ca-pinkband</span></h3>
 </div>
@@ -439,7 +436,7 @@
     <span class="ca-tag ca-tag--plain" style="margin-left:auto;background:#1a5cff;color:#fff;border-color:#fff">Accept all</span>
   </div>
   <div class="ca-cols-3" style="margin-top:var(--gap)">
-    <div class="ca-card ca-card--night"><h3>Trigger</h3><p class="ca-small">Typing "cookie" anywhere fires a <code>ca:arcade</code> event (already wired in <code>js/googly.js</code>). Also a tiny cookie in the footer for people who don't type at websites.</p></div>
+    <div class="ca-card ca-card--night"><h3>Trigger</h3><p class="ca-small">Typing "cookie" anywhere fires a <code>ca:arcade</code> event (already wired in <code>js/googly.js</code>). The footer hints at it: “Or type cookie”.</p></div>
     <div class="ca-card ca-card--night"><h3>Look</h3><p class="ca-small">Night background, pink chomper with one googly eye, cookies as pellets, banner-blue "Accept all" ghosts. Ink walls with pink edges.</p></div>
     <div class="ca-card ca-card--night"><h3>Rules (draft)</h3><p class="ca-small">Eat every cookie. A "Reject all" power-up turns the ghosts grey for 6 seconds. Score is "banners rejected". Arrow keys and swipe.</p></div>
   </div>
@@ -456,7 +453,7 @@
     <article class="ca-card ca-card--flat"><span class="ca-tag ca-tag--ok">Decided</span><h3>His name is Kooky</h3><p class="ca-small">Because he's a bit kooky and his eyes are all funny. He can be "he" in copy, and the toasts can say "Kooky rejected…".</p></article>
     <article class="ca-card ca-card--flat"><span class="ca-tag ca-tag--ok">Decided</span><h3>We publish the benchmarks</h3><p class="ca-small">Every site, both extensions, the method and the caveats, on cookieaway.com/benchmarks. The homepage shows the headline numbers only.</p></article>
     <article class="ca-card ca-card--flat"><span class="ca-tag ca-tag--ok">Decided</span><h3>Minimal homepage</h3><p class="ca-small">Hero with the illustration, how it works, careful by design, results, install, FAQ, footer. Copy checked with Jev Writer.</p></article>
-    <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Open</span><h3>Where's the googly switch?</h3><p class="ca-small">Default: a small button in the footer next to "This site uses no cookies. Obviously." The hero stays about the product.</p></article>
+    <article class="ca-card ca-card--flat"><span class="ca-tag ca-tag--ok">Decided</span><h3>Googly switch in the footer</h3><p class="ca-small">A small button under “Play”, next to “This site uses no cookies. Obviously.” The hero stays about the product.</p></article>
     <article class="ca-card ca-card--flat"><span class="ca-eyebrow">Open</span><h3>Retire #FF3EA5</h3><p class="ca-small">The promo video and store art use #FF3EA5, a near-miss of the icon's #FF3FAF. Default: switch them on the next render.</p></article>
   </div>
 </div></section>

@@ -33,7 +33,6 @@
 .ca-white .sg-demo { background: var(--ca-paper); }
 .sg-demo--white { background: #fff; }
 .sg-demo--ink { background: var(--ca-ink); border-color: #3A3A40; }
-.sg-demo--night { background: var(--ca-night); border-color: var(--ca-night-2); }
 .sg-list { padding-left: 1.1rem; display: grid; gap: .45rem; }
 .sg-list li::marker { color: var(--ca-pink-deep); }
 

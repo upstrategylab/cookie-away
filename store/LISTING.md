@@ -40,9 +40,11 @@ Found a banner it can't handle? Open an issue with the URL.
 
 **Icon:** `icons/icon128.png` (already in the zip)
 
-**Screenshots** (1280×800, at least 1, up to 5): `store/screenshot-1-popup.png`, `store/screenshot-2-settings.png`. Best extra one to take yourself: the popup open on a real news site right after it rejected a banner.
+**Screenshots** (1280×800, at least 1, up to 5): `store/screenshot-1-popup.png`, `store/screenshot-2-settings.png`, `store/screenshot-3-before-after.jpg`.
 
 **Small promo tile** (440×280): `store/promo-small-440x280.png`
+
+**Marquee promo tile** (1400×560): `store/promo-marquee-1400x560.jpg`
 
 **Official URL / Homepage:** https://www.cookieaway.com
 **Support URL:** https://github.com/upstrategylab/cookie-away/issues
@@ -71,8 +73,8 @@ Then tick all three certifications (not sold to third parties, not used for unre
 
 Visibility: Public. Regions: all.
 
-## Before you submit
+## Publishing an update
 
-1. Reload the unpacked extension in Chrome (version 4.2.2 removed two unused permissions) and check it still closes a couple of banners.
-2. Register as a Chrome Web Store developer (one-off $5 fee) and verify your contact email.
-3. Upload the zip, fill in the tabs above, submit. Review usually takes a few days. Extensions that run on all sites sometimes get a longer review.
+1. Bump `version` in `manifest.json`.
+2. Run `./scripts/package.sh` and upload `store/cookie-away-<version>.zip` under Package in the dashboard.
+3. Submit for review. Updates usually take a day or two; extensions that run on all sites sometimes take longer.

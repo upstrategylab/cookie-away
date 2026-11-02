@@ -17,7 +17,6 @@ img, video, svg { display: block; max-width: 100%; }
 code { font: 500 .875em var(--f-mono); background: var(--ca-pink-soft); color: var(--ca-ink); padding: .1em .35em; border-radius: 5px; }
 :focus-visible { outline: none; box-shadow: var(--focus); border-radius: var(--r-1); }
 ::selection { background: var(--ca-pink); color: var(--ca-ink); }
-.ca-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ── Layout ───────────────────────────────────────────────── */
 .ca-wrap { width: min(100% - 2 * var(--gutter), var(--max)); margin-inline: auto; }
@@ -26,10 +25,8 @@ code { font: 500 .875em var(--f-mono); background: var(--ca-pink-soft); color: v
 .ca-cols-2, .ca-cols-3, .ca-cols-4 { display: grid; gap: var(--gap); }
 @media (min-width: 720px) { .ca-cols-2 { grid-template-columns: repeat(2, 1fr); } .ca-cols-3 { grid-template-columns: repeat(3, 1fr); } .ca-cols-4 { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .ca-cols-4 { grid-template-columns: repeat(4, 1fr); } }
-.ca-section { padding-block: var(--section); }
 .ca-stack > * + * { margin-top: var(--s-4); }
 .ca-row { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
-.ca-center { text-align: center; margin-inline: auto; }
 
 /* Bands */
 .ca-white { background: var(--ca-white); }
@@ -50,7 +47,6 @@ code { font: 500 .875em var(--f-mono); background: var(--ca-pink-soft); color: v
 .ca-stat { font: 800 var(--t-stat)/.95 var(--f-sans); letter-spacing: -.05em; color: var(--ca-ink); font-variant-numeric: tabular-nums; }
 .ca-small { font-size: var(--t-small); }
 .ca-micro { font-size: var(--t-micro); color: var(--ca-muted); line-height: 1.45; }
-.ca-mono { font: 500 .75rem var(--f-mono); letter-spacing: .02em; }
 .ca-pink { color: var(--ca-pink-deep); }
 .ca-ink .ca-pink, .ca-night .ca-pink { color: var(--ca-pink); }
 /* Marker highlight: pink swipe behind a word. One per heading. */
@@ -240,7 +236,6 @@ code { font: 500 .875em var(--f-mono); background: var(--ca-pink-soft); color: v
 /* ── Callout ──────────────────────────────────────────────── */
 .ca-callout { display: grid; grid-template-columns: auto 1fr; gap: var(--s-4); align-items: start; padding: 1.1rem 1.25rem; border-radius: var(--r-2); background: var(--ca-pink-soft); border: var(--bw) solid var(--ca-ink); }
 .ca-callout .ca-mascot { width: 44px; }
-.ca-callout--plain { background: #fff; border-color: var(--ca-line); }
 
 /* ── Mascot, googly eyes, cookies ─────────────────────────── */
 .ca-mascot { width: 120px; height: auto; overflow: visible; flex: none; }

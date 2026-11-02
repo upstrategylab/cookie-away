@@ -6,7 +6,7 @@ Everything to paste into https://www.producthunt.com/posts/new. Assets are in th
 
 1. **Wait for the Chrome Web Store approval.** Product Hunt visitors click once and expect "Add to Chrome". A "load it unpacked from GitHub" install loses most of them. Once it's approved:
    - upload 4.2.4 (`store/cookie-away-4.2.4.zip`) as the first update;
-   - ask Claude to switch the site's install button and "in review" tag to the store link.
+   - switch the site's install button and "in review" tag (`site/index.html`) to the store link.
 2. **Self-hunt.** Post it from your own account as the maker. Hunters no longer make much difference.
 3. **Schedule it** in the Product Hunt form rather than posting live. A Product Hunt day starts at 00:01 Pacific, which is **09:01 in Stockholm**. Schedule for 00:01 to get the full 24 hours.
 4. **Pick the day.** Tuesday to Thursday has the most traffic and the most competition. A small free open-source tool has a better shot at the top five on a Sunday or Monday.

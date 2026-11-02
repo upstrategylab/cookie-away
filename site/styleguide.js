@@ -82,7 +82,7 @@
   $('#crumbs').addEventListener('click', e => { const r = e.currentTarget.getBoundingClientRect(); crumbs(e.currentTarget, r.width / 2, r.height / 2, 14); });
   $$('[data-chomp]').forEach(m => m.addEventListener('click', () => CA.chomp($('svg', m))));
 
-  // ── Arcade hook: for now, a chomp and a toast
+  // ── Arcade hook: until the game exists, a chomp and a toast
   document.addEventListener('ca:arcade', () => {
     $$('.ca-mascot').forEach(CA.chomp);
     const t = document.createElement('span');

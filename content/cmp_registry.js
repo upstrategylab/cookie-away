@@ -3,12 +3,15 @@
  * Loaded before content.js. Everything shared lives on window.CA.
  *
  * Each provider is data, resolved by resolveBanner() in this order:
- *   reject selectors -> reject by label -> go through settings -> accept (if allowed)
+ *   reject selector -> settings layer already open -> reject by label
+ *   -> "allow selection" with nothing ticked -> open the settings (not on pay walls)
+ *   -> accept (only if the user allows it)
  * - name: Display name
  * - banner: selector for the visible banner (or detect(root) for custom logic)
- * - checkGlobal (optional): true if the CMP's script is on the page
+ * - checkGlobal (optional): true if the consent tool's script is on the page
  * - reject / accept: button selectors, strongest first
  * - settings: { open, layer, reject, save } selectors for the "Manage options" route
+ * - skip (optional): buttons never to click, e.g. Sourcepoint's paid "reject" routes
  */
 
 (() => {
@@ -16,7 +19,7 @@
 
     // --- Keywords -----------------------------------------------------------
     // Matched as whole words/phrases (see matchIndex), so short words like
-    // "no", "ok" or "ja" no longer match inside "cookies", "know" or "jahr".
+    // "no", "ok" or "ja" don't match inside "cookies", "know" or "jahr".
 
     // Refuse non-essential cookies. Ordered roughly strongest first.
     const REJECT = [
@@ -606,8 +609,8 @@
     }
 
     window.CA = {
-        REJECT, ACCEPT, DISMISS, AVOID, BANNER, OPEN, SAVE, PAYWALL,
-        matchIndex, matchesAny, isVisible, labelOf, wouldNavigate, safeClick, findButtons, findByLabel, pickButton,
+        REJECT, ACCEPT, AVOID, BANNER,
+        matchesAny, isVisible, wouldNavigate, safeClick, findButtons,
         collectRoots, detectProvider, rejectViaSettings, resolveBanner
     };
     window.CMP_REGISTRY = CMP_REGISTRY;

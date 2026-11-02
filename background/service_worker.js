@@ -1,4 +1,4 @@
-// Cookie Away 4.0 - Background Service Worker
+// Cookie Away - Background Service Worker
 
 const COOLDOWN_MS = 24 * 60 * 60 * 1000; // Pause on a site after a click/reload loop
 const JEV_URL = 'https://api.typesafe.ai/v1/systemone';
@@ -111,7 +111,7 @@ async function pauseHost(host) {
 // New Tab Storm guard: a site opening many tabs right after we act usually means
 // we clicked a link. Pause that site only, instead of switching the whole extension off.
 // Only tabs opened BY another tab count. Tabs restored after a crash/restart (or opened
-// by the user) have no opener; counting them used to disable the extension on restart.
+// by the user) have no opener, and counting them would trip this guard on every restart.
 const tabStorms = {};
 
 chrome.tabs.onCreated.addListener((tab) => {

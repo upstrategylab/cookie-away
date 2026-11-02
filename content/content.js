@@ -1,9 +1,12 @@
 /**
- * Cookie Away - Smart Content Script
- * 1. Known CMPs (cmp_registry.js) by selector
+ * Cookie Away - Content Script
+ * 1. Known consent tools (cmp_registry.js) by selector
  * 2. Heuristics: consent-looking overlays + multilingual button labels
  * 3. No reject button? Open "Manage options", switch everything off, save
  * 4. Optional Jev fallback (via the service worker) for banners the heuristics can't read
+ *
+ * Scans run on DOM changes and again 1.5, 4 and 8 seconds after load (fade-in banners).
+ * Pay-or-accept walls are left alone: nothing that leads to a payment is ever clicked.
  *
  * Safety rails against click/reload loops:
  * - Every action is verified; the banner must disappear
