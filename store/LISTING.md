@@ -21,7 +21,7 @@ Tired of hitting "Accept all" on every cookie banner just to get to the page? Co
 When a page shows a consent banner, Cookie Away finds it and clicks the reject option. If there isn't one (common on news sites), it opens the settings, clicks "Reject all" or "Object all", switches off whatever is still on, and saves. If even that fails, it leaves the banner alone, or accepts it if you'd rather not see it at all. You choose.
 
 How it finds banners
-• Dedicated rules for 27 consent tools, including OneTrust, Cookiebot, Didomi, Sourcepoint, Usercentrics, TrustArc, Google Funding Choices, Quantcast/InMobi and Complianz
+• Dedicated rules for 27 of the most widely used consent management platforms
 • For everything else, it recognises consent banners by their wording, in about 20 languages
 • Optional: Jev by TypeSafe can read banners it doesn't understand (off by default, needs your own API key)
 
