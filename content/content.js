@@ -38,7 +38,8 @@
 
     const LOOP_KEY = '__cookieAwayActions';
     const IS_TOP = window === window.top;
-    const host = location.hostname;
+    // A blank iframe has no hostname of its own; it belongs to the site in the tab
+    const host = location.hostname || tabHost();
 
     // Elements whose class/id/label suggests a consent UI, plus dialogs.
     const CANDIDATE_SELECTOR = [
@@ -81,7 +82,18 @@
         init();
     });
 
+    function tabHost() {
+        const origins = location.ancestorOrigins;
+        try {
+            return new URL(origins[origins.length - 1]).hostname;
+        } catch (e) {
+            return '';
+        }
+    }
+
     async function init() {
+        // No site to check "Turn off here" or a pause against, so stay out of it
+        if (!host) return;
         settings = await chrome.storage.local.get(['enabled', 'ignoredSites', 'cooldowns', 'jevEnabled', 'fallback', 'deepReject']);
         if (settings.enabled === false) return;
         if ((settings.ignoredSites || []).includes(host)) return;
@@ -206,10 +218,11 @@
             }
         }
 
-        // Fixed/sticky bars near the top or bottom: only check the top two levels of the page,
-        // which is where banners are mounted, instead of computing styles for every element.
+        // Fixed/sticky bars near the top or bottom: only check the top three levels of the page,
+        // which is where banners are mounted (Next.js puts them under #__next > layout), instead of
+        // computing styles for every element.
         if (document.body) {
-            for (const el of document.body.querySelectorAll(':scope > *, :scope > * > *')) {
+            for (const el of document.body.querySelectorAll(':scope > *, :scope > * > *, :scope > * > * > *')) {
                 if (found.has(el)) continue;
                 const style = getComputedStyle(el);
                 if (style.position !== 'fixed' && style.position !== 'sticky') continue;
@@ -349,7 +362,9 @@
             }
             page.busy = false;
             log(`Couldn't find a way to reject (${source})`);
-            send('BANNER_MISSED', { reason: 'no-button', source });
+            // Only an "Accept"/"OK" to press: say so, since the user can let us accept these
+            const acceptOnly = findButtons(banner).some(b => matchesAny(b.label, ACCEPT));
+            send('BANNER_MISSED', { reason: acceptOnly ? 'accept-only' : 'no-button', source });
             return;
         }
 

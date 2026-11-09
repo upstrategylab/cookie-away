@@ -437,3 +437,21 @@ body.disabled main {
 .link:hover {
     text-decoration: underline;
 }
+
+.report-link {
+    display: block;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.report-link[hidden] {
+    display: none;
+}
+
+.report-link:disabled {
+    opacity: 0.5;
+    cursor: default;
+    text-decoration: none;
+}

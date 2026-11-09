@@ -23,7 +23,9 @@ We test it against [Consent-O-Matic](https://github.com/cavi-au/Consent-O-Matic)
 
 ## Install
 
-Cookie Away is in review on the Chrome Web Store. Until it's approved, load it from the source:
+Install it from the [Chrome Web Store](https://chromewebstore.google.com/detail/cookie-away/kfgncknoeacelcjpkgkfbcklcmgnpplf).
+
+Or load it from the source:
 
 1. Download this repository (green **Code** button → **Download ZIP**) and unzip it, or `git clone` it.
 2. Open `chrome://extensions` in Chrome.
@@ -36,11 +38,13 @@ It should also work in other Chromium browsers (Edge, Brave, Arc) the same way.
 
 Everything happens inside your browser. Cookie Away has no server, no analytics and no tracking. Settings and stats stay in Chrome's local extension storage.
 
-The one exception is Jev. If you turn it on and add your API key, then for a banner it can't read, the extension sends the site's hostname, the banner's text and its button labels to `api.typesafe.ai`. That's at most 3 requests per site per day. Nothing else from the page is sent.
+Reporting a site is your call: the popup's "Report this site" link opens a pre-filled public GitHub issue, and nothing is sent unless you submit it.
+
+The one other exception is Jev. If you turn it on and add your API key, then for a banner it can't read, the extension sends the site's hostname, the banner's text and its button labels to `api.typesafe.ai`. That's at most 3 requests per site per day. Nothing else from the page is sent.
 
 ## When it doesn't work
 
-Some banners will get past it. If you find one, please [open an issue](https://github.com/upstrategylab/cookie-away/issues) with:
+Some banners will get past it. If you find one, click **Report this site** in the popup, which pre-fills an issue for you. Or [open an issue](https://github.com/upstrategylab/cookie-away/issues) yourself with:
 
 - the URL of the page
 - what happened (banner stayed, wrong button clicked, page kept reloading)

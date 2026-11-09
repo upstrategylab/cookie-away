@@ -187,9 +187,23 @@
         return rect.width > 0 && rect.height > 0;
     }
 
+    // Hover animations often repeat the label in a hidden copy: "AcceptAccept" -> "accept"
+    function undouble(t) {
+        const half = t.length / 2;
+        if (half >= 2 && Number.isInteger(half)) {
+            const a = t.slice(0, half).trim();
+            if (a === t.slice(half).trim()) return a;
+        }
+        if (t.length >= 5 && (t.length - 1) % 2 === 0) {
+            const h = (t.length - 1) / 2;
+            if (t[h] === ' ' && t.slice(0, h) === t.slice(h + 1)) return t.slice(0, h);
+        }
+        return t;
+    }
+
     function labelOf(el) {
         const options = [el.getAttribute('aria-label'), el.value, el.textContent, el.title]
-            .map(t => (t || '').replace(/\s+/g, ' ').trim().toLowerCase())
+            .map(t => undouble((t || '').replace(/\s+/g, ' ').trim().toLowerCase()))
             .filter(Boolean);
         // Prefer the first label short enough to be a button label
         return options.find(t => t.length <= 60) || options[0] || '';
@@ -364,6 +378,8 @@
         if (hints.layer) {
             const el = query([hints.layer], roots);
             if (el && (hasLayerControls(el) || findButtons(el).some(b => matchesAny(b.label, REJECT)))) return el;
+            // Switches the provider names (OneTrust keeps them in hidden tabs) plus a Save button is enough
+            if (el && hints.toggles && el.querySelector(hints.toggles) && findSave(el, hints)) return el;
         }
         const found = [];
         if (isVisible(banner) && hasLayerControls(banner)) found.push(banner);
@@ -427,6 +443,14 @@
             toggle.click();
             toggles++;
         }
+        // Provider switches that sit in tabs not shown yet (OneTrust): turn off any that are on
+        if (hints.toggles) {
+            for (const input of layer.querySelectorAll(hints.toggles)) {
+                if (!input.checked || input.disabled) continue;
+                input.click();
+                toggles++;
+            }
+        }
         if (toggles) await wait(250);
 
         // 4. Save
@@ -444,7 +468,10 @@
             checkGlobal: () => !!(window.OneTrust || window.OnetrustActiveGroups),
             banner: '#onetrust-banner-sdk, #onetrust-pc-sdk',
             reject: ['#onetrust-reject-all-handler', '.ot-pc-refuse-all-handler'],
-            settings: { open: ['#onetrust-pc-btn-handler'], layer: '#onetrust-pc-sdk', reject: ['.ot-pc-refuse-all-handler'], save: ['.save-preference-btn-handler'] },
+            settings: {
+                open: ['#onetrust-pc-btn-handler'], layer: '#onetrust-pc-sdk', reject: ['.ot-pc-refuse-all-handler'], save: ['.save-preference-btn-handler'],
+                toggles: 'input.category-switch-handler, input.category-vendors-handler'
+            },
             accept: ['#onetrust-accept-btn-handler']
         },
         {
@@ -543,7 +570,9 @@
         { name: 'GDPR Cookie Consent', banner: '.cli-modal-dialog, #cookie-law-info-bar', reject: ['#wt-cli-reject-btn', '.wt-cli-reject-btn'], accept: ['#cookie_action_close_header'] },
         { name: 'CookieScript', banner: '#cookiescript_injected', reject: ['#cookiescript_reject'], accept: ['#cookiescript_accept'] },
         { name: 'Ketch', banner: '#lanyard_root', reject: ['[aria-label="Reject All" i]', '#ketch-banner-button-secondary'], accept: ['#ketch-banner-button-primary'] },
-        { name: 'Silktide', banner: '#silktide-wrapper', reject: ['.silktide-reject-all', '#silktide-banner .reject-all'], accept: ['.silktide-accept-all'] }
+        { name: 'Silktide', banner: '#silktide-wrapper', reject: ['.silktide-reject-all', '#silktide-banner .reject-all'], accept: ['.silktide-accept-all'] },
+        // The buttons live in a blank iframe; the page around it only holds #main-cookie-banner
+        { name: 'Secure Privacy', banner: '#main-cookie-banner.sp-banner-show, [id^="banner-"].sp-banner-show', reject: ['.evSpRejectBtn'], accept: ['.evSpAcceptBtn'] }
     ];
 
     function visible(root, selector) {

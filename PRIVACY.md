@@ -1,6 +1,6 @@
 # Cookie Away privacy policy
 
-Last updated: 31 October 2026
+Last updated: 7 November 2026
 
 Cookie Away is a browser extension that rejects cookie consent banners for you. It is built to collect as little as possible.
 
@@ -33,6 +33,18 @@ When it's on and Cookie Away finds a banner it can't read, it sends the followin
 - the labels of the banner's buttons
 
 That's at most 3 requests per site per day, and answers are cached on your device so the same banner isn't sent twice. TypeSafe handles that request under its own terms and privacy policy. Turn Jev off or remove your key to stop it.
+
+## Reporting a site
+
+The popup has a "Report this site" link for banners Cookie Away didn't handle. It only does something if you click it, and then it opens a pre-filled issue on GitHub in a new tab. Nothing is sent until you press Submit there, and you can edit or remove anything first. You need a GitHub account, and GitHub issues are public.
+
+The pre-filled issue contains:
+
+- the page address, without anything after a `?` or `#`
+- what the popup said about that page, such as its status and the consent tool it found
+- the versions of Cookie Away and your browser
+
+It contains no page content, cookies or history. GitHub handles the issue under its own terms and privacy policy.
 
 ## Permissions
 

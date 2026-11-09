@@ -2,11 +2,13 @@
 
 const $ = (id) => document.getElementById(id);
 const SECONDS_SAVED_PER_BANNER = 5;
+const ISSUES_URL = 'https://github.com/upstrategylab/cookie-away/issues/new';
 
 let tab = null;
 let host = null;
 let rescanTimer = null;
 let scanning = null; // Shown after "Try again" until the page reports back
+let lastSeen = null; // What the popup is showing, for "Report this site"
 
 document.addEventListener('DOMContentLoaded', async () => {
     [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -104,6 +106,10 @@ function siteState(local, status, enabled, earlier) {
         return { state: 'missed', title: 'Left alone', detail: 'This site only lets you reject if you pay. Close it yourself, or set "If that doesn\'t work" to Accept.', retry: false };
     }
 
+    if (status.state === 'missed' && status.reason === 'accept-only') {
+        return { state: 'missed', title: 'Left alone', detail: 'This banner only has an Accept button. Close it yourself, or set "If that doesn\'t work" to Accept.', retry: false };
+    }
+
     if (status.state === 'missed') {
         const detail = status.reason === 'still-visible'
             ? 'It clicked, but the banner stayed. Try again, or handle this one yourself.'
@@ -141,6 +147,11 @@ function renderSite(s, status) {
     $('retry-btn').classList.toggle('btn-quiet', !['missed', 'paused'].includes(s.state));
     $('retry-btn').querySelector('span').textContent = s.retryLabel || 'Try again';
     $('site-toggle-btn').textContent = s.siteOn === false ? 'Turn on here' : 'Turn off here';
+
+    // Available whatever the status says: "No cookie banner seen" can be wrong too
+    $('report-btn').hidden = s.actions === false;
+    $('report-btn').disabled = s.state === 'scanning';
+    lastSeen = { title: s.title, status };
 }
 
 function renderStats(stats) {
@@ -174,6 +185,7 @@ function bindEvents() {
 
     $('retry-btn').addEventListener('click', retry);
     $('site-toggle-btn').addEventListener('click', toggleSite);
+    $('report-btn').addEventListener('click', () => chrome.tabs.create({ url: reportUrl() }));
     $('jev-row').addEventListener('click', () => chrome.runtime.openOptionsPage());
     $('open-settings').addEventListener('click', () => chrome.runtime.openOptionsPage());
 }
@@ -204,6 +216,34 @@ async function retry() {
         scanning = null;
         render();
     }, 6000);
+}
+
+// A pre-filled GitHub issue. GitHub issues are public, so the query string and
+// fragment stay out (they can hold tokens or personal details), as does page content.
+function reportUrl() {
+    const page = new URL(tab.url);
+    const { title, status } = lastSeen;
+    const details = [
+        `Popup said: ${title}`,
+        status.reason && `Reason: ${status.reason}`,
+        status.cmp && `Consent tool: ${status.cmp}`,
+        `Extension: ${chrome.runtime.getManifest().version}`,
+        `Browser: ${browserVersion()}`
+    ].filter(Boolean);
+    const params = new URLSearchParams({
+        title: `Banner not handled: ${host.replace(/^www\./, '')}`,
+        body: [
+            `URL: ${page.origin}${page.pathname}`,
+            'What happened (banner stayed, wrong button, page kept reloading):',
+            details.join('\n')
+        ].join('\n\n')
+    });
+    return `${ISSUES_URL}?${params}`;
+}
+
+function browserVersion() {
+    const ua = navigator.userAgent;
+    return (ua.match(/(?:Edg|OPR)\/[\d.]+/) || ua.match(/Chrome\/[\d.]+/) || ['unknown'])[0];
 }
 
 async function toggleSite() {

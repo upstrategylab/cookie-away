@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Cookie Away",
-  "version": "4.2.4",
+  "version": "4.2.5",
   "description": "Rejects cookie banners for you, including the ones that hide Reject behind a settings screen.",
   "permissions": [
     "storage"
@@ -34,7 +34,8 @@
         "content/content.js"
       ],
       "run_at": "document_end",
-      "all_frames": true
+      "all_frames": true,
+      "match_about_blank": true
     }
   ],
   "icons": {
