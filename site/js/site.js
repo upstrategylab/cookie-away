@@ -20,6 +20,16 @@
     els.forEach(el => { el.textContent = txt; });
   })();
 
+  // ── Product Hunt bar: before, during and after launch day (00:01 Pacific, for 24 hours)
+  (() => {
+    const bar = $('[data-ph-launch]'); if (!bar) return;
+    const start = Date.parse(bar.dataset.phLaunch), now = Date.now();
+    if (now < start) return; // the HTML already says "launches on Monday"
+    const live = now < start + 24 * 3600e3;
+    $('[data-ph-text]', bar).textContent = live ? "We're live on Product Hunt today." : 'Cookie Away is on Product Hunt.';
+    $('[data-ph-cta]', bar).textContent = live ? 'Come say hi' : 'Leave a review';
+  })();
+
   // ── FAQ: animate open and close (native <details>, so it still works without JS)
   $$('details.ca-faq').forEach(d => {
     const summary = $('summary', d), body = $('.ca-faq__body', d);
