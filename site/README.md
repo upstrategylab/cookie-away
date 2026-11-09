@@ -20,6 +20,7 @@ Deploy from `site/` with `vercel deploy` (preview) or `vercel deploy --prod`.
 - `styles/tokens.css`, `components.css`, `motion.css`, `fonts.css`: used by every page. `home.css` is the homepage and benchmarks layout; `styleguide.css` is style-sheet chrome only.
 - `js/googly.js`: Kooky (eyes follow the pointer, blinks, chomps), googly eyes on any element (`data-googly`), googly mode (`data-googly-toggle`), and the `ca:arcade` event when someone types "cookie".
 - `js/site.js`: star count, animated FAQ, tabs, copy buttons, the report-a-site form, scroll reveals.
+- `js/arcade.js`: Kooky's arcade, the maze game behind the "cookie" easter egg and the footer's arcade button. `js/home.js` loads it on first use; no storage, no network.
 - `js/mascot.js`: `assets/kooky.svg` as a string. Keep the two in sync.
 - `sitemap.xml` + `robots.txt`: the homepage and /benchmarks (the style sheet is left out). Bump `lastmod` when a page changes; it's submitted in Google Search Console.
 - `api/stars.js`: edge function that returns the GitHub star count, cached for an hour, so visitors never contact GitHub.

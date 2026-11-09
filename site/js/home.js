@@ -1,11 +1,14 @@
-// Homepage extras. The arcade isn't built yet: typing "cookie" gets a chomp and a promise.
+// Homepage extras. Typing "cookie" (or the footer's Play button) opens Kooky's arcade, loaded on first use.
 (() => {
-  document.addEventListener('ca:arcade', () => {
+  let loading = null;
+  const play = () => {
     document.querySelectorAll('.ca-mascot').forEach(window.CA.chomp);
-    const t = document.createElement('div');
-    t.className = 'ca-toast'; t.setAttribute('role', 'status');
-    t.style.cssText = 'position:fixed;left:50%;bottom:24px;translate:-50% 0;z-index:99;animation:ca-pop var(--d-3) var(--ease-boing)';
-    t.innerHTML = '<span class="ca-chomper" style="--c:28px"></span>Kooky’s arcade is coming. Nom.';
-    document.body.append(t); setTimeout(() => t.remove(), 3000);
-  });
+    if (window.CA.arcade) return window.CA.arcade.open();
+    loading = loading || new Promise((ok, fail) => {
+      const s = document.createElement('script'); s.src = '/js/arcade.js'; s.onload = ok; s.onerror = fail; document.head.append(s);
+    });
+    loading.then(() => window.CA.arcade.open(), () => { loading = null; });
+  };
+  document.addEventListener('ca:arcade', play);
+  document.querySelectorAll('[data-arcade]').forEach(b => b.addEventListener('click', play));
 })();
