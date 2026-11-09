@@ -21,5 +21,6 @@ Deploy from `site/` with `vercel deploy` (preview) or `vercel deploy --prod`.
 - `js/googly.js`: Kooky (eyes follow the pointer, blinks, chomps), googly eyes on any element (`data-googly`), googly mode (`data-googly-toggle`), and the `ca:arcade` event when someone types "cookie".
 - `js/site.js`: star count, animated FAQ, tabs, copy buttons, the report-a-site form, scroll reveals.
 - `js/mascot.js`: `assets/kooky.svg` as a string. Keep the two in sync.
+- `sitemap.xml` + `robots.txt`: the homepage and /benchmarks (the style sheet is left out). Bump `lastmod` when a page changes; it's submitted in Google Search Console.
 - `api/stars.js`: edge function that returns the GitHub star count, cached for an hour, so visitors never contact GitHub.
 - `assets/`: Kooky, the favicon, the hero illustration, the social image (`og.png`) and self-hosted fonts (SIL OFL).
