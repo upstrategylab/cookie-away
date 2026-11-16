@@ -195,7 +195,7 @@
             // A lone "Cookie settings" link (site footers) isn't a banner: it has nothing to answer with
             if (buttons.length === 1 && !matchesAny(buttons[0].label, [...REJECT, ...ACCEPT])) continue;
 
-            const verdict = classify(candidate);
+            const verdict = classify(candidate, buttons);
             if (verdict === 'yes') {
                 handle(candidate.el, null, 'heuristic');
                 return;
@@ -247,7 +247,7 @@
     }
 
     // 'yes' = consent banner, 'maybe' = overlay we can't read (Jev may), 'no' = skip
-    function classify({ el, overlay }) {
+    function classify({ el, overlay }, buttons) {
         const text = (el.textContent || '').replace(/\s+/g, ' ').toLowerCase();
         const className = typeof el.className === 'string' ? el.className : (el.getAttribute('class') || '');
         const classId = `${el.id} ${className}`.toLowerCase();
@@ -259,6 +259,8 @@
 
         if (STRONG_CLASS.test(classId) && (hits >= 1 || text.length > 20)) return 'yes';
         if (hits >= 2) return 'yes';
+        // One consent word plus both a reject and an accept button (Google's dialog in Swedish only says "cookies")
+        if (hits === 1 && buttons.some(b => matchesAny(b.label, REJECT)) && buttons.some(b => matchesAny(b.label, ACCEPT))) return 'yes';
         // Unreadable overlay (unknown language?): worth asking Jev, unless it's site navigation
         if (overlay && text.length >= 40 && text.length <= 2500 && !isNavigation(el)) return 'maybe';
         return 'no';

@@ -34,6 +34,18 @@ Or load it from the source:
 
 It should also work in other Chromium browsers (Edge, Brave, Arc) the same way.
 
+### Safari (developer version)
+
+A Safari version for the App Store is in the works. Until then you can build it yourself on a Mac with Xcode:
+
+1. Download or clone this repository and run `scripts/safari.sh`. It builds the app in `safari/`, copies it to `~/Applications` and opens it once, which adds the extension to Safari.
+2. In Safari, open **Settings → Advanced** and tick **Show features for web developers**. Then in **Developer**, tick **Allow unsigned extensions**.
+3. In **Extensions**, tick **Cookie Away** and allow it on all websites.
+
+**After every Safari restart** the extension disappears, because Safari switches unsigned extensions off when it quits. Go to **Settings → Developer**, tick **Allow unsigned extensions** again, and Cookie Away comes back. This goes away once the App Store version is out.
+
+To sign the build with your own Apple team, put `SAFARI_TEAM=<team ID>` in `safari/local.env` and change the bundle ID in the Xcode project to one of yours. A free or development signature doesn't stop the restart reset; only App Store or Developer ID builds do.
+
 ## Privacy
 
 Everything happens inside your browser. Cookie Away has no server, no analytics and no tracking. Settings and stats stay in Chrome's local extension storage.

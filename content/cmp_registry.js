@@ -113,6 +113,13 @@
         'interesse legítimo', 'gerechtvaardigd belang', 'berättigat intresse', 'legitime interesser', 'oikeutettu etu', 'prawnie uzasadniony interes'
     ];
 
+    // Radio-button settings ("Marketing / Functional / Required"): the option that keeps only what's needed.
+    const MINIMAL = [
+        'strictly necessary', 'required', 'necessary', 'essential', 'only necessary',
+        'notwendig', 'erforderlich', 'essenziell', 'nécessaires', 'essentiels', 'necesarias', 'esenciales',
+        'necessari', 'essenziali', 'noodzakelijk', 'nödvändiga', 'nödvändig', 'nødvendige', 'välttämättömät'
+    ];
+
     // Never click these on the first layer: they open settings, policies or other pages.
     const AVOID = [
         'settings', 'preferences', 'customize', 'customise', 'manage', 'options', 'more info', 'learn more', 'read more',
@@ -175,8 +182,12 @@
         return matchIndex(text, phrases) !== -1;
     }
 
-    function isVisible(el) {
+    function isVisible(el, depth = 0) {
         if (!el || !el.isConnected) return false;
+        // display: contents has no box of its own (Reddit's consent dialog): visible if a child is
+        if (depth < 3 && getComputedStyle(el).display === 'contents') {
+            return [...el.children].some(child => isVisible(child, depth + 1));
+        }
         if (typeof el.checkVisibility === 'function') {
             if (!el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) return false;
         } else {
@@ -352,6 +363,27 @@
         return toggles;
     }
 
+    // The "Required only" option in a radio group of consent levels (selected or not), or null.
+    function minimalRadio(scope) {
+        const groups = new Map();
+        for (const el of scope.querySelectorAll('input[type="radio"]')) {
+            if (!el.name || el.disabled) continue;
+            if (!groups.has(el.name)) groups.set(el.name, []);
+            groups.get(el.name).push(el);
+        }
+        for (const radios of groups.values()) {
+            if (radios.length < 2 || radios.length > 6) continue;
+            const minimal = radios.find(r => {
+                const label = (r.id && scope.querySelector(`label[for="${CSS.escape(r.id)}"]`)) || r.closest('label');
+                // The level's name opens the label ("Required (Oatmeal raisin...): ..."), the description follows
+                const text = (label ? label.textContent : r.value || '').replace(/\s+/g, ' ').trim().toLowerCase().slice(0, 40);
+                return matchesAny(text, MINIMAL);
+            });
+            if (minimal) return minimal;
+        }
+        return null;
+    }
+
     function findSave(scope, hints = {}) {
         const bySelector = query(hints.save, [scope.getRootNode ? scope.getRootNode() : document]);
         if (bySelector) return bySelector;
@@ -364,7 +396,7 @@
     }
 
     function hasLayerControls(el) {
-        return (findToggles(el).length > 0 || rejectButtonsIn(el).length >= 2) && !!findSave(el);
+        return (findToggles(el).length > 0 || rejectButtonsIn(el).length >= 2 || !!minimalRadio(el)) && !!findSave(el);
     }
 
     const LAYER_SELECTOR = [
@@ -450,6 +482,12 @@
                 input.click();
                 toggles++;
             }
+        }
+        // Consent levels as radio buttons: pick the necessary-only level
+        const radio = minimalRadio(layer);
+        if (radio && !radio.checked) {
+            radio.click();
+            toggles++;
         }
         if (toggles) await wait(250);
 
@@ -569,6 +607,14 @@
         { name: 'Real Cookie Banner', banner: '.rcb-cookie-banner', reject: ['.rcb-btn-deny'] },
         { name: 'GDPR Cookie Consent', banner: '.cli-modal-dialog, #cookie-law-info-bar', reject: ['#wt-cli-reject-btn', '.wt-cli-reject-btn'], accept: ['#cookie_action_close_header'] },
         { name: 'CookieScript', banner: '#cookiescript_injected', reject: ['#cookiescript_reject'], accept: ['#cookiescript_accept'] },
+        {
+            name: 'Finsweet Cookie Consent',
+            // Common on Webflow sites; fs-cc is v1, fs-consent-element the newer attribute set
+            banner: '[fs-cc="banner"], [fs-consent-element="banner"]',
+            reject: ['[fs-cc="deny"]', '[fs-consent-element="deny"]'],
+            settings: { open: ['[fs-cc="open-preferences"]', '[fs-consent-element="open-preferences"]'], layer: '[fs-cc="preferences"], [fs-consent-element="preferences"]', save: ['[fs-cc="submit"]', '[fs-consent-element="submit"]'] },
+            accept: ['[fs-cc="allow"]', '[fs-consent-element="allow"]']
+        },
         { name: 'Ketch', banner: '#lanyard_root', reject: ['[aria-label="Reject All" i]', '#ketch-banner-button-secondary'], accept: ['#ketch-banner-button-primary'] },
         { name: 'Silktide', banner: '#silktide-wrapper', reject: ['.silktide-reject-all', '#silktide-banner .reject-all'], accept: ['.silktide-accept-all'] },
         // The buttons live in a blank iframe; the page around it only holds #main-cookie-banner
