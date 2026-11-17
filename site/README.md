@@ -22,6 +22,6 @@ Deploy from `site/` with `vercel deploy` (preview) or `vercel deploy --prod`.
 - `js/site.js`: star count, animated FAQ, tabs, copy buttons, the report-a-site form, scroll reveals.
 - `js/arcade.js`: Kooky's arcade, the maze game behind the "cookie" easter egg and the footer's arcade button. `js/home.js` loads it on first use; no storage, no network.
 - `js/mascot.js`: `assets/kooky.svg` as a string. Keep the two in sync.
-- `sitemap.xml` + `robots.txt`: the homepage and /benchmarks (the style sheet is left out). Bump `lastmod` when a page changes; it's submitted in Google Search Console.
+- `sitemap.xml` + `robots.txt`: the homepage and /benchmarks (the style sheet, `api/`, `js/` and `styles/` send `X-Robots-Tag: noindex`; robots.txt still allows them so Google can see that). Bump `lastmod` when a page changes; it's submitted in Google Search Console.
 - `api/stars.js`: edge function that returns the GitHub star count, cached for an hour, so visitors never contact GitHub.
 - `assets/`: Kooky, the favicon, the hero illustration, the social image (`og.png`) and self-hosted fonts (SIL OFL).
