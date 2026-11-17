@@ -57,13 +57,13 @@
 
 <main>
   <section class="h-sec" style="padding-top:var(--s-7)"><div class="ca-wrap">
-    <div class="h-head"><span class="ca-eyebrow">Test results · 1 November 2026</span><h1>Every site we tested, <span class="ca-hl">misses included</span>.</h1>
+    <div class="h-head"><span class="ca-eyebrow">Test results · 17 November 2026</span><h1>Every site we tested, <span class="ca-hl">misses included</span>.</h1>
       <p class="ca-lead">We loaded 69 popular European sites in a fresh browser, once with Cookie Away, once with Consent-O-Matic and once with nothing, then checked what each site recorded. 58 of them showed a cookie banner.</p></div>
     <div style="overflow-x:auto"><table class="ca-table">
-      <thead><tr><th></th><th class="is-us">Cookie Away 4.2.4</th><th>Consent-O-Matic 1.1.5</th></tr></thead>
+      <thead><tr><th></th><th class="is-us">Cookie Away 4.2.7</th><th>Consent-O-Matic 1.1.5</th></tr></thead>
       <tbody>
         <tr><td>Banners with a free way to say no, rejected</td><td class="is-us">26 of 27</td><td>15 of 26</td></tr>
-        <tr><td>Pay-or-accept walls handled without paying or accepting</td><td class="is-us">31 of 31</td><td>27 of 31</td></tr>
+        <tr><td>Pay-or-accept walls handled without paying or accepting</td><td class="is-us">30 of 30</td><td>27 of 31</td></tr>
         <tr><td>Times it ended on a subscription or payment page</td><td class="is-us">0</td><td>3</td></tr>
         <tr><td>Times it accepted tracking</td><td class="is-us">0</td><td>1</td></tr>
       </tbody>
@@ -112,7 +112,7 @@
         <tr data-kind="wall"><td>chefkoch.de</td><td>Pay or accept</td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td><span class="ca-tag ca-tag--bad">Accepted tracking</span></td><td class="ca-micro">Consent-O-Matic accepted all 11 purposes</td></tr>
         <tr data-kind="wall"><td>chip.de</td><td>Pay or accept</td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td class="ca-micro"></td></tr>
         <tr data-kind="wall"><td>corriere.it</td><td>Pay or accept</td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td class="ca-micro"></td></tr>
-        <tr data-kind="wall"><td>dailymail.co.uk</td><td>Pay or accept</td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td class="ca-micro"></td></tr>
+        <tr data-kind="wall"><td>dailymail.co.uk</td><td>Pay or accept</td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Blocked by the site</span></td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td class="ca-micro">Showed the Cookie Away test browser a blank page</td></tr>
         <tr data-kind="wall"><td>elconfidencial.com</td><td>Pay or accept</td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td class="ca-micro"></td></tr>
         <tr data-kind="wall"><td>elmundo.es</td><td>Pay or accept</td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td><span class="ca-tag ca-tag--ok">Rejected</span></td><td class="ca-micro"></td></tr>
         <tr data-kind="wall"><td>elpais.com</td><td>Pay or accept</td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td><span class="ca-tag ca-tag--plain ca-tag--plain">Left for you</span></td><td class="ca-micro"></td></tr>
@@ -152,7 +152,7 @@
   <section class="h-sec"><div class="ca-wrap h-split">
     <div class="h-head" style="margin:0"><span class="ca-eyebrow">How we test</span><h2>Small, honest, repeatable.</h2></div>
     <div class="ca-stack">
-      <p class="b-note"><b>Setup.</b> Cookie Away’s column is one run of version 4.2.4 on all sites; Consent-O-Matic’s comes from the same setup earlier the same day. Headless Chromium from Sweden, a fresh profile for every site, the extension loaded unpacked, 12 seconds per page. Consent-O-Matic is the official 1.1.5 release with its default settings.</p>
+      <p class="b-note"><b>Setup.</b> Cookie Away’s column is one run of version 4.2.7 on all sites on 17 November 2026; Consent-O-Matic’s comes from the same setup on 1 November 2026. Headless Chromium from Sweden, a fresh profile for every site, the extension loaded unpacked, 12 seconds per page. Consent-O-Matic is the official 1.1.5 release with its default settings.</p>
       <p class="b-note"><b>What counts as rejected.</b> The banner is gone and the site’s consent tool (TCF, OneTrust, Cookiebot or Didomi) records no consents. “Banner gone” means it went away but the site doesn’t expose what it recorded; we checked those screenshots by hand.</p>
       <p class="b-note"><b>Pay-or-accept walls.</b> Some sites only let you reject if you subscribe. Leaving those for you to decide counts as handled; ending on a payment page or accepting tracking doesn’t.</p>
       <p class="b-note"><b>The catch.</b> These are the sites we used to find and fix Cookie Away’s bugs, so the final numbers flatter it. The fairer comparison is the first run on sites Cookie Away hadn’t seen yet: there it answered 13 of 16 banners with a free “no”, and Consent-O-Matic 9 of 15. One country, one day, and banners change all the time, so treat all of this as a snapshot.</p>

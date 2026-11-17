@@ -1,7 +1,12 @@
 {
- "date": "1 November 2026",
- "cookieAway": "4.2.4",
+ "date": "17 November 2026",
+ "comDate": "1 November 2026",
+ "cookieAway": "4.2.7",
  "consentOMatic": "1.1.5",
+ "firstRunUnseen": {
+  "ca": "13 of 16",
+  "com": "9 of 15"
+ },
  "sites": [
   {
    "site": "lidl.de",
@@ -97,9 +102,9 @@
   {
    "site": "dailymail.co.uk",
    "kind": "wall",
-   "ca": "left",
+   "ca": "blocked",
    "com": "left",
-   "note": ""
+   "note": "Showed the Cookie Away test browser a blank page"
   },
   {
    "site": "elmundo.es",
@@ -486,9 +491,5 @@
    "com": null,
    "note": ""
   }
- ],
- "firstRunUnseen": {
-  "ca": "13 of 16",
-  "com": "9 of 15"
- }
+ ]
 }

@@ -29,7 +29,7 @@ GOOD_FREE = {'rejected', 'gone'}
 
 def tally(tool):
     free = [s for s in sites if s['kind'] == 'free' and s[tool] != 'blocked']
-    walls = [s for s in sites if s['kind'] == 'wall']
+    walls = [s for s in sites if s['kind'] == 'wall' and s[tool] != 'blocked']
     return {
         'free_ok': sum(s[tool] in GOOD_FREE for s in free), 'free_n': len(free),
         'free_ok_now': sum(s[tool] in GOOD_FREE | {'fixed'} for s in free),
@@ -52,7 +52,7 @@ for s in sorted(sites, key=lambda s: (['free', 'wall', 'notice', 'none', 'captch
 
 page = (ROOT / 'benchmarks.template.html').read_text()
 fill = {
-    'TESTED': tested, 'ALL': len(sites), 'DATE': data['date'], 'CA_VERSION': data['cookieAway'], 'COM_VERSION': data['consentOMatic'],
+    'TESTED': tested, 'ALL': len(sites), 'DATE': data['date'], 'COM_DATE': data.get('comDate', data['date']), 'CA_VERSION': data['cookieAway'], 'COM_VERSION': data['consentOMatic'],
     'CA_FREE': f'{ca["free_ok"]} of {ca["free_n"]}', 'COM_FREE': f'{com["free_ok"]} of {com["free_n"]}',
     'CA_FREE_NOW': f'{ca["free_ok_now"]} of {ca["free_n"]}',
     'CA_WALL': f'{ca["wall_safe"]} of {ca["wall_n"]}', 'COM_WALL': f'{com["wall_safe"]} of {com["wall_n"]}',
