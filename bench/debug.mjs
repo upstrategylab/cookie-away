@@ -19,12 +19,12 @@ const BTNS = () => { const out = []; const walk = (root) => { for (const el of r
 for (const site of sites) {
   const page = await ctx.newPage(); const logs = [];
   page.on('console', (m) => { if (/Cookie Away/.test(m.text())) logs.push((m.location()?.url || '').replace(/^https?:\/\//, '').slice(0, 28).padEnd(28) + ' ' + m.text().slice(0, 130)); });
-  await page.goto(`https://${site}/`, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch((e) => logs.push('NAV ' + e.message.slice(0, 80)));
+  await page.goto(/^https?:/.test(site) ? site : `https://${site}/`, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch((e) => logs.push('NAV ' + e.message.slice(0, 80)));
   await page.waitForTimeout(Number(process.env.WAIT || 12000));
   console.log(`\n===== ${site}\n-- log:\n  ${logs.join('\n  ')}`);
-  for (const fr of page.frames()) { const b = await fr.evaluate(BTNS).catch(() => []); const kw = b.filter((x) => /cookie|kakor|reject|avvisa|neka|godkänn|accept|ablehn|akzept|akkoord|instell|agree|settings|spara|opslaan|save|hantera|inställ|einstell|okej|weiger|pay|betal/i.test(x));
+  for (const fr of page.frames()) { const b = await fr.evaluate(BTNS).catch(() => []); const kw = b.filter((x) => /cookie|kakor|reject|avvisa|neka|godkänn|accept|ablehn|akzept|akkoord|instell|agree|settings|spara|opslaan|save|hantera|inställ|einstell|okej|weiger|pay|betal|odrzu|akceptuj|zgadzam|zgoda|ustawie|zapisz|odm[oó]w|preferencj|tylko|niezb[eę]dne|wszystk/i.test(x));
     if (kw.length) console.log(`-- frame ${fr === page.mainFrame() ? 'main' : fr.url().slice(0, 70)}:\n  ${kw.slice(0, 40).join('\n  ')}`); }
-  await page.screenshot({ path: `${B}/dbg-${site}.jpg`, type: 'jpeg', quality: 55 });
+  await page.screenshot({ path: `${B}/dbg-${site.replace(/^https?:\/\//, '').replace(/[^\w.-]+/g, '_').slice(0, 60)}.jpg`, type: 'jpeg', quality: 55 });
   await page.close();
 }
 await ctx.close();

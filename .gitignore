@@ -6,6 +6,7 @@
 promo/
 
 bench/out-*
+bench/dbg-*.jpg
 bench/com/
 bench/node_modules/
 

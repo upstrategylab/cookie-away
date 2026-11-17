@@ -179,7 +179,12 @@
             if (banner || scriptPresent) reportCmp(provider.name);
             if (!banner || page.tried.has(banner)) continue;
             // The container can appear before its buttons (Didomi); wait for the next DOM change
-            if (findButtons(banner).length === 0) continue;
+            const providerButtons = findButtons(banner);
+            if (providerButtons.length === 0) continue;
+            // What's left after a choice: a floating "Privacy settings" button (Usercentrics keeps it in
+            // #uc-main-dialog). Clicking it would reopen the dialog we just closed.
+            if (providerButtons.length === 1 && !matchesAny(providerButtons[0].label, [...REJECT, ...ACCEPT]) &&
+                (banner.textContent || '').trim().length < 60) continue;
 
             log(`Detected ${provider.name}`);
             handle(banner, provider, provider.name);

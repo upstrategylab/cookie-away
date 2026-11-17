@@ -27,7 +27,9 @@
         'reject all', 'reject', 'decline all', 'decline', 'deny all', 'deny', 'refuse all', 'refuse',
         'only necessary', 'necessary only', 'essential only', 'only essential', 'necessary cookies only',
         'use necessary cookies only', 'continue without accepting', 'i do not agree', 'disagree',
-        'refuse non-essential cookies', 'no thanks', 'no, thanks', 'nein danke', 'non merci', 'nee bedankt', 'nei takk', 'nej tak',
+        'refuse non-essential cookies', 'no thanks', 'no, thanks',
+        // US opt-out (CCPA)
+        'do not sell or share my personal information', 'do not sell my personal information', 'do not sell or share my info', 'do not sell or share', 'nein danke', 'non merci', 'nee bedankt', 'nei takk', 'nej tak',
         // "Legitimate interest" objections in TCF settings screens
         'object all', 'object to all', 'alle widersprechen', 'widersprechen', "s'opposer à tout", 'oponerse a todo',
         'opporsi a tutto', 'opponiti a tutto', 'invänd mot alla', 'bezwaar maken tegen alles',
@@ -50,7 +52,7 @@
         // Finnish
         'hylkää kaikki', 'hylkää', 'vain välttämättömät',
         // Polish / Czech / Slovak
-        'odrzuć wszystkie', 'odrzuć', 'odmítnout vše', 'odmítnout', 'odmietnuť',
+        'odrzuć wszystkie', 'odrzuć wszystko', 'odrzuć', 'tylko niezbędne', 'nie zgadzam się', 'odmawiam', 'odmów', 'kontynuuj bez akceptacji', 'odmítnout vše', 'odmítnout', 'odmietnuť',
         // Hungarian / Romanian
         'elutasítom', 'elutasít', 'refuză tot', 'refuză', 'resping',
         // Greek / Turkish
@@ -71,7 +73,7 @@
         'godkänn alla', 'godkänn', 'jag godkänner', 'acceptera alla', 'acceptera', 'tillåt alla', 'okej',
         'accepter alle', 'godta alle', 'godta', 'aksepter',
         'hyväksy kaikki', 'hyväksy',
-        'zaakceptuj', 'akceptuję', 'přijmout vše', 'přijmout', 'súhlasím',
+        'zaakceptuj wszystkie', 'akceptuj wszystkie', 'zezwól na wszystkie', 'zgadzam się', 'zaakceptuj', 'akceptuję', 'akceptuj', 'zezwól', 'přijmout vše', 'přijmout', 'súhlasím',
         'elfogadom', 'elfogad', 'accept tot', 'acceptă',
         'αποδοχή', 'kabul et', 'kabul',
         'すべて同意', '同意', '모두 동의', '동의', '全部接受', '接受'
@@ -92,7 +94,7 @@
         'opties beheren', 'instellingen', 'instellen', 'aanpassen',
         'fler alternativ', 'inställningar', 'hantera', 'anpassa',
         'indstillinger', 'tilpas', 'innstillinger', 'administrer', 'asetukset', 'muokkaa',
-        'więcej opcji', 'zarządzaj', 'ustawienia', 'spravovat', 'nastavení'
+        'więcej opcji', 'spersonalizuj', 'dostosuj', 'personalizuj', 'preferencje', 'zarządzaj', 'ustawienia', 'spravovat', 'nastavení'
     ];
 
     // Saves the choices in a settings layer. Strongest first.
@@ -104,7 +106,7 @@
         'enregistrer et quitter', 'confirmer mes choix', 'enregistrer', 'confirmer', 'valider',
         'guardar y salir', 'guardar', 'confirmar', 'salva e esci', 'salva', 'conferma', 'guardar e sair', 'salvar',
         'keuze opslaan', 'opslaan', 'spara och avsluta', 'tillåt urval', 'tillåt valda', 'spara', 'bekräfta', 'gem', 'bekræft', 'tillad udvalgte', 'tillad valgte', 'tillat utvalgte', 'lagre', 'bekreft',
-        'tallenna', 'vahvista', 'zapisz', 'potvrdit', 'uložit'
+        'tallenna', 'vahvista', 'zezwól na wybór', 'zapisz wybór', 'zapisz ustawienia', 'zapisz preferencje', 'potwierdź wybór', 'akceptuj wybrane', 'zapisz', 'potwierdź', 'potvrdit', 'uložit'
     ];
 
     // Tab that reveals "legitimate interest" toggles in TCF settings screens.
@@ -117,7 +119,7 @@
     const MINIMAL = [
         'strictly necessary', 'required', 'necessary', 'essential', 'only necessary',
         'notwendig', 'erforderlich', 'essenziell', 'nécessaires', 'essentiels', 'necesarias', 'esenciales',
-        'necessari', 'essenziali', 'noodzakelijk', 'nödvändiga', 'nödvändig', 'nødvendige', 'välttämättömät'
+        'necessari', 'essenziali', 'noodzakelijk', 'nödvändiga', 'nödvändig', 'nødvendige', 'välttämättömät', 'niezbędne', 'wymagane'
     ];
 
     // Never click these on the first layer: they open settings, policies or other pages.
@@ -130,7 +132,7 @@
         'impostazioni', 'personalizza', 'scopri di più',
         'instellingen', 'aanpassen', 'meer informatie',
         'inställningar', 'anpassa', 'läs mer', 'hantera',
-        'indstillinger', 'innstillinger', 'asetukset', 'ustawienia', 'nastavení'
+        'indstillinger', 'innstillinger', 'asetukset', 'ustawienia', 'spersonalizuj', 'dostosuj', 'preferencje', 'szczegóły', 'więcej informacji', 'nastavení'
     ];
 
     // "Reject and pay" options (consent-or-pay walls). Never clicked.
@@ -150,7 +152,7 @@
     ];
 
     // "Accept all"-style labels must never be mistaken for a Save button.
-    const ACCEPT_ALL = ACCEPT.filter(p => /\b(all|alle|alla|tout|todo|tutto|tudo|alles|kaikki|vše)\b|すべて|모두|全部/.test(p));
+    const ACCEPT_ALL = ACCEPT.filter(p => /\b(all|alle|alla|tout|todo|tutto|tudo|alles|kaikki|vše|wszystkie|wszystko)\b|すべて|모두|全部/.test(p));
 
     // --- Helpers ------------------------------------------------------------
 
@@ -195,7 +197,10 @@
             if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
         }
         const rect = el.getBoundingClientRect();
-        return rect.width > 0 && rect.height > 0;
+        if (rect.width > 0 && rect.height > 0) return true;
+        // A zero-size wrapper around fixed content (CookieFirst's inline <dialog>): visible if that content is
+        return depth < 3 && [...el.children].some(child =>
+            /^(fixed|absolute)$/.test(getComputedStyle(child).position) && isVisible(child, depth + 1));
     }
 
     // Hover animations often repeat the label in a hidden copy: "AcceptAccept" -> "accept"
@@ -284,13 +289,16 @@
     function query(selectors, roots = collectRoots()) {
         for (const sel of selectors || []) {
             for (const root of roots) {
-                let el = null;
+                let matches = [];
                 try {
-                    el = root.querySelector(sel);
+                    matches = root.querySelectorAll(sel);
                 } catch (e) {
                     break; // Invalid selector
                 }
-                if (isVisible(el)) return el;
+                // Not just the first match: a hidden copy can come first (CookieFirst's closed first layer)
+                for (const el of matches) {
+                    if (isVisible(el)) return el;
+                }
             }
         }
         return null;
@@ -325,11 +333,13 @@
     // Pick reject > accept > dismiss. Returns { button, kind } or null.
     function pickButton(buttons, { allowAccept = true } = {}) {
         let best = null;
+        // A notice with only "Close" (indeks24.pl) has nothing to accept: closing it gives no consent
+        const noticeOnly = !buttons.some(b => matchesAny(b.label, ACCEPT));
         for (const b of buttons) {
             if (matchesAny(b.label, AVOID) || matchesAny(b.label, PAYWALL) || wouldNavigate(b.element)) continue;
             const r = matchIndex(b.label, REJECT);
             const a = allowAccept ? matchIndex(b.label, ACCEPT) : -1;
-            const d = allowAccept ? matchIndex(b.label, DISMISS) : -1;
+            const d = allowAccept || noticeOnly ? matchIndex(b.label, DISMISS) : -1;
             let rank = null;
             if (r !== -1) rank = r / 1000;
             else if (a !== -1) rank = 1 + a / 1000;
@@ -395,8 +405,9 @@
         return findButtons(el).filter(b => matchesAny(b.label, REJECT) && !matchesAny(b.label, PAYWALL) && !wouldNavigate(b.element));
     }
 
-    function hasLayerControls(el) {
-        return (findToggles(el).length > 0 || rejectButtonsIn(el).length >= 2 || !!minimalRadio(el)) && !!findSave(el);
+    // hints: the provider's selectors, so a Save button with an unfamiliar label still counts
+    function hasLayerControls(el, hints = {}) {
+        return (findToggles(el).length > 0 || rejectButtonsIn(el).length >= 2 || !!minimalRadio(el)) && !!findSave(el, hints);
     }
 
     const LAYER_SELECTOR = [
@@ -409,9 +420,11 @@
         const roots = collectRoots();
         if (hints.layer) {
             const el = query([hints.layer], roots);
-            if (el && (hasLayerControls(el) || findButtons(el).some(b => matchesAny(b.label, REJECT)))) return el;
+            if (el && (hasLayerControls(el, hints) || findButtons(el).some(b => matchesAny(b.label, REJECT)))) return el;
             // Switches the provider names (OneTrust keeps them in hidden tabs) plus a Save button is enough
             if (el && hints.toggles && el.querySelector(hints.toggles) && findSave(el, hints)) return el;
+            // Every switch already off (CookieYes, superpharm.pl): saving as-is is the reject
+            if (el && el.querySelector('input[type="checkbox"]:not(:disabled), [role="switch"]:not([aria-disabled="true"])') && findSave(el, hints)) return el;
         }
         const found = [];
         if (isVisible(banner) && hasLayerControls(banner)) found.push(banner);
@@ -427,7 +440,7 @@
 
     // Returns { kind: 'reject' | 'settings', toggles, layer } or null if this route didn't work.
     async function rejectViaSettings(banner, hints = {}) {
-        let layer = hasLayerControls(banner) ? banner : null;
+        let layer = hasLayerControls(banner, hints) ? banner : null;
 
         if (!layer) {
             const open = hints.openElement || query(hints.open) ||
@@ -594,7 +607,14 @@
         },
         { name: 'Osano', banner: '.osano-cm-window', reject: ['.osano-cm-denyAll', '.osano-cm-deny'], accept: ['.osano-cm-accept'] },
         { name: 'TrustArc', banner: '#truste-consent-track', reject: ['#truste-consent-required'], accept: ['#truste-consent-button'] },
-        { name: 'CookieFirst', banner: '#cookiefirst-root', reject: ['[data-cookiefirst-action="reject"]'], accept: ['[data-cookiefirst-action="accept"]'] },
+        {
+            name: 'CookieFirst',
+            // Newer versions mount <dialog class="cookiefirst-root"> (apteline.pl, recepta.pl)
+            banner: '#cookiefirst-root, .cookiefirst-root',
+            reject: ['[data-cookiefirst-action="reject"]'],
+            settings: { open: ['[data-cookiefirst-action="adjust"]'], layer: '.cookiefirst-root', save: ['[data-cookiefirst-action="save"]'] },
+            accept: ['[data-cookiefirst-action="accept"]']
+        },
         { name: 'Termly', banner: '#termly-code-snippet-support', reject: ['[data-tid="banner-decline"]'], accept: ['[data-tid="banner-accept"]'] },
         { name: 'Iubenda', banner: '#iubenda-cs-banner', reject: ['.iubenda-cs-reject-btn'], accept: ['.iubenda-cs-accept-btn'] },
         { name: 'Civic Cookie Control', banner: '#ccc', reject: ['#ccc-reject-settings', '#ccc-notify-reject'], accept: ['#ccc-notify-accept'] },
@@ -646,7 +666,7 @@
         if (rejectSel && !matchesAny(labelOf(rejectSel), PAYWALL) && safeClick(rejectSel)) return { kind: 'reject', label: labelOf(rejectSel) };
 
         // Consent-or-pay: the only way to reject is a subscription. Never go there.
-        if (deep && hasLayerControls(banner)) {
+        if (deep && hasLayerControls(banner, provider.settings)) {
             const viaSettings = await rejectViaSettings(banner, { ...(provider.settings || {}), skip: provider.skip });
             if (viaSettings) return viaSettings;
         }
@@ -657,7 +677,7 @@
             (matchesAny(b.label, PAYWALL) || !buttons.some(u => u.element === b.element)));
 
         const reject = pickButton(buttons, { allowAccept: false });
-        if (reject && safeClick(reject.button.element)) return { kind: 'reject', label: reject.button.label };
+        if (reject && safeClick(reject.button.element)) return { kind: reject.kind, label: reject.button.label };
 
         // "Allow selection" with every optional box already unticked is a reject (Cookiebot's first layer, DR)
         const boxes = [...banner.querySelectorAll('input[type="checkbox"], [role="switch"], [role="checkbox"]')]
