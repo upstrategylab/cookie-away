@@ -48,6 +48,10 @@
         '[role="dialog"]', '[role="alertdialog"]', '[aria-modal="true"]', 'dialog[open]'
     ].join(',');
     const STRONG_CLASS = /cookie|consent|gdpr|kakor|samtycke|datenschutz|einwilligung|cmp-|privacy-banner/;
+    // In-article stand-ins for blocked embeds ("To show this YouTube video, allow cookies").
+    // Their "Manage" button reopens the site's own consent dialog (france24.com).
+    const EMBED_CLASS = /video|player|embed|iframe|youtube|vimeo|social|podcast/i;
+    const EMBED_TEXT = /youtube|vimeo|dailymotion|twitter|instagram|tiktok|facebook|spotify|soundcloud|google maps/i;
 
     let page;
     let settings = {};
@@ -64,6 +68,7 @@
             cmpReported: false,
             tried: new WeakSet(),
             retried: new WeakSet(),
+            handled: new Set(), // Known consent tools handled on this page
             timer: null,
             observer: null
         };
@@ -177,7 +182,16 @@
 
             const scriptPresent = !banner && provider.checkGlobal && safe(provider.checkGlobal);
             if (banner || scriptPresent) reportCmp(provider.name);
-            if (!banner || page.tried.has(banner)) continue;
+            if (!banner) continue;
+            // We handled this one and the site showed it again: something on the page reopens it.
+            // Clicking again would loop, so leave it to the user.
+            if (page.handled.has(provider.name)) {
+                log(`${provider.name} came back after it was handled; leaving it alone`);
+                send('BANNER_MISSED', { reason: 'came-back', source: provider.name, correction: true });
+                stop();
+                return;
+            }
+            if (page.tried.has(banner)) continue;
             // The container can appear before its buttons (Didomi); wait for the next DOM change
             const providerButtons = findButtons(banner);
             if (providerButtons.length === 0) continue;
@@ -244,7 +258,7 @@
             const tag = c.el.tagName;
             if (tag === 'HTML' || tag === 'BODY' || tag === 'SCRIPT' || tag === 'STYLE') return false;
             const len = (c.el.textContent || '').length;
-            return len >= 20 && len <= 6000 && isVisible(c.el);
+            return len >= 20 && len <= 6000 && isVisible(c.el) && !isEmbedPlaceholder(c.el);
         });
 
         // Outermost match only, so nested ".cookie-banner__text" etc. collapse into one banner; overlays first.
@@ -269,6 +283,17 @@
         // Unreadable overlay (unknown language?): worth asking Jev, unless it's site navigation
         if (overlay && text.length >= 40 && text.length <= 2500 && !isNavigation(el)) return 'maybe';
         return 'no';
+    }
+
+    // Part of the article flow (not an overlay) and about one embed: a placeholder, not a banner
+    function isEmbedPlaceholder(el) {
+        if (el.closest('[role="dialog"],[role="alertdialog"],[aria-modal="true"],dialog')) return false;
+        for (let n = el; n && n !== document.body; n = n.parentElement) {
+            const position = getComputedStyle(n).position;
+            if (position === 'fixed' || position === 'sticky') return false;
+        }
+        const className = typeof el.className === 'string' ? el.className : (el.getAttribute('class') || '');
+        return EMBED_CLASS.test(`${el.id} ${className}`) || EMBED_TEXT.test((el.textContent || '').slice(0, 300));
     }
 
     function isNavigation(el) {
@@ -408,6 +433,7 @@
         if (gone) {
             log(`Handled ${source}: ${result.kind}${result.label ? ` "${result.label}"` : ''}${result.toggles ? `, ${result.toggles} switched off` : ''}`);
             if (IS_TOP) send('BANNER_HANDLED', report);
+            if (isProvider(source)) page.handled.add(source);
             // Some sites stack two consent tools (e.g. a hidden OneTrust plus Google's dialog),
             // so keep looking until the per-page cap or the watch window runs out.
             if (page.actions >= LIMITS.maxActionsPerPage) stop();
@@ -461,6 +487,10 @@
     }
 
     // --- Utils --------------------------------------------------------------
+
+    function isProvider(source) {
+        return !['heuristic', 'jev'].includes(source);
+    }
 
     function reportCmp(name) {
         if (page.cmpReported) return;

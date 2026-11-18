@@ -113,7 +113,9 @@ function siteState(local, status, enabled, earlier) {
     if (status.state === 'missed') {
         const detail = status.reason === 'still-visible'
             ? 'It clicked, but the banner stayed. Try again, or handle this one yourself.'
-            : "Found a banner but couldn't work out which button to press.";
+            : status.reason === 'came-back'
+                ? 'The site showed the banner again after it was handled, so it was left alone. Please report it.'
+                : "Found a banner but couldn't work out which button to press.";
         return { state: 'missed', title: "Couldn't handle the banner", detail };
     }
 
