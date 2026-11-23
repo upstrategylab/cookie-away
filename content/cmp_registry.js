@@ -21,6 +21,9 @@
     // Matched as whole words/phrases (see matchIndex), so short words like
     // "no", "ok" or "ja" don't match inside "cookies", "know" or "jahr".
 
+    // "Do Not Sell" (US). Usually opens a form with an opt-out checkbox and Save.
+    const CCPA_OPT_OUT = ['do not sell or share my personal information', 'do not sell my personal information', 'do not sell or share my info', 'do not sell or share'];
+
     // Refuse non-essential cookies. Ordered roughly strongest first.
     const REJECT = [
         // English
@@ -28,8 +31,8 @@
         'only necessary', 'necessary only', 'essential only', 'only essential', 'necessary cookies only',
         'use necessary cookies only', 'continue without accepting', 'i do not agree', 'disagree',
         'refuse non-essential cookies', 'no thanks', 'no, thanks',
-        // US opt-out (CCPA)
-        'do not sell or share my personal information', 'do not sell my personal information', 'do not sell or share my info', 'do not sell or share', 'nein danke', 'non merci', 'nee bedankt', 'nei takk', 'nej tak',
+        // US opt-out (CCPA): opens an opt-out form, completed by completeOptOut()
+        ...CCPA_OPT_OUT, 'nein danke', 'non merci', 'nee bedankt', 'nei takk', 'nej tak',
         // "Legitimate interest" objections in TCF settings screens
         'object all', 'object to all', 'alle widersprechen', 'widersprechen', "s'opposer à tout", 'oponerse a todo',
         'opporsi a tutto', 'opponiti a tutto', 'invänd mot alla', 'bezwaar maken tegen alles',
@@ -105,7 +108,7 @@
         'auswahl speichern', 'auswahl bestätigen', 'einstellungen speichern', 'auswahl erlauben', 'speichern', 'bestätigen',
         'enregistrer et quitter', 'confirmer mes choix', 'enregistrer', 'confirmer', 'valider',
         'guardar y salir', 'guardar', 'confirmar', 'salva e esci', 'salva', 'conferma', 'guardar e sair', 'salvar',
-        'keuze opslaan', 'opslaan', 'spara och avsluta', 'tillåt urval', 'tillåt valda', 'spara', 'bekräfta', 'gem', 'bekræft', 'tillad udvalgte', 'tillad valgte', 'tillat utvalgte', 'lagre', 'bekreft',
+        'keuze opslaan', 'opslaan', 'spara och avsluta', 'tillåt urval', 'tillåt valda', 'acceptera valda cookies', 'acceptera valda', 'godkänn valda', 'spara mina val', 'spara val', 'spara', 'bekräfta', 'gem', 'bekræft', 'tillad udvalgte', 'tillad valgte', 'tillat utvalgte', 'lagre', 'bekreft',
         'tallenna', 'vahvista', 'zezwól na wybór', 'zapisz wybór', 'zapisz ustawienia', 'zapisz preferencje', 'potwierdź wybór', 'akceptuj wybrane', 'zapisz', 'potwierdź', 'potvrdit', 'uložit'
     ];
 
@@ -149,6 +152,13 @@
         'cookie', 'cookies', 'consent', 'gdpr', 'tracking', 'privacy',
         'kakor', 'samtycke', 'datenschutz', 'einwilligung', 'consentement',
         'consentimiento', 'consenso', 'toestemming', 'samtykke', 'evästeet', 'ciasteczka', 'sütik'
+    ];
+
+    // A category that can't be switched off, even when its checkbox isn't marked disabled
+    // ("Nödvändiga funktioner (alltid aktiva)", dustin.se)
+    const ALWAYS_ON = [
+        'always active', 'always on', 'alltid aktiva', 'alltid aktiv', 'immer aktiv', 'toujours actif', 'toujours actifs',
+        'siempre activas', 'siempre activo', 'sempre attivi', 'altijd actief', 'altid aktive', 'alltid aktive', 'aina käytössä', 'zawsze aktywne'
     ];
 
     // "Accept all"-style labels must never be mistaken for a Save button.
@@ -366,11 +376,24 @@
         return el.tagName === 'INPUT' ? el.checked : el.getAttribute('aria-checked') === 'true';
     }
 
+    // The required category: its own label, or a short row around it, says necessary / always active
+    function isRequiredToggle(el) {
+        const label = (el.id && document.querySelector(`label[for="${CSS.escape(el.id)}"]`)) || el.closest('label');
+        const own = `${el.value || ''} ${el.getAttribute('aria-label') || ''} ${label ? label.textContent : ''}`.toLowerCase();
+        if (matchesAny(own, ALWAYS_ON) || /^\s*(strictly )?necessary\s*$/.test(el.value || '')) return true;
+        for (let row = el.parentElement, i = 0; row && i < 3; row = row.parentElement, i++) {
+            const text = (row.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+            if (text.length > 120) break;
+            if (matchesAny(text, ALWAYS_ON)) return true;
+        }
+        return false;
+    }
+
     // Switched-on, changeable toggles. Hidden inputs behind custom switches count too.
     function findToggles(scope) {
         const toggles = [];
         for (const el of scope.querySelectorAll('input[type="checkbox"], [role="switch"], [role="checkbox"]')) {
-            const locked = el.disabled || el.getAttribute('aria-disabled') === 'true';
+            const locked = el.disabled || el.getAttribute('aria-disabled') === 'true' || isRequiredToggle(el);
             if (isOn(el) && !locked) toggles.push(el);
         }
         return toggles;
@@ -520,6 +543,36 @@
         const save = findSave(layer, hints);
         if (!save || !safeClick(save)) return clicked ? { kind: 'reject', toggles, layer } : null;
         return { kind: 'settings', toggles: toggles + clicked, layer };
+    }
+
+    // After a "Do Not Sell" click: tick the opt-out box in the form it opened and save
+    // (CookieYes in the US, housefresh.com). The click alone only opens the form.
+    async function completeOptOut(hints = {}) {
+        const box = await waitFor(() => {
+            for (const root of collectRoots()) {
+                for (const el of root.querySelectorAll('input[type="checkbox"], [role="switch"], [role="checkbox"]')) {
+                    if (el.disabled || !(isVisible(el) || (el.parentElement && isVisible(el.parentElement)))) continue;
+                    const label = (el.id && root.querySelector(`label[for="${CSS.escape(el.id)}"]`)) || el.closest('label');
+                    const text = `${el.id} ${el.name || ''} ${el.className} ${el.getAttribute('aria-label') || ''} ${label ? label.textContent : ''}`.toLowerCase();
+                    if (/opt.?out|do.?not.?sell|ccpa/.test(text)) return el;
+                }
+            }
+            return null;
+        }, 2000);
+        if (!box) return null;
+        if (!isOn(box)) box.click();
+        await wait(200);
+        if (!isOn(box)) return null;
+        // The nearest container around the box that has a Save button is the form
+        let save = null;
+        for (let el = box.parentElement, i = 0; el && i < 8 && !save; el = el.parentElement, i++) {
+            save = findSave(el, {}) || findSave(el, hints);
+            if (save && !el.contains(save)) save = null;
+        }
+        if (!save || matchesAny(labelOf(save), [...ACCEPT_ALL, 'cancel']) || !safeClick(save)) return null;
+        // No layer to verify: CookieYes confirms ("Your opt-out preference has been honored") and
+        // closes the form itself after a countdown, longer than the check after a click
+        return { layer: null, label: labelOf(save) };
     }
 
     // --- Providers ----------------------------------------------------------
@@ -691,7 +744,13 @@
             (matchesAny(b.label, PAYWALL) || !buttons.some(u => u.element === b.element)));
 
         const reject = pickButton(buttons, { allowAccept: false });
-        if (reject && safeClick(reject.button.element)) return { kind: reject.kind, label: reject.button.label };
+        if (reject && safeClick(reject.button.element)) {
+            if (matchesAny(reject.button.label, CCPA_OPT_OUT)) {
+                const optOut = await completeOptOut(provider.settings || {});
+                if (optOut) return { kind: 'reject', label: `${reject.button.label} + ${optOut.label}`, layer: optOut.layer };
+            }
+            return { kind: reject.kind, label: reject.button.label };
+        }
 
         // "Allow selection" with every optional box already unticked is a reject (Cookiebot's first layer, DR)
         const boxes = [...banner.querySelectorAll('input[type="checkbox"], [role="switch"], [role="checkbox"]')]
