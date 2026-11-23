@@ -362,13 +362,16 @@
 
     // --- Settings layer ("Manage options" -> untick everything -> Save) -----
 
+    function isOn(el) {
+        return el.tagName === 'INPUT' ? el.checked : el.getAttribute('aria-checked') === 'true';
+    }
+
     // Switched-on, changeable toggles. Hidden inputs behind custom switches count too.
     function findToggles(scope) {
         const toggles = [];
         for (const el of scope.querySelectorAll('input[type="checkbox"], [role="switch"], [role="checkbox"]')) {
-            const on = el.tagName === 'INPUT' ? el.checked : el.getAttribute('aria-checked') === 'true';
             const locked = el.disabled || el.getAttribute('aria-disabled') === 'true';
-            if (on && !locked) toggles.push(el);
+            if (isOn(el) && !locked) toggles.push(el);
         }
         return toggles;
     }
@@ -482,11 +485,19 @@
             }
         }
 
-        // 3. Switch off everything that's still on (capped: vendor lists can be huge)
+        // 3. Switch off everything that's still on (capped: vendor lists can be huge).
+        //    Re-check each one first: some layers show every switch twice and keep the pair in sync
+        //    (Cookiebot's main and "Inline" switches, electrokit.com), so clicking the twin of one
+        //    we just switched off would switch both back on.
         let toggles = 0;
-        for (const toggle of findToggles(layer).slice(0, 400)) {
-            toggle.click();
-            toggles++;
+        for (let pass = 0; pass < 2; pass++) {
+            for (const toggle of findToggles(layer).slice(0, 400)) {
+                if (!isOn(toggle)) continue;
+                toggle.click();
+                toggles++;
+            }
+            if (!findToggles(layer).length) break;
+            await wait(150);
         }
         // Provider switches that sit in tabs not shown yet (OneTrust): turn off any that are on
         if (hints.toggles) {
@@ -504,7 +515,8 @@
         }
         if (toggles) await wait(250);
 
-        // 4. Save
+        // 4. Save. Never while an optional switch is still on: saving would consent to it.
+        if (findToggles(layer).length) return clicked ? { kind: 'reject', toggles, layer } : null;
         const save = findSave(layer, hints);
         if (!save || !safeClick(save)) return clicked ? { kind: 'reject', toggles, layer } : null;
         return { kind: 'settings', toggles: toggles + clicked, layer };
@@ -533,6 +545,8 @@
             settings: {
                 open: ['#CybotCookiebotDialogBodyLevelButtonCustomize', '#CybotCookiebotDialogNavDetails'],
                 layer: '#CybotCookiebotDialog',
+                // "Avvisa"/"Deny" is hidden on some first layers and appears once the details are open
+                reject: ['#CybotCookiebotDialogBodyButtonDecline'],
                 save: ['#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection', '#CybotCookiebotDialogBodyButtonAcceptSelected']
             },
             accept: ['#CybotCookiebotDialogBodyButtonAccept', '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll']
